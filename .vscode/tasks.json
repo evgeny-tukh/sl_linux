@@ -1,0 +1,48 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "Build Test",
+			"command": "/usr/bin/gcc",
+			"args": [
+				"/home/jeca/work/test.cpp",
+				"-o",
+				"test",
+				"-lX11"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "compiler: /usr/bin/gcc"
+		},
+		{
+			"type": "cppbuild",
+			"label": "Build SL",
+			"command": "/usr/bin/g++",
+			"args": [
+				"/home/jeca/work/sl_main.cpp",
+				"/home/jeca/work/sl_button.cpp",
+				"/home/jeca/work/sl_wnd.cpp",
+				"/home/jeca/work/sl_event.cpp",
+				"-g",
+				"-std=c++11",
+				"-o",
+				"/home/jeca/work/bin/sl",
+				"-lX11"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "compiler: /usr/bin/gcc"
+		}
+	]
+}
