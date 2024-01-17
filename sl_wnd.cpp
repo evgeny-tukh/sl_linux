@@ -142,9 +142,6 @@ void Ui::Wnd::onConfigurationChanged(XConfigureEvent& evt) {
 }
 
 void Ui::Wnd::paint(GC ctx) const {
-    XSetForeground(_display, ctx, _borderClr);
-    XSetBackground(_display, ctx, _bgClr);
-    XDrawString(_display, _wnd, ctx, 50, 50, "hello!", 6);
 }
 
 void Ui::Wnd::onPaint(XExposeEvent& evt) {

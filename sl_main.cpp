@@ -7,6 +7,7 @@
 #include "sl_button.h"
 #include "sl_wnd.h"
 #include "sl_event.h"
+#include "sl_bitmap.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -30,36 +31,28 @@ namespace Const {
 
 Context ctx;
 
-void paintMainWindow(Display *display, int screen, Window wnd) {
-    XFillRectangle(display, wnd, DefaultGC(display, screen), 20, 20, 10, 10); 
-}
+class MainWnd: public Ui::Wnd {
+    public:
+        MainWnd(Display *display, Ui::Wnd::Properties& props);
 
-void onWndConfigurationChanged(Display *display, int screen, Window wnd, XConfigureEvent& evt) {
-    if (evt.width != ctx.mainWndWidth)
-        ctx.mainWndWidth = evt.width;
-    if (evt.height != ctx.mainWndHeight)
-        ctx.mainWndHeight = evt.height;
-}
+    protected:
+        Ui::Button *_butDisable;
+        Ui::Button *_butClose;
+        std::shared_ptr<Ui::Bitmap> _img;
+        bool _closeDisabled;
 
-int main(int argCount, char *args[]) {
-    char *displayEnv = getenv(Const::DISPLAY);
+        void paint(GC ctx) const override;
+};
 
-    if (!displayEnv) {
-        printf("No display environment variable!\n");
-        return 0;
-    }
-
-    Display *display = XOpenDisplay(displayEnv);
-
-    if (!display) {
-        printf("Unable to connect display server!\n");
-        return 0;
-    }
-
+MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
+    Ui::Wnd(display, props, RootWindow(display, DefaultScreen(display))),
+    _butDisable(nullptr),
+    _butClose(nullptr),
+    _closeDisabled(false) {
     auto screen = DefaultScreen(display);
-    auto palette = DefaultColormap(display, screen);
     auto borderClr = BlackPixel(display, screen);
     auto bgClr = WhitePixel(display, screen);
+    auto palette = DefaultColormap(display, screen);
 
     XColor extraLightGrayRef;
     extraLightGrayRef.red = 200 * 256;
@@ -81,29 +74,7 @@ int main(int argCount, char *args[]) {
     res = XAllocColor(display, palette, &lightGrayRef);
     res = XAllocColor(display, palette, &darkGrayRef);
 
-    Ui::Wnd::Properties props;
-    props[Ui::Wnd::Property::X] = Const::LEFT;
-    props[Ui::Wnd::Property::Y] = Const::TOP;
-    props[Ui::Wnd::Property::Width] = Const::WIDTH;
-    props[Ui::Wnd::Property::Height] = Const::HEIGHT;
-    props[Ui::Wnd::Property::BorderColor] = borderClr;
-    props[Ui::Wnd::Property::BgColor] = bgClr;
-    props[Ui::Wnd::Property::BorderWidth] = Const::BORDER_WIDTH;
-    Ui::Wnd wndMain(display, props, RootWindow(display, screen));
-
-    wndMain.create();
-
-    /*auto wnd = XCreateSimpleWindow(
-        display,
-        RootWindow(display, screen),
-        Const::LEFT,
-        Const::TOP,
-        Const::WIDTH,
-        Const::HEIGHT,
-        Const::BORDER_WIDTH,
-        borderClr,
-        bgClr
-    );*/
+    create();
 
     Ui::Wnd::Properties butProps;
     butProps[Ui::Wnd::Property::X] = 50;
@@ -116,67 +87,66 @@ int main(int argCount, char *args[]) {
     butProps[Ui::Wnd::Property::ActiveBgColor] = extraLightGrayRef.pixel;
     butProps[Ui::Wnd::Property::BgColor] = lightGrayRef.pixel;
     butProps[Ui::Wnd::Property::BorderWidth] = 1;
-    Ui::Button *okBut = dynamic_cast<Ui::Button *>(wndMain.addChild((uint16_t) Controls::OK, std::make_shared<Ui::Button>((uint16_t) Controls::OK, "Ok", display, butProps, wndMain.handle())));
+    _butDisable = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::OK, std::make_shared<Ui::Button>((uint16_t) Controls::OK, "Ok", display, butProps, _wnd)));
+
     butProps[Ui::Wnd::Property::X] = 150;
-    Ui::Button *closeBut = dynamic_cast<Ui::Button *>(wndMain.addChild((uint16_t) Controls::Cancel, std::make_shared<Ui::Button>((uint16_t) Controls::Cancel, "Close", display, butProps, wndMain.handle())));
+    _butClose = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::Cancel, std::make_shared<Ui::Button>((uint16_t) Controls::Cancel, "Close", display, butProps, _wnd)));
 
-    wndMain.selectInput(SubstructureRedirectMask | StructureNotifyMask | SubstructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask);
-    wndMain.show(true);
+    selectInput(SubstructureRedirectMask | StructureNotifyMask | SubstructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask);
+    show(true);
 
-    bool disabled = false;
-    okBut->create();
-    closeBut->create();
-    okBut->show(true);
-    okBut->connect([&closeBut, &disabled] (Ui::Event&) {
-        disabled = !disabled;
-        closeBut->enable(!disabled);
+    _butDisable->create();
+    _butDisable->show(true);
+    _butDisable->connect([this] (Ui::Event&) {
+        _closeDisabled = !_closeDisabled;
+        _butClose->enable(!_closeDisabled);
     });
-    closeBut->connect([&wndMain] (Ui::Event&) {
-        wndMain.destroy();
+
+    _butClose->create();
+    _butClose->connect([this] (Ui::Event&) {
+        destroy();
     });
-    closeBut->show(true);
-    //XMapWindow(display, /*wnd*/wndMain.handle());
+    _butClose->show(true);
 
-    //bool keepRunning = true;
+    _img = std::make_shared<Ui::Bitmap>(*this);
+    //_img->loadBmp("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
+    _img->loadBmpFile("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
+    //_img->loadXbm("/home/jeca/work/bin/res/Range +/RangePlusActivated.xbm");
+}
 
-    auto eventHandler = [screen, display] (Ui::Wnd& wnd, XEvent& evt) {
-        switch (evt.type) {
-            case ConfigureNotify:
-                onWndConfigurationChanged(display, screen, wnd.handle(), evt.xconfigure); break;
-            case Expose:
-                paintMainWindow(display, screen, wnd.handle()); break;
-            case DestroyNotify:
-            //case KeyPress:
-                return false;
-        }
+void MainWnd::paint(GC ctx) const {
+    XSetForeground(_display, ctx, _borderClr);
+    XSetBackground(_display, ctx, _bgClr);
+    XDrawString(_display, _wnd, ctx, 50, 50, "hello!", 6);
+    _img->drawTo(*this, 10, 200, 0, 0, ctx);
+}
 
-        return true;
-    };
+int main(int argCount, char *args[]) {
+    char *displayEnv = getenv(Const::DISPLAY);
 
-    wndMain.eventLoop(eventHandler);
-    #if 0
-    while (keepRunning) {
-        XEvent evt;
-
-        try {
-            XNextEvent(display, &evt);
-        } catch (...) {
-            break;
-        }
-
-        printf("Evt %d\n", evt.type);
-
-        switch (evt.type) {
-            case ConfigureNotify:
-                onWndConfigurationChanged(display, screen, /*wnd*/wndMain.handle(), evt.xconfigure); break;
-            case Expose:
-                paintMainWindow(display, screen, /*wnd*/wndMain.handle()); break;
-            case DestroyNotify:
-            case KeyPress:
-                keepRunning = false; break;
-        }
+    if (!displayEnv) {
+        printf("No display environment variable!\n");
+        return 0;
     }
-    #endif
+
+    Display *display = XOpenDisplay(displayEnv);
+
+    if (!display) {
+        printf("Unable to connect display server!\n");
+        return 0;
+    }
+
+    Ui::Wnd::Properties props;
+    props[Ui::Wnd::Property::X] = Const::LEFT;
+    props[Ui::Wnd::Property::Y] = Const::TOP;
+    props[Ui::Wnd::Property::Width] = Const::WIDTH;
+    props[Ui::Wnd::Property::Height] = Const::HEIGHT;
+    props[Ui::Wnd::Property::BorderColor] = BlackPixel(display, DefaultScreen(display));
+    props[Ui::Wnd::Property::BgColor] = WhitePixel(display, DefaultScreen(display));
+    props[Ui::Wnd::Property::BorderWidth] = Const::BORDER_WIDTH;
+    
+    MainWnd wndMain(display, props);
+    wndMain.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
 
     XCloseDisplay(display);
 
