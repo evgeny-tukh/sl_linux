@@ -25,12 +25,16 @@ Ui::Bitmap::Bitmap(Wnd& compatibleWnd):
     _height(0),
     _baseX(0),
     _baseY(0),
-    _image(0) {
+    _image(0),
+    _img(nullptr) {
 }
 
 Ui::Bitmap::~Bitmap() {
     if (_image)
         XFreePixmap(_compatibleWnd.display(), _image);
+
+    if (_img)
+        XDestroyImage(_img.get());
 }
 
 bool Ui::Bitmap::loadBmp(const char *file) {
@@ -73,7 +77,26 @@ bool Ui::Bitmap::drawTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY
 
     GC localCtx = ctx ? ctx : XCreateGC(wnd.display(), wnd.handle(), 0, nullptr);
 
-    return XCopyPlane(wnd.display(), _image, wnd.handle(), localCtx, srcX, srcY, _width, _height, destX, destY, 8) == Success;
+    bool result = XCopyPlane(wnd.display(), _image, wnd.handle(), localCtx, srcX, srcY, _width, _height, destX, destY, 8) == Success;
+
+    if (!ctx)
+        XFreeGC(wnd.display(), localCtx);
+
+    return result;
+}
+
+bool Ui::Bitmap::putTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY, GC ctx) {
+    if (!_img)
+        return false;
+
+    GC localCtx = ctx ? ctx : XCreateGC(wnd.display(), wnd.handle(), 0, nullptr);
+
+    bool result = XPutImage(_compatibleWnd.display(), _compatibleWnd.handle(), localCtx, _img.get(), srcX, srcY, destX, destY, _width, _height);
+
+    if (!ctx)
+        XFreeGC(wnd.display(), localCtx);
+
+    return result;
 }
 
 bool Ui::Bitmap::loadBmpFile(const char *file) {
@@ -114,7 +137,7 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
 
     _width = bmpInfoHeader->width;
     _height = bmpInfoHeader->height;
-    _image = XCreatePixmap(display, _compatibleWnd.handle(), _width, _height, bmpInfoHeader->bitsPerPixel);
+    //_image = XCreatePixmap(display, _compatibleWnd.handle(), _width, _height, bmpInfoHeader->bitsPerPixel);
 
     uint32_t bitsPerLine = bmpInfoHeader->width * bmpInfoHeader->bitsPerPixel;
 
@@ -124,21 +147,60 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
     uint32_t bytesPerLine = (bitsPerLine >> 3);
     bytesPerLine = ((((bmpInfoHeader->width * bmpInfoHeader->bitsPerPixel) + 31) & ~31) >> 3);
     uint8_t *lineStart = buffer + bmpFileHeader->imageDataOffset;
-    auto gc = XCreateGC(display, _image, 0, nullptr);
-    XSetPlaneMask(display, gc, AllPlanes);
+    //auto gc = XCreateGC(display, _image, 0, nullptr);
+    //XSetFunction(display, gc, GXcopy);
+    //XSetPlaneMask(display, gc, AllPlanes);
     int res;
 
-    for (uint32_t y = 0; y < bmpInfoHeader->height; ++ y) {
+    Visual *visual = DefaultVisual(display, 0);
+    _imgData.resize(bmpInfoHeader->width * bmpInfoHeader->height * 4);
+    std::vector<uint32_t> tempData;
+    tempData.resize(bmpInfoHeader->height * bytesPerLine);
+
+    for (uint32_t y = 0, count = 0; y < bmpInfoHeader->height; ++y) {
+        uint8_t *curByte = lineStart;
+
+        for (uint32_t x = 0; x < bmpInfoHeader->width; ++x, ++count) {
+            uint8_t red = *(curByte++);
+            uint8_t green = *(curByte++);
+            uint8_t blue = *(curByte++);
+
+            tempData[count] = (red << 24) + (green << 16) + (blue << 8);
+        }
+
+        lineStart += bytesPerLine;
+    }
+
+    for (uint32_t y = 0, count = 0; y < bmpInfoHeader->height; ++ y) {
+        for (uint32_t x = 0; x < bmpInfoHeader->width; ++x) {
+            uint32_t index = bmpInfoHeader->width * (bmpInfoHeader->height - y - 1) + x;
+            uint32_t pixel = tempData[index];
+            uint8_t red = pixel >> 24;
+            uint8_t green = (pixel >> 16) & 255;
+            uint8_t blue = (pixel >> 8) && 255;
+
+            _imgData[count++] = red;
+            _imgData[count++] = green;
+            _imgData[count++] = blue;
+            _imgData[count++] = 0;
+        }
+    }
+
+    lineStart = buffer + bmpFileHeader->imageDataOffset;
+    XImage *imgPtr = XCreateImage(_compatibleWnd.display(), visual, bmpInfoHeader->bitsPerPixel, ZPixmap, 0, _imgData.data(), bmpInfoHeader->width, bmpInfoHeader->height, 32, 0);
+    _img.reset(imgPtr);
+
+    /*for (uint32_t y = 0; y < bmpInfoHeader->height; ++ y) {
         uint8_t *curByte = lineStart;
         for (uint32_t x = 0; x < bmpInfoHeader->width; ++x) {
-            XColor clr;
+            XColor clr, clr2;
 
             switch (bmpInfoHeader->bitsPerPixel) {
                 case 24: {
                     clr.pixel = 0;
                     clr.red = (*(curByte++)) << 8;
                     clr.green = (*(curByte++)) << 8;
-                    clr.blue = (*curByte++) << 8;
+                    clr.blue = (*(curByte++)) << 8;
                     
                     res = XAllocColor(display, palette, &clr);
                     break;
@@ -162,14 +224,14 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
                 }
             }
 
-            res = XSetForeground(display, gc, clr.pixel);
-            res = XDrawPoint(display, _image, gc, x, _height - y - 1);
+            //res = XSetForeground(display, gc, BlackPixel(display, 0) ^ clr.pixel);
+            //res = XDrawPoint(display, _image, gc, x, _height - y - 1);
         }
 
         lineStart += bytesPerLine;
     }
 
-    XFreeGC(display, gc);
+    XFreeGC(display, gc);*/
     free(buffer);
     fclose(bmp);
 

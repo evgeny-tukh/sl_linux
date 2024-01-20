@@ -8,6 +8,8 @@
 #include "sl_wnd.h"
 #include "sl_event.h"
 #include "sl_bitmap.h"
+#include "sl_range_inc_but.h"
+#include "sl_res.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -38,6 +40,7 @@ class MainWnd: public Ui::Wnd {
     protected:
         Ui::Button *_butDisable;
         Ui::Button *_butClose;
+        std::shared_ptr<RangeIncButton> _butRangeInc;
         std::shared_ptr<Ui::Bitmap> _img;
         bool _closeDisabled;
 
@@ -112,13 +115,21 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     //_img->loadBmp("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
     _img->loadBmpFile("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
     //_img->loadXbm("/home/jeca/work/bin/res/Range +/RangePlusActivated.xbm");
+
+    _butRangeInc.reset(new RangeIncButton(*this));
+    addChild((uint16_t) Ui::Resources::IncreaseRange, _butRangeInc);
+    _butRangeInc->create();
+    _butRangeInc->show(true);
 }
 
 void MainWnd::paint(GC ctx) const {
+    XSetPlaneMask(_display, ctx, AllPlanes);
     XSetForeground(_display, ctx, _borderClr);
     XSetBackground(_display, ctx, _bgClr);
+    XSetFunction(_display, ctx, GXcopy);
     XDrawString(_display, _wnd, ctx, 50, 50, "hello!", 6);
-    _img->drawTo(*this, 10, 200, 0, 0, ctx);
+    //_img->drawTo(*this, 10, 200, 0, 0, ctx);
+    _img->putTo(*this, 10, 200, 0, 0, ctx);
 }
 
 int main(int argCount, char *args[]) {

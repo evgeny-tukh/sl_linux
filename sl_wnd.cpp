@@ -11,6 +11,24 @@ uint32_t Ui::Wnd::Properties::get(Property prop) {
     return pos->second;
 }
 
+Ui::Wnd::Properties::Properties (uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+    clear();
+    (*this)[Ui::Wnd::Property::X] = x;
+    (*this)[Ui::Wnd::Property::Y] = y;
+    (*this)[Ui::Wnd::Property::Width] = width;
+    (*this)[Ui::Wnd::Property::Height] = height;
+}
+
+Ui::Wnd::Properties& Ui::Wnd::Properties::populate(Ui::Wnd::Properties& props, uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+    props.clear();
+    props.emplace(std::pair<Ui::Wnd::Property, uint32_t>(Ui::Wnd::Property::X, x));
+    props.emplace(std::pair<Ui::Wnd::Property, uint32_t>(Ui::Wnd::Property::Y, y));
+    props.emplace(std::pair<Ui::Wnd::Property, uint32_t>(Ui::Wnd::Property::Width, width));
+    props.emplace(std::pair<Ui::Wnd::Property, uint32_t>(Ui::Wnd::Property::Height, height));
+
+    return props;
+}
+
 Ui::Wnd::Wnd(Display *display, Properties& props, Window parent):
     _wnd(0),
     _parent(parent),

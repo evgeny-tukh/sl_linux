@@ -29,11 +29,14 @@
 				"/home/jeca/work/sl_button.cpp",
 				"/home/jeca/work/sl_wnd.cpp",
 				"/home/jeca/work/sl_event.cpp",
+				"/home/jeca/work/sl_bitmap.cpp",
+				"/home/jeca/work/sl_range_inc_but.cpp",
 				"-g",
-				"-std=c++11",
+				"-std=c++14",
 				"-o",
 				"/home/jeca/work/bin/sl",
-				"-lX11"
+				"-lX11",
+				"-lImlib2"
 			],
 			"options": {
 				"cwd": "${fileDirname}"

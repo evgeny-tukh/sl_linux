@@ -27,9 +27,14 @@ class Wnd {
 
         class Properties: public std::unordered_map<Property, uint32_t> {
             public:
+                Properties() {}
+                Properties (uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+
                 static const uint32_t UNDEFINED = 0xFFFFFFFF;
                 
                 uint32_t get(Property prop);
+
+                static Properties& populate(Properties& props, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
         };
 
         Wnd(Display *display, Properties& props, Window parent);

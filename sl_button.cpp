@@ -1,13 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <memory>
 
 #include "sl_button.h"
 #include "sl_event.h"
 
+Ui::Button::Button(uint16_t id, const char *text, Properties& props, Wnd& parent):
+    Ui::Button::Button(id, text, parent.display(), props, parent.handle()) {
+    if (text && *text)
+        _status |= (int) ButtonStatus::Text;
+}
+
 Ui::Button::Button(uint16_t id, const char *text, Display *display, Properties& props, Window parent):
     Ui::Wnd::Wnd(display, props, parent),
     _id(id),
-    _text(text),
+    _text(text ? text : ""),
     _status((int) ButtonStatus::Default),
     _activeBgClr(props.get(Wnd::Property::ActiveBgColor)),
     _fgClr(props.get(Wnd::Property::FgColor)),
@@ -69,6 +76,9 @@ void Ui::Button::paint(GC ctx) const {
         XSetForeground(_display, ctx, fg);
         XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, (_height >> 1) + 5, _text.c_str(), _text.length());
         XUnloadFont(_display, font->fid);
+    } else if (_status & (int) ButtonStatus::Image) {
+        if (_normalImg)
+            _normalImg->putTo(*this, 0, 0, 0, 0, ctx);
     }
 }
 
@@ -90,3 +100,23 @@ void Ui::Button::onMouseLeave(XCrossingEvent& evt) {
     }
 }
 
+void Ui::Button::loadNormalImg(const char *path) {
+    _normalImg.reset(new Ui::Bitmap(*this));
+
+    if (_normalImg && _normalImg->loadBmpFile(path))
+        _status |= (int) Button::ButtonStatus::Image;
+}
+
+void Ui::Button::loadPressedImg(const char *path) {
+    _pressedImg.reset(new Ui::Bitmap(*this));
+
+    if (_pressedImg)
+        _pressedImg->loadBmpFile(path);
+}
+
+void Ui::Button::loadHoveredImg(const char *path) {
+    _hoveredImg.reset(new Ui::Bitmap(*this));
+
+    if (_hoveredImg)
+        _hoveredImg->loadBmpFile(path);
+}

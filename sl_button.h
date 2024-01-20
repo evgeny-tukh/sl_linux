@@ -4,14 +4,18 @@
 
 #include <cstdint>
 #include <string>
+#include <memory>
 
 #include "sl_wnd.h"
 #include "sl_event.h"
+#include "sl_button.h"
+#include "sl_bitmap.h"
 
 namespace Ui {
 
 class Button: public Wnd {
     public:
+        Button(uint16_t id, const char *text, Properties& props, Wnd& parent);
         Button(uint16_t id, const char *text, Display *display, Properties& props, Window parent);
         virtual ~Button() {}
 
@@ -30,6 +34,10 @@ class Button: public Wnd {
 
         void enable(bool enableFlag);
 
+        void loadNormalImg(const char *path);
+        void loadPressedImg(const char *path);
+        void loadHoveredImg(const char *path);
+
     protected:
         unsigned long _activeBgClr;
         unsigned long _fgClr;
@@ -38,6 +46,9 @@ class Button: public Wnd {
         int _status;
         uint16_t _id;
         Event::EventHandler _handler;
+        std::unique_ptr<Bitmap> _normalImg;
+        std::unique_ptr<Bitmap> _hoveredImg;
+        std::unique_ptr<Bitmap> _pressedImg;
 
         void onButtonPress(XButtonPressedEvent& evt) override;
         void onButtonRelease(XButtonReleasedEvent& evt) override;

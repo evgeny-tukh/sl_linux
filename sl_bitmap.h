@@ -3,6 +3,8 @@
 #include <X11/Xlib.h> 
 
 #include <cstdint>
+#include <vector>
+#include <memory>
 
 #include "sl_wnd.h"
 
@@ -43,6 +45,7 @@ class Bitmap {
         bool loadBmpFile(const char *file);
 
         bool drawTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
+        bool putTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
 
     protected:
         Wnd& _compatibleWnd;
@@ -51,6 +54,8 @@ class Bitmap {
         int _baseX;
         int _baseY;
         Pixmap _image;
+        std::unique_ptr<XImage> _img;
+        std::vector<char> _imgData;
 };
 
 }
