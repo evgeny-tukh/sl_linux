@@ -38,6 +38,7 @@ class Wnd {
         };
 
         Wnd(Display *display, Properties& props, Window parent);
+        Wnd(Display *display, int x, int y, int width, int height, Window parent);
         virtual ~Wnd();
 
         virtual void create();

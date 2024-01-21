@@ -9,6 +9,7 @@
 #include "sl_event.h"
 #include "sl_bitmap.h"
 #include "sl_range_inc_but.h"
+#include "sl_range_dec_but.h"
 #include "sl_res.h"
 
 enum class Controls: uint16_t {
@@ -26,8 +27,8 @@ namespace Const {
 
     const int LEFT = 10;
     const int TOP = 10;
-    const int WIDTH = 500;
-    const int HEIGHT = 500;
+    const int WIDTH = 800;
+    const int HEIGHT = 600;
     const int BORDER_WIDTH = 5;
 }
 
@@ -41,7 +42,7 @@ class MainWnd: public Ui::Wnd {
         Ui::Button *_butDisable;
         Ui::Button *_butClose;
         std::shared_ptr<RangeIncButton> _butRangeInc;
-        std::shared_ptr<Ui::Bitmap> _img;
+        std::shared_ptr<RangeDecButton> _butRangeDec;
         bool _closeDisabled;
 
         void paint(GC ctx) const override;
@@ -72,10 +73,9 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     darkGrayRef.green = 120 * 256;
     darkGrayRef.blue = 120 * 256;
 
-    bool res;
-    res = XAllocColor(display, palette, &extraLightGrayRef);
-    res = XAllocColor(display, palette, &lightGrayRef);
-    res = XAllocColor(display, palette, &darkGrayRef);
+    XAllocColor(display, palette, &extraLightGrayRef);
+    XAllocColor(display, palette, &lightGrayRef);
+    XAllocColor(display, palette, &darkGrayRef);
 
     create();
 
@@ -111,15 +111,15 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     });
     _butClose->show(true);
 
-    _img = std::make_shared<Ui::Bitmap>(*this);
-    //_img->loadBmp("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
-    _img->loadBmpFile("/home/jeca/work/bin/res/Range +/RangePlusActivated.bmp");
-    //_img->loadXbm("/home/jeca/work/bin/res/Range +/RangePlusActivated.xbm");
-
     _butRangeInc.reset(new RangeIncButton(*this));
     addChild((uint16_t) Ui::Resources::IncreaseRange, _butRangeInc);
     _butRangeInc->create();
     _butRangeInc->show(true);
+
+    _butRangeDec.reset(new RangeDecButton(*this));
+    addChild((uint16_t) Ui::Resources::DecreaseRange, _butRangeDec);
+    _butRangeDec->create();
+    _butRangeDec->show(true);
 }
 
 void MainWnd::paint(GC ctx) const {
@@ -128,8 +128,6 @@ void MainWnd::paint(GC ctx) const {
     XSetBackground(_display, ctx, _bgClr);
     XSetFunction(_display, ctx, GXcopy);
     XDrawString(_display, _wnd, ctx, 50, 50, "hello!", 6);
-    //_img->drawTo(*this, 10, 200, 0, 0, ctx);
-    _img->putTo(*this, 10, 200, 0, 0, ctx);
 }
 
 int main(int argCount, char *args[]) {

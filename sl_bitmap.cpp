@@ -4,6 +4,7 @@
 #include <Imlib2.h>
 
 #include <memory.h>
+#include <unordered_map>
 
 #pragma pack(1)
 union Rgb {
@@ -27,6 +28,10 @@ Ui::Bitmap::Bitmap(Wnd& compatibleWnd):
     _baseY(0),
     _image(0),
     _img(nullptr) {
+}
+
+namespace {
+std::unordered_map<uint32_t, uint32_t> colors;
 }
 
 Ui::Bitmap::~Bitmap() {
@@ -137,7 +142,6 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
 
     _width = bmpInfoHeader->width;
     _height = bmpInfoHeader->height;
-    //_image = XCreatePixmap(display, _compatibleWnd.handle(), _width, _height, bmpInfoHeader->bitsPerPixel);
 
     uint32_t bitsPerLine = bmpInfoHeader->width * bmpInfoHeader->bitsPerPixel;
 
@@ -147,10 +151,6 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
     uint32_t bytesPerLine = (bitsPerLine >> 3);
     bytesPerLine = ((((bmpInfoHeader->width * bmpInfoHeader->bitsPerPixel) + 31) & ~31) >> 3);
     uint8_t *lineStart = buffer + bmpFileHeader->imageDataOffset;
-    //auto gc = XCreateGC(display, _image, 0, nullptr);
-    //XSetFunction(display, gc, GXcopy);
-    //XSetPlaneMask(display, gc, AllPlanes);
-    int res;
 
     Visual *visual = DefaultVisual(display, 0);
     _imgData.resize(bmpInfoHeader->width * bmpInfoHeader->height * 4);
@@ -166,6 +166,23 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
             uint8_t blue = *(curByte++);
 
             tempData[count] = (red << 24) + (green << 16) + (blue << 8);
+
+            /*auto clrPos = colors.find(tempData[count]);
+
+            if (clrPos == colors.end()) {
+                XColor clrRef;
+                clrRef.red = red * 256;
+                clrRef.green = green * 256;
+                clrRef.blue = blue * 256;
+
+                XAllocColor(display, palette, &clrRef);
+
+                colors.emplace(std::pair<uint32_t, uint32_t>(tempData[count], clrRef.pixel));
+
+                tempData[count] = clrRef.pixel;
+            } else {
+                tempData[count] = clrPos->second;
+            }*/
         }
 
         lineStart += bytesPerLine;
@@ -189,49 +206,7 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
     lineStart = buffer + bmpFileHeader->imageDataOffset;
     XImage *imgPtr = XCreateImage(_compatibleWnd.display(), visual, bmpInfoHeader->bitsPerPixel, ZPixmap, 0, _imgData.data(), bmpInfoHeader->width, bmpInfoHeader->height, 32, 0);
     _img.reset(imgPtr);
-
-    /*for (uint32_t y = 0; y < bmpInfoHeader->height; ++ y) {
-        uint8_t *curByte = lineStart;
-        for (uint32_t x = 0; x < bmpInfoHeader->width; ++x) {
-            XColor clr, clr2;
-
-            switch (bmpInfoHeader->bitsPerPixel) {
-                case 24: {
-                    clr.pixel = 0;
-                    clr.red = (*(curByte++)) << 8;
-                    clr.green = (*(curByte++)) << 8;
-                    clr.blue = (*(curByte++)) << 8;
-                    
-                    res = XAllocColor(display, palette, &clr);
-                    break;
-                }
-                case 1: {
-                    int bitIndex = x % 8;
-                    int mask = 0x80 >> bitIndex;
-                    
-                    if (((*curByte) & mask) == 0)
-                        clr.pixel = WhitePixel(display, screen);
-                    else
-                        clr.pixel = BlackPixel(display, screen);
-
-                    if (bitIndex == 7)
-                        ++curByte;
-                    
-                    break;
-                }
-                default: {
-                    continue;
-                }
-            }
-
-            //res = XSetForeground(display, gc, BlackPixel(display, 0) ^ clr.pixel);
-            //res = XDrawPoint(display, _image, gc, x, _height - y - 1);
-        }
-
-        lineStart += bytesPerLine;
-    }
-
-    XFreeGC(display, gc);*/
+    
     free(buffer);
     fclose(bmp);
 

@@ -29,6 +29,19 @@ Ui::Wnd::Properties& Ui::Wnd::Properties::populate(Ui::Wnd::Properties& props, u
     return props;
 }
 
+Ui::Wnd::Wnd(Display *display, int x, int y, int width, int height, Window parent):
+    _wnd(0),
+    _parent(parent),
+    _display(display),
+    _bgClr(getDefaultPropValue(Property::BgColor)),
+    _borderClr(getDefaultPropValue(Property::BorderColor)),
+    _bordwerWidth(getDefaultPropValue(Property::BorderWidth)),
+    _width(width),
+    _height(height),
+    _x(x),
+    _y(y) {
+}
+
 Ui::Wnd::Wnd(Display *display, Properties& props, Window parent):
     _wnd(0),
     _parent(parent),

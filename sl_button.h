@@ -17,6 +17,8 @@ class Button: public Wnd {
     public:
         Button(uint16_t id, const char *text, Properties& props, Wnd& parent);
         Button(uint16_t id, const char *text, Display *display, Properties& props, Window parent);
+        Button(uint16_t id, const char *text, int x, int y, int width, int height, Wnd& parent);
+        Button(uint16_t id, const char *text, Display *display, int x, int y, int width, int height, Window parent);
         virtual ~Button() {}
 
         enum class ButtonStatus: int {
@@ -28,15 +30,21 @@ class Button: public Wnd {
             Image = 16,
         };
 
+        enum class ImageType: int {
+            Normal,
+            Pressed,
+            Hovered,
+            Disabled,
+        };
+
         void create() override;
 
         void connect(Event::EventHandler handler);
 
         void enable(bool enableFlag);
 
-        void loadNormalImg(const char *path);
-        void loadPressedImg(const char *path);
-        void loadHoveredImg(const char *path);
+        void loadImage(ImageType imgType, const char *path);
+        void loadImage(ImageType imgType, const std::string path) { loadImage(imgType, path.c_str()); }
 
     protected:
         unsigned long _activeBgClr;
@@ -49,6 +57,7 @@ class Button: public Wnd {
         std::unique_ptr<Bitmap> _normalImg;
         std::unique_ptr<Bitmap> _hoveredImg;
         std::unique_ptr<Bitmap> _pressedImg;
+        std::unique_ptr<Bitmap> _disabledImg;
 
         void onButtonPress(XButtonPressedEvent& evt) override;
         void onButtonRelease(XButtonReleasedEvent& evt) override;

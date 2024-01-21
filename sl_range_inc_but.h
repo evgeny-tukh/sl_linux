@@ -1,13 +1,8 @@
 #pragma once
 
-#include "sl_button.h"
+#include "sl_img_button.h"
 
-class RangeIncButton: public Ui::Button {
+class RangeIncButton: public UiButton {
     public:
         RangeIncButton(Ui::Wnd& parent);
-
-        class ButProperties: public Ui::Wnd::Properties {
-            public:
-                ButProperties();
-        };
 };
