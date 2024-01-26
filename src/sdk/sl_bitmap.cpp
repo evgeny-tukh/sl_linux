@@ -166,23 +166,6 @@ bool Ui::Bitmap::loadBmpFile(const char *file) {
             uint8_t blue = *(curByte++);
 
             tempData[count] = (red << 24) + (green << 16) + (blue << 8);
-
-            /*auto clrPos = colors.find(tempData[count]);
-
-            if (clrPos == colors.end()) {
-                XColor clrRef;
-                clrRef.red = red * 256;
-                clrRef.green = green * 256;
-                clrRef.blue = blue * 256;
-
-                XAllocColor(display, palette, &clrRef);
-
-                colors.emplace(std::pair<uint32_t, uint32_t>(tempData[count], clrRef.pixel));
-
-                tempData[count] = clrRef.pixel;
-            } else {
-                tempData[count] = clrPos->second;
-            }*/
         }
 
         lineStart += bytesPerLine;

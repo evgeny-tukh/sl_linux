@@ -2,19 +2,27 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"type": "shell",
+			"command": "/home/jeca/work/sl/make.sh",
+			"label": "Make",
+			"group": "build"
+		},
+		{
 			"type": "cppbuild",
 			"label": "Build SL",
 			"command": "/usr/bin/g++",
 			"args": [
 				"/home/jeca/work/sl/sl_main.cpp",
-				"/home/jeca/work/sl/sl_button.cpp",
-				"/home/jeca/work/sl/sl_wnd.cpp",
-				"/home/jeca/work/sl/sl_event.cpp",
-				"/home/jeca/work/sl/sl_bitmap.cpp",
+				"/home/jeca/work/sl/sdk/sl_button.cpp",
+				"/home/jeca/work/sl/sdk/sl_wnd.cpp",
+				"/home/jeca/work/sl/sdk/sl_event.cpp",
+				"/home/jeca/work/sl/sdk/sl_bitmap.cpp",
+				"/home/jeca/work/sl/sdk/sl_img_button.cpp",
 				"/home/jeca/work/sl/sl_range_inc_but.cpp",
 				"/home/jeca/work/sl/sl_range_dec_but.cpp",
-				"/home/jeca/work/sl/sl_img_button.cpp",
 				"-g",
+				"-I",
+				"/home/jeca/work/sl/bin/sl/sdk",
 				"-std=c++14",
 				"-o",
 				"/home/jeca/work/sl/bin/sl",
