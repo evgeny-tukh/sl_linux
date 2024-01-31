@@ -80,58 +80,50 @@ void Ui::Button::connect(Event::EventHandler handler) {
     _handler = handler;
 }
 
+const std::string& Ui::Button::getFontName() const {
+    const static std::string DEF_FONT_NAME{"*7x14*"};
+
+    return DEF_FONT_NAME;
+}
+
+int Ui::Button::getTextY() const {
+    return (_height >> 1) + 5;
+}
+
+int Ui::Button::getImageY() const {
+    return 0;
+}
+
+void Ui::Button::drawText(GC ctx) const {
+    XFontStruct *font = XLoadQueryFont(_display, getFontName().c_str());
+    int textWidth = XTextWidth(font, _text.c_str(), _text.length());
+    XSetFont(_display, ctx, font->fid);
+    unsigned long fg, bg;
+    if ((_status & (int) ButtonStatus::Hovered) == 0)
+        bg = _bgClr;
+    else
+        bg = _activeBgClr;
+    if ((_status & (int) ButtonStatus::Disabled) == 0)
+        fg = _fgClr;
+    else
+        fg = _disabledFgClr;
+    XSetForeground(_display, ctx, bg);
+    XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
+    XSetForeground(_display, ctx, fg);
+    XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), _text.c_str(), _text.length());
+    XUnloadFont(_display, font->fid);
+}
+
 void Ui::Button::paint(GC ctx) const {
     if (_status & (int) ButtonStatus::Text) {
-        XFontStruct *font = XLoadQueryFont(_display, "*7x14*");
-        int textWidth = XTextWidth(font, _text.c_str(), _text.length());
-        XSetFont(_display, ctx, font->fid);
-        unsigned long fg, bg;
-        if ((_status & (int) ButtonStatus::Hovered) == 0)
-            bg = _bgClr;
-        else
-            bg = _activeBgClr;
-        if ((_status & (int) ButtonStatus::Disabled) == 0)
-            fg = _fgClr;
-        else
-            fg = _disabledFgClr;
-        XSetForeground(_display, ctx, bg);
-        XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
-        XSetForeground(_display, ctx, fg);
-        XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, (_height >> 1) + 5, _text.c_str(), _text.length());
-        XUnloadFont(_display, font->fid);
-    } else if (_status & (int) ButtonStatus::Image) {
-        Bitmap *bmp;
-        if (_status & (int) ButtonStatus::Disabled) {
-            if (_disabledImg)
-                bmp = _disabledImg.get();
-            else if (_normalImg)
-                bmp = _normalImg.get();
-            else
-                bmp = nullptr;
-        } else if (_status & (int) ButtonStatus::Pressed) {
-            if (_pressedImg)
-                bmp = _pressedImg.get();
-            else if (_hoveredImg)
-                bmp = _hoveredImg.get();
-            else if (_normalImg)
-                bmp = _normalImg.get();
-            else
-                bmp = nullptr;
-        } else if (_status & (int) ButtonStatus::Hovered) {
-            if (_hoveredImg)
-                bmp = _hoveredImg.get();
-            else if (_normalImg)
-                bmp = _normalImg.get();
-            else
-                bmp = nullptr;
-        } else if (_normalImg) {
-            bmp = _normalImg.get();
-        } else {
-            bmp = nullptr;
-        }
+        drawText(ctx);
+    }
+    
+    if (_status & (int) ButtonStatus::Image) {
+        const BmpPtr& bmp = getImage();
             
         if (bmp)
-            bmp->putTo(*this, 0, 0, 0, 0, ctx);
+            bmp->putTo(*this, 0, getImageY(), 0, 0, ctx);
     }
 }
 
@@ -153,30 +145,60 @@ void Ui::Button::onMouseLeave(XCrossingEvent& evt) {
     }
 }
 
-void Ui::Button::loadImage(ImageType imgType, const char *path) {
-    std::unique_ptr<Bitmap> *bmp;
-    switch (imgType) {
-        case ImageType::Normal:
-            _normalImg.reset(new Ui::Bitmap(*this));
-            
-            if (_normalImg->loadBmpFile(path))
-                _status |= (int) Button::ButtonStatus::Image;    
-            
-            break;
-        case ImageType::Disabled:
-            _disabledImg.reset(new Ui::Bitmap(*this));
-            _disabledImg->loadBmpFile(path);
-            break;
-        case ImageType::Hovered:
-            _hoveredImg.reset(new Ui::Bitmap(*this));
-            _hoveredImg->loadBmpFile(path);
-            break;
-        case ImageType::Pressed:
-            _pressedImg.reset(new Ui::Bitmap(*this));
-            _pressedImg->loadBmpFile(path);
-            break;
-        default:
-            return;
+const Ui::Button::BmpPtr& Ui::Button::getImage(int index) const {
+    auto pos = _images.find(index);
+
+    if (pos == _images.end())
+        return _noImage;
+
+    return pos->second;
+}
+
+const Ui::Button::BmpPtr& Ui::Button::getImage() const {
+    const BmpPtr& normalImg = getImage(ImageIndex::Normal);
+    const BmpPtr& hoveredImg = getImage(ImageIndex::Hovered);
+    const BmpPtr& pressedImg = getImage(ImageIndex::Pressed);
+    const BmpPtr& disabledImg = getImage(ImageIndex::Disabled);
+
+    if (_status & (int) ButtonStatus::Disabled) {
+        if (disabledImg)
+            return disabledImg;
+        else if (normalImg)
+            return normalImg;
+        else
+            return _noImage;
+    } else if (_status & (int) ButtonStatus::Pressed) {
+        if (pressedImg)
+            return pressedImg;
+        else if (hoveredImg)
+            return hoveredImg;
+        else if (normalImg)
+            return normalImg;
+    } else if (_status & (int) ButtonStatus::Hovered) {
+        if (hoveredImg)
+            return hoveredImg;
+        else if (normalImg)
+            return normalImg;
+    } else if (normalImg) {
+        return normalImg;
     }
+        
+    return _noImage;
+}
+
+void Ui::Button::loadImage(int imgType, const char *path) {
+    BmpPtr bmp;
+    bmp.reset(new Ui::Bitmap(*this));
+    
+    bmp->loadBmpFile(path);
+
+    _status |= (int) Button::ButtonStatus::Image;
+
+    auto pos = _images.find(imgType);
+
+    if (pos == _images.end())
+        _images.emplace(std::pair<int, BmpPtr>(imgType, std::move(bmp)));
+    else
+        pos->second.swap(bmp);
 }
 

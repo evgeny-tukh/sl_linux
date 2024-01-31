@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 #include "sl_wnd.h"
 #include "sl_event.h"
@@ -30,11 +31,12 @@ class Button: public Wnd {
             Image = 16,
         };
 
-        enum class ImageType: int {
-            Normal,
-            Pressed,
+        enum class ImageIndex: int {
+            Normal = 0,
             Hovered,
+            Pressed,
             Disabled,
+            FirstUserImage,
         };
 
         void create() override;
@@ -43,10 +45,14 @@ class Button: public Wnd {
 
         void enable(bool enableFlag);
 
-        void loadImage(ImageType imgType, const char *path);
-        void loadImage(ImageType imgType, const std::string path) { loadImage(imgType, path.c_str()); }
+        void loadImage(int imgType, const char *path);
+        void loadImage(int imgType, const std::string path) { loadImage(imgType, path.c_str()); }
+        void loadImage(ImageIndex imgType, const char *path) { loadImage((int) imgType, path); }
+        void loadImage(ImageIndex imgType, const std::string path) { loadImage((int) imgType, path.c_str()); }
 
     protected:
+        typedef std::unique_ptr<Ui::Bitmap> BmpPtr;
+
         unsigned long _activeBgClr;
         unsigned long _fgClr;
         unsigned long _disabledFgClr;
@@ -54,10 +60,8 @@ class Button: public Wnd {
         int _status;
         uint16_t _id;
         Event::EventHandler _handler;
-        std::unique_ptr<Bitmap> _normalImg;
-        std::unique_ptr<Bitmap> _hoveredImg;
-        std::unique_ptr<Bitmap> _pressedImg;
-        std::unique_ptr<Bitmap> _disabledImg;
+        std::unordered_map<int, BmpPtr> _images;
+        BmpPtr _noImage;
 
         void onButtonPress(XButtonPressedEvent& evt) override;
         void onButtonRelease(XButtonReleasedEvent& evt) override;
@@ -65,6 +69,18 @@ class Button: public Wnd {
         void onMouseLeave(XCrossingEvent& evt) override;
 
         void paint(GC ctx) const override;
+
+        virtual void loadImages() {}
+        virtual const BmpPtr& getImage() const;
+
+        const BmpPtr& getImage(int index) const;
+        const BmpPtr& getImage(ImageIndex index) const { return getImage((int) index); }
+
+        virtual void drawText(GC ctx) const;
+
+        virtual const std::string& getFontName() const;
+        virtual int getTextY() const;
+        virtual int getImageY() const;
 };
 
 }

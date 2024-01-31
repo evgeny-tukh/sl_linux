@@ -47,6 +47,9 @@ class Bitmap {
         bool drawTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
         bool putTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
 
+        unsigned int width() const { return _width; }
+        unsigned int height() const { return _height; }
+
     protected:
         Wnd& _compatibleWnd;
         unsigned int _width;

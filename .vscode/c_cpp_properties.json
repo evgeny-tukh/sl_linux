@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/sdk",
+                "/usr/include",
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

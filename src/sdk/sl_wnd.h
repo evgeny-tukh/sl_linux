@@ -23,6 +23,9 @@ class Wnd {
             ActiveBgColor,
             FgColor,
             DisabledFgColor,
+            TextY,
+            ImageY,
+            Command,
         };
 
         class Properties: public std::unordered_map<Property, uint32_t> {

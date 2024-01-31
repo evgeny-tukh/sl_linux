@@ -4,7 +4,19 @@
 		{
 			"type": "shell",
 			"command": "/home/jeca/work/sl/make.sh",
-			"label": "Make",
+			"args": [
+				"Debug"
+			],
+			"label": "Make Debug",
+			"group": "build"
+		},
+		{
+			"type": "shell",
+			"command": "/home/jeca/work/sl/make.sh",
+			"args": [
+				"Release"
+			],
+			"label": "Make Release",
 			"group": "build"
 		},
 		{

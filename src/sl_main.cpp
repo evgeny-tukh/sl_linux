@@ -11,10 +11,12 @@
 #include "sl_range_inc_but.h"
 #include "sl_range_dec_but.h"
 #include "sl_res.h"
+#include "sl_main_wnd.h"
 
 enum class Controls: uint16_t {
     OK,
     Cancel,
+    ShowSM,
 };
 
 struct Context {
@@ -41,8 +43,10 @@ class MainWnd: public Ui::Wnd {
     protected:
         Ui::Button *_butDisable;
         Ui::Button *_butClose;
+        Ui::Button *_butShowSM;
         std::shared_ptr<RangeIncButton> _butRangeInc;
         std::shared_ptr<RangeDecButton> _butRangeDec;
+        std::shared_ptr<SearchMasterWnd> _smWindow;
         bool _closeDisabled;
 
         void paint(GC ctx) const override;
@@ -52,6 +56,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     Ui::Wnd(display, props, RootWindow(display, DefaultScreen(display))),
     _butDisable(nullptr),
     _butClose(nullptr),
+    _butShowSM(nullptr),
     _closeDisabled(false) {
     auto screen = DefaultScreen(display);
     auto borderClr = BlackPixel(display, screen);
@@ -81,7 +86,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
 
     Ui::Wnd::Properties butProps;
     butProps[Ui::Wnd::Property::X] = 50;
-    butProps[Ui::Wnd::Property::Y] = 50;
+    butProps[Ui::Wnd::Property::Y] = 60;
     butProps[Ui::Wnd::Property::Width] = 80;
     butProps[Ui::Wnd::Property::Height] = 40;
     butProps[Ui::Wnd::Property::BorderColor] = borderClr;
@@ -90,10 +95,14 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     butProps[Ui::Wnd::Property::ActiveBgColor] = extraLightGrayRef.pixel;
     butProps[Ui::Wnd::Property::BgColor] = lightGrayRef.pixel;
     butProps[Ui::Wnd::Property::BorderWidth] = 1;
-    _butDisable = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::OK, std::make_shared<Ui::Button>((uint16_t) Controls::OK, "Ok", display, butProps, _wnd)));
+    _butDisable = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::OK, std::make_shared<Ui::Button>((uint16_t) Controls::OK, "Toggle", display, butProps, _wnd)));
 
     butProps[Ui::Wnd::Property::X] = 150;
     _butClose = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::Cancel, std::make_shared<Ui::Button>((uint16_t) Controls::Cancel, "Close", display, butProps, _wnd)));
+
+    butProps[Ui::Wnd::Property::X] = 50;
+    butProps[Ui::Wnd::Property::Y] = 110;
+    _butShowSM = dynamic_cast<Ui::Button *>(addChild((uint16_t) Controls::ShowSM, std::make_shared<Ui::Button>((uint16_t) Controls::ShowSM, "Show SM", display, butProps, _wnd)));
 
     selectInput(SubstructureRedirectMask | StructureNotifyMask | SubstructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask);
     show(true);
@@ -111,6 +120,12 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     });
     _butClose->show(true);
 
+    _butShowSM->create();
+    _butShowSM->connect([this] (Ui::Event&) {
+        _smWindow->show(true);
+    });
+    _butShowSM->show(true);
+
     _butRangeInc.reset(new RangeIncButton(*this));
     addChild((uint16_t) Ui::Resources::IncreaseRange, _butRangeInc);
     _butRangeInc->create();
@@ -120,6 +135,10 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     addChild((uint16_t) Ui::Resources::DecreaseRange, _butRangeDec);
     _butRangeDec->create();
     _butRangeDec->show(true);
+
+    _smWindow.reset(new SearchMasterWnd(_display));
+    addChild((uint16_t) Ui::Resources::SeacrhMaster, _smWindow);
+    _smWindow->create();
 }
 
 void MainWnd::paint(GC ctx) const {
