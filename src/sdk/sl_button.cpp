@@ -52,6 +52,7 @@ void Ui::Button::enable(bool enableFlag) {
 void Ui::Button::create() {
     Ui::Wnd::create();
     selectInput(ButtonPressMask|ButtonReleaseMask|EnterWindowMask|LeaveWindowMask);
+    loadImages();
 }
 
 void Ui::Button::onButtonPress(XButtonPressedEvent& evt) {

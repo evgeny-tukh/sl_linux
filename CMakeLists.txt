@@ -5,11 +5,11 @@ project (SearchMaster)
 
 set(CMAKE_DEBUG_POSTFIX d)
 
-set(BUTONS_SOURCES
+set(BUT_SOURCES
     src/buttons/sl_name_edit_button.cpp
 )
 
-set(BUTTONS_HEADERS
+set(BUT_HEADERS
     src/buttons/sl_name_edit_button.h
 )
 

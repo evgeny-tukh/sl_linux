@@ -6,6 +6,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/src/sdk",
+                "${workspaceFolder}/src/buttons",
                 "/usr/include",
             ],
             "defines": [],
