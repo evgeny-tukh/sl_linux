@@ -95,7 +95,7 @@ int Ui::Button::getImageY() const {
     return 0;
 }
 
-void Ui::Button::drawText(GC ctx) const {
+void Ui::Button::drawText(GC ctx, bool fillBgRect) const {
     XFontStruct *font = XLoadQueryFont(_display, getFontName().c_str());
     int textWidth = XTextWidth(font, _text.c_str(), _text.length());
     XSetFont(_display, ctx, font->fid);
@@ -108,11 +108,20 @@ void Ui::Button::drawText(GC ctx) const {
         fg = _fgClr;
     else
         fg = _disabledFgClr;
-    XSetForeground(_display, ctx, bg);
-    XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
+    if (fillBgRect) {
+        XSetForeground(_display, ctx, bg);
+        XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
+    }
     XSetForeground(_display, ctx, fg);
     XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), _text.c_str(), _text.length());
     XUnloadFont(_display, font->fid);
+}
+
+void Ui::Button::drawImage(GC ctx) const {
+    const BmpPtr& bmp = getImage();
+        
+    if (bmp)
+        bmp->putTo(*this, 0, getImageY(), 0, 0, ctx);
 }
 
 void Ui::Button::paint(GC ctx) const {
@@ -121,10 +130,7 @@ void Ui::Button::paint(GC ctx) const {
     }
     
     if (_status & (int) ButtonStatus::Image) {
-        const BmpPtr& bmp = getImage();
-            
-        if (bmp)
-            bmp->putTo(*this, 0, getImageY(), 0, 0, ctx);
+        drawImage(ctx);
     }
 }
 

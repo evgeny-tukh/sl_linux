@@ -1,6 +1,7 @@
 #include "sl_wnd.h"
 #include "sl_event.h"
 #include <vector>
+#include <string.h>
 
 uint32_t Ui::Wnd::Properties::get(Property prop) {
     auto pos = find(prop);
@@ -122,10 +123,13 @@ void Ui::Wnd::selectInput(long mask) const {
 }
 
 void Ui::Wnd::show (bool showFlag) const {
-    if (showFlag)
+    if (showFlag) {
         XMapWindow(_display, _wnd);
-    else
+        XMapSubwindows(_display, _wnd);
+    } else {
         XUnmapWindow(_display, _wnd);
+    }
+    XFlush(_display);
 }
 
 void Ui::Wnd::eventLoop(std::function<bool(Wnd& wnd, XEvent&)> cb) {
@@ -220,4 +224,8 @@ void Ui::Wnd::forceRedraw() {
     evt.x = 0;
     evt.y = 0;
     onPaint(evt);
+}
+
+void Ui::Wnd::textOut(int x, int y, GC ctx, const char *txt) const {
+    XDrawString(_display, _wnd, ctx, x, y, txt, strlen(txt));
 }

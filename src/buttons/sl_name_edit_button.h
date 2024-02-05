@@ -7,9 +7,14 @@ class NameEditButton: public Ui::Button {
         NameEditButton(Ui::Wnd& parent, int x, int y);
 
     protected:
-        virtual void loadImages();
+        long int _whiteClr;
+        long int _blackClr;
 
-        virtual const std::string& getFontName() const;
-        virtual int getTextY() const;
-        virtual int getImageY() const;
+        virtual void loadImages() override;
+
+        void paint(GC ctx) const override;
+
+        virtual const std::string& getFontName() const override;
+        virtual int getTextY() const override;
+        virtual int getImageY() const override;
 };

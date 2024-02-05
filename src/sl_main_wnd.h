@@ -22,6 +22,9 @@ class SearchMasterWnd: public Ui::Wnd {
         void create() override;
 
     protected:
+        long int _yellowClr;
+        std::unique_ptr<Ui::Bitmap> _img;
+
         std::shared_ptr<NameEditButton> _butNameEdit;
 
         void paint(GC ctx) const override;

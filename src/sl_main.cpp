@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <memory>
 
+#include <unistd.h>
 #include <X11/Xlib.h> 
 
 #include "sl_button.h"
@@ -12,6 +13,7 @@
 #include "sl_range_dec_but.h"
 #include "sl_res.h"
 #include "sl_main_wnd.h"
+#include "sl_util.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -25,8 +27,6 @@ struct Context {
 };
 
 namespace Const {
-    const char *DISPLAY = "DISPLAY";
-
     const int LEFT = 10;
     const int TOP = 10;
     const int WIDTH = 800;
@@ -122,7 +122,10 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
 
     _butShowSM->create();
     _butShowSM->connect([this] (Ui::Event&) {
+        _smWindow->create();
         _smWindow->show(true);
+        //_smWindow->forceRedraw();
+        _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
     });
     _butShowSM->show(true);
 
@@ -136,9 +139,9 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _butRangeDec->create();
     _butRangeDec->show(true);
 
-    _smWindow.reset(new SearchMasterWnd(_display));
-    addChild((uint16_t) Ui::Resources::SeacrhMaster, _smWindow);
-    _smWindow->create();
+    _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
+    //addChild((uint16_t) Ui::Resources::SeacrhMaster, _smWindow);
+    //_smWindow->create();
 }
 
 void MainWnd::paint(GC ctx) const {
@@ -150,14 +153,7 @@ void MainWnd::paint(GC ctx) const {
 }
 
 int main(int argCount, char *args[]) {
-    char *displayEnv = getenv(Const::DISPLAY);
-
-    if (!displayEnv) {
-        printf("No display environment variable!\n");
-        return 0;
-    }
-
-    Display *display = XOpenDisplay(displayEnv);
+    Display *display = Ui::Util::openDisplay();
 
     if (!display) {
         printf("Unable to connect display server!\n");

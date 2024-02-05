@@ -56,6 +56,8 @@ class Wnd {
 
         void eventLoop(std::function<bool(Wnd& wnd, XEvent&)> cb);
 
+        void forceRedraw();
+
         Wnd *addChild(uint16_t id, std::shared_ptr<Wnd> wnd);
         Wnd *findChildByHandle(Window handle) const;
         Wnd *findChildById(uint16_t id) const;
@@ -84,7 +86,7 @@ class Wnd {
 
         virtual void paint(GC ctx) const;
 
-        void forceRedraw();
+        void textOut(int x, int y, GC ctx, const char *txt) const;
 };
 
 }
