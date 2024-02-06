@@ -96,7 +96,7 @@ bool Ui::Bitmap::putTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY,
 
     GC localCtx = ctx ? ctx : XCreateGC(wnd.display(), wnd.handle(), 0, nullptr);
 
-    bool result = XPutImage(_compatibleWnd.display(), _compatibleWnd.handle(), localCtx, _img.get(), srcX, srcY, destX, destY, _width, _height);
+    bool result = XPutImage(/*_compatibleWnd*/wnd.display(), /*_compatibleWnd*/wnd.handle(), localCtx, _img.get(), srcX, srcY, destX, destY, _width, _height);
 
     if (!ctx)
         XFreeGC(wnd.display(), localCtx);

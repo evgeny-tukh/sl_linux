@@ -1,6 +1,6 @@
 #include "sl_img_button.h"
 
-UiButton::UiButton(Ui::Wnd& parent, const std::string& folder, uint16_t cmd, int x, int y, int width, int height):
+Ui::ImgButton::ImgButton(Ui::Wnd& parent, const std::string& folder, uint16_t cmd, int x, int y, int width, int height):
     Ui::Button(cmd, nullptr, x, y, width, height, parent) {
     _bordwerWidth = 0;
     loadImage(Ui::Button::ImageIndex::Pressed, folder + "/pressed.bmp");

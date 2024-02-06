@@ -10,5 +10,5 @@ const int BUT_Y = 10;
 }
 
 RangeIncButton::RangeIncButton(Ui::Wnd& parent):
-    UiButton(parent, "/home/jeca/work/sl/bin/res/Range +", (uint16_t) Ui::Resources::DecreaseRange, BUT_X, BUT_Y, BUT_WIDTH, BUT_HEIGHT) {
+    Ui::ImgButton(parent, "/home/jeca/work/sl/bin/res/Range +", (uint16_t) Ui::Resources::DecreaseRange, BUT_X, BUT_Y, BUT_WIDTH, BUT_HEIGHT) {
 }

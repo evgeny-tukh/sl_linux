@@ -81,7 +81,11 @@ class Button: public Wnd {
 
         virtual const std::string& getFontName() const;
         virtual int getTextY() const;
-        virtual int getImageY() const;
+        virtual int getImageX(const BmpPtr&) const;
+        virtual int getImageY(const BmpPtr&) const;
+
+        virtual unsigned long getFgColor() const { return _fgClr; }
+        virtual unsigned long getBgColor() const { return _bgClr; }
 };
 
 }

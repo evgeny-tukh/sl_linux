@@ -9,6 +9,7 @@ enum class Resources: uint16_t {
     DecreaseRange,
     SeacrhMaster,
     ToggleName,
+    ToggleHarbourMode,
 };
 
 }

@@ -14,6 +14,7 @@
 #include "sl_range_dec_but.h"
 #include "sl_res.h"
 #include "sl_name_edit_button.h"
+#include "sl_harbour_mode_button.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -26,6 +27,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::unique_ptr<Ui::Bitmap> _img;
 
         std::shared_ptr<NameEditButton> _butNameEdit;
+        std::shared_ptr<HarbourModeButton> _butHarbourModeSwitch;
 
         void paint(GC ctx) const override;
 };

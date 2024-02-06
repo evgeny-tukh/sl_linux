@@ -91,7 +91,11 @@ int Ui::Button::getTextY() const {
     return (_height >> 1) + 5;
 }
 
-int Ui::Button::getImageY() const {
+int Ui::Button::getImageX(const BmpPtr&) const {
+    return 0;
+}
+
+int Ui::Button::getImageY(const BmpPtr&) const {
     return 0;
 }
 
@@ -109,10 +113,10 @@ void Ui::Button::drawText(GC ctx, bool fillBgRect) const {
     else
         fg = _disabledFgClr;
     if (fillBgRect) {
-        XSetForeground(_display, ctx, bg);
+        XSetForeground(_display, ctx, getBgColor());
         XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
     }
-    XSetForeground(_display, ctx, fg);
+    XSetForeground(_display, ctx, getFgColor());
     XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), _text.c_str(), _text.length());
     XUnloadFont(_display, font->fid);
 }
@@ -121,7 +125,7 @@ void Ui::Button::drawImage(GC ctx) const {
     const BmpPtr& bmp = getImage();
         
     if (bmp)
-        bmp->putTo(*this, 0, getImageY(), 0, 0, ctx);
+        bmp->putTo(*this, getImageX(bmp), getImageY(bmp), 0, 0, ctx);
 }
 
 void Ui::Button::paint(GC ctx) const {

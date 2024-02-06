@@ -2,7 +2,7 @@
 #include "sl_util.h"
 
 namespace {
-    const int X = 100, Y = 100, WIDTH = 1000, HEIGHT = 400;
+    const int X = 100, Y = 100, WIDTH = 1200, HEIGHT = 800;
 }
 
 SearchMasterWnd::SearchMasterWnd(Display *display):
@@ -12,17 +12,22 @@ SearchMasterWnd::SearchMasterWnd(Display *display):
     _bgClr = BlackPixel(display, screen);
     _yellowClr = Ui::Util::allocateColor(255, 127, 0, display);
     _img.reset(new Ui::Bitmap(*this));
-    _img->loadBmpFile("/home/jeca/work/sl/bin/res/buttonImages/name/normal.bmp");
+    _img->loadBmpFile("/home/jeca/work/sl/bin/res/buttonImages/name/hovered.bmp");
 }
 
 void SearchMasterWnd::create() {
     Ui::Wnd::create();
     selectInput(ButtonPressMask|ButtonReleaseMask|EnterWindowMask|LeaveWindowMask|SubstructureRedirectMask|StructureNotifyMask|SubstructureNotifyMask |ExposureMask |KeyPressMask);
 
-    _butNameEdit.reset(new NameEditButton(*this, 10, 10));
+    _butNameEdit.reset(new NameEditButton(*this));
     addChild((uint16_t) Ui::Resources::ToggleName, _butNameEdit);
     _butNameEdit->create();
     _butNameEdit->show(true);
+
+    _butHarbourModeSwitch.reset(new HarbourModeButton(*this));
+    addChild((uint16_t) Ui::Resources::ToggleHarbourMode, _butHarbourModeSwitch);
+    _butHarbourModeSwitch->create();
+    _butHarbourModeSwitch->show(true);
 }
 
 void SearchMasterWnd::paint(GC ctx) const {
@@ -37,7 +42,7 @@ void SearchMasterWnd::paint(GC ctx) const {
     XSetForeground(_display, ctx, _yellowClr);
     XFillArc(_display, _wnd, ctx, 200, 200, 100, 100, 0, 360 * 64);
     textOut(120, 100, ctx, "NAME");
-    _img->putTo(*this, 100, 100, 0, 0, ctx);
     XUnloadFont(_display, font->fid);
+    _img->putTo(*this, 100, 100, 0, 0, ctx);
 }
 

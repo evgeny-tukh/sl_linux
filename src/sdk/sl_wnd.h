@@ -61,6 +61,9 @@ class Wnd {
         Wnd *addChild(uint16_t id, std::shared_ptr<Wnd> wnd);
         Wnd *findChildByHandle(Window handle) const;
         Wnd *findChildById(uint16_t id) const;
+
+        int width() const { return _width; }
+        int height() const { return _height; }
         
     protected:
         Window _wnd;
