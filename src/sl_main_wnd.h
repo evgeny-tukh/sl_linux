@@ -15,6 +15,9 @@
 #include "sl_res.h"
 #include "sl_name_edit_button.h"
 #include "sl_harbour_mode_button.h"
+#include "sl_settings_button.h"
+#include "sl_range_ext_button.h"
+#include "sl_range_red_button.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -28,6 +31,17 @@ class SearchMasterWnd: public Ui::Wnd {
 
         std::shared_ptr<NameEditButton> _butNameEdit;
         std::shared_ptr<HarbourModeButton> _butHarbourModeSwitch;
+        std::shared_ptr<SettingsButton> _butSettings;
+        std::shared_ptr<RangeExtendButton> _butRangeExt;
+        std::shared_ptr<RangeReduceButton> _butRangeRed;
 
         void paint(GC ctx) const override;
+
+        template<typename ButCls>
+        void initButton(std::shared_ptr<ButCls>& button, Ui::Resources id) {
+            button.reset(new ButCls(*this));
+            addChild((uint16_t) id, button);
+            button->create();
+            button->show(true);
+        }
 };

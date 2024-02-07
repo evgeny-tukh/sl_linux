@@ -10,6 +10,9 @@ enum class Resources: uint16_t {
     SeacrhMaster,
     ToggleName,
     ToggleHarbourMode,
+    Settings,
+    RangeExt,
+    RangeRed,
 };
 
 }

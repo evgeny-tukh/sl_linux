@@ -8,13 +8,13 @@
 Ui::Button::Button(uint16_t id, const char *text, Properties& props, Wnd& parent):
     Ui::Button::Button(id, text, parent.display(), props, parent.handle()) {
     if (text && *text)
-        _status |= (int) ButtonStatus::Text;
+        setStatusFlag(ButtonStatus::Text);
 }
 
 Ui::Button::Button(uint16_t id, const char *text, int x, int y, int width, int height, Wnd& parent):
     Ui::Button::Button(id, text, parent.display(), x, y, width, height, parent.handle()) {
     if (text && *text)
-        _status |= (int) ButtonStatus::Text;
+        setStatusFlag(ButtonStatus::Text);
 }
 
 Ui::Button::Button(uint16_t id, const char *text, Display *display, Properties& props, Window parent):
@@ -27,7 +27,7 @@ Ui::Button::Button(uint16_t id, const char *text, Display *display, Properties& 
     _disabledFgClr(props.get(Wnd::Property::DisabledFgColor)),
     _handler(Event::defEventHandler) {
     if (text && *text)
-        _status |= (int) ButtonStatus::Text;
+        setStatusFlag(ButtonStatus::Text);
 }
 
 Ui::Button::Button(uint16_t id, const char *text, Display *display, int x, int y, int width, int height, Window parent):
@@ -37,14 +37,14 @@ Ui::Button::Button(uint16_t id, const char *text, Display *display, int x, int y
     _status((int) ButtonStatus::Default),
     _handler(Event::defEventHandler) {
     if (text && *text)
-        _status |= (int) ButtonStatus::Text;
+        setStatusFlag(ButtonStatus::Text);
 }
 
 void Ui::Button::enable(bool enableFlag) {
     if (enableFlag)
-        _status &= ~((int) ButtonStatus::Disabled);
+        clearStatusFlag(ButtonStatus::Disabled);
     else
-        _status |= (int) ButtonStatus::Disabled;
+        setStatusFlag(ButtonStatus::Disabled);
 
     forceRedraw();
 }
@@ -56,19 +56,24 @@ void Ui::Button::create() {
 }
 
 void Ui::Button::onButtonPress(XButtonPressedEvent& evt) {
-    if ((_status & (int) ButtonStatus::Disabled) == 0) {
-        _status |= (int) ButtonStatus::Pressed;
+    if (!getStatusFlag(ButtonStatus::Disabled)) {
+        setStatusFlag(ButtonStatus::Pressed);
 
-        if (_status & (int) ButtonStatus::Image)
+        if (getStatusFlag(ButtonStatus::Image))
             forceRedraw();
     }
 }
 
 void Ui::Button::onButtonRelease(XButtonReleasedEvent& evt) {
-    if ((_status & (int) ButtonStatus::Disabled) == 0) {
-        _status &= ~((int) ButtonStatus::Pressed);
+    if (!getStatusFlag(ButtonStatus::Disabled)) {
+        if (getStatusFlag(ButtonStatus::Checkable)) {
+            if (canBeToggled())
+                toggle();
+        }
+        
+        clearStatusFlag(ButtonStatus::Pressed);
 
-        if (_status & (int) ButtonStatus::Image)
+        if (getStatusFlag(ButtonStatus::Image))
             forceRedraw();
 
         Ui::Event butEvt(Event::Type::Command, _handler);
@@ -104,20 +109,24 @@ void Ui::Button::drawText(GC ctx, bool fillBgRect) const {
     int textWidth = XTextWidth(font, _text.c_str(), _text.length());
     XSetFont(_display, ctx, font->fid);
     unsigned long fg, bg;
-    if ((_status & (int) ButtonStatus::Hovered) == 0)
-        bg = _bgClr;
+    if (!getStatusFlag(ButtonStatus::Hovered))
+        bg = getBgColor();
     else
-        bg = _activeBgClr;
-    if ((_status & (int) ButtonStatus::Disabled) == 0)
-        fg = _fgClr;
+        bg = getActiveBgColor();
+    if (!getStatusFlag(ButtonStatus::Disabled))
+        fg = getFgColor();
     else
-        fg = _disabledFgClr;
+        fg = getDisabledFgColor();
+
     if (fillBgRect) {
         XSetForeground(_display, ctx, getBgColor());
         XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
     }
+    
+    auto& text = getText();
+
     XSetForeground(_display, ctx, getFgColor());
-    XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), _text.c_str(), _text.length());
+    XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), text.c_str(), text.length());
     XUnloadFont(_display, font->fid);
 }
 
@@ -129,11 +138,11 @@ void Ui::Button::drawImage(GC ctx) const {
 }
 
 void Ui::Button::paint(GC ctx) const {
-    if (_status & (int) ButtonStatus::Text) {
+    if (getStatusFlag(ButtonStatus::Text)) {
         drawText(ctx);
     }
     
-    if (_status & (int) ButtonStatus::Image) {
+    if (getStatusFlag(ButtonStatus::Image)) {
         drawImage(ctx);
     }
 }
@@ -170,28 +179,34 @@ const Ui::Button::BmpPtr& Ui::Button::getImage() const {
     const BmpPtr& hoveredImg = getImage(ImageIndex::Hovered);
     const BmpPtr& pressedImg = getImage(ImageIndex::Pressed);
     const BmpPtr& disabledImg = getImage(ImageIndex::Disabled);
+    const BmpPtr& checkedNormalImg = getImage(ImageIndex::CheckedNormal);
+    const BmpPtr& checkedHoveredImg = getImage(ImageIndex::CheckedHovered);
+    const BmpPtr& checkedPressedImg = getImage(ImageIndex::CheckedPressed);
 
-    if (_status & (int) ButtonStatus::Disabled) {
+    bool checkable = getStatusFlag(ButtonStatus::Checkable);
+    bool checked = checkable ? getStatusFlag(ButtonStatus::Checked) : false;
+
+    if (getStatusFlag(ButtonStatus::Disabled)) {
         if (disabledImg)
             return disabledImg;
         else if (normalImg)
-            return normalImg;
+            return checked ? checkedNormalImg : normalImg;
         else
             return _noImage;
-    } else if (_status & (int) ButtonStatus::Pressed) {
+    } else if (getStatusFlag(ButtonStatus::Pressed)) {
         if (pressedImg)
-            return pressedImg;
+            return checked ? checkedPressedImg : pressedImg;
         else if (hoveredImg)
-            return hoveredImg;
+            return checked ? checkedHoveredImg : hoveredImg;
         else if (normalImg)
-            return normalImg;
-    } else if (_status & (int) ButtonStatus::Hovered) {
+            return checked ? checkedNormalImg : normalImg;
+    } else if (getStatusFlag(ButtonStatus::Hovered)) {
         if (hoveredImg)
-            return hoveredImg;
+            return checked ? checkedHoveredImg : hoveredImg;
         else if (normalImg)
-            return normalImg;
+            return checked ? checkedNormalImg : normalImg;
     } else if (normalImg) {
-        return normalImg;
+        return checked ? checkedNormalImg : normalImg;
     }
         
     return _noImage;
@@ -203,7 +218,7 @@ void Ui::Button::loadImage(int imgType, const char *path) {
     
     bmp->loadBmpFile(path);
 
-    _status |= (int) Button::ButtonStatus::Image;
+    setStatusFlag(Button::ButtonStatus::Image);
 
     auto pos = _images.find(imgType);
 
@@ -211,5 +226,46 @@ void Ui::Button::loadImage(int imgType, const char *path) {
         _images.emplace(std::pair<int, BmpPtr>(imgType, std::move(bmp)));
     else
         pos->second.swap(bmp);
+}
+
+void Ui::Button::setStatusFlag(ButtonStatus flag) {
+    _status |= (int) flag;
+}
+
+void Ui::Button::clearStatusFlag(ButtonStatus flag) {
+    _status &= ~((int) flag);
+}
+
+bool Ui::Button::getStatusFlag(ButtonStatus flag) const {
+    return (_status & (int) flag) != 0;
+}
+
+void Ui::Button::setCheckable(bool flag) {
+    if (flag)
+        setStatusFlag(ButtonStatus::Checkable);
+    else
+        clearStatusFlag(ButtonStatus::Checkable);
+}
+
+bool Ui::Button::checkable() {
+    return getStatusFlag(ButtonStatus::Checkable);
+}
+
+void Ui::Button::setChecked(bool flag) {
+    if (flag)
+        setStatusFlag(ButtonStatus::Checked);
+    else
+        clearStatusFlag(ButtonStatus::Checked);
+}
+
+bool Ui::Button::checked() {
+    return getStatusFlag(ButtonStatus::Checked);
+}
+
+void Ui::Button::toggle() {
+    if (getStatusFlag(ButtonStatus::Checked))
+        clearStatusFlag(ButtonStatus::Checked);
+    else
+        setStatusFlag(ButtonStatus::Checked);
 }
 

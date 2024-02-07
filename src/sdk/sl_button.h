@@ -9,7 +9,6 @@
 
 #include "sl_wnd.h"
 #include "sl_event.h"
-#include "sl_button.h"
 #include "sl_bitmap.h"
 
 namespace Ui {
@@ -29,6 +28,8 @@ class Button: public Wnd {
             Disabled = 4,
             Text = 8,
             Image = 16,
+            Checkable = 32,
+            Checked = 64,
         };
 
         enum class ImageIndex: int {
@@ -37,6 +38,9 @@ class Button: public Wnd {
             Pressed,
             Disabled,
             FirstUserImage,
+            CheckedNormal,
+            CheckedHovered,
+            CheckedPressed,
         };
 
         void create() override;
@@ -49,6 +53,12 @@ class Button: public Wnd {
         void loadImage(int imgType, const std::string path) { loadImage(imgType, path.c_str()); }
         void loadImage(ImageIndex imgType, const char *path) { loadImage((int) imgType, path); }
         void loadImage(ImageIndex imgType, const std::string path) { loadImage((int) imgType, path.c_str()); }
+
+        void setCheckable(bool);
+        bool checkable();
+        void setChecked(bool);
+        bool checked();
+        void toggle();
 
     protected:
         typedef std::unique_ptr<Ui::Bitmap> BmpPtr;
@@ -85,7 +95,20 @@ class Button: public Wnd {
         virtual int getImageY(const BmpPtr&) const;
 
         virtual unsigned long getFgColor() const { return _fgClr; }
+        virtual unsigned long getCheckedFgColor() const { return getFgColor(); }
         virtual unsigned long getBgColor() const { return _bgClr; }
+        virtual unsigned long getCheckedBgColor() const { return getBgColor(); }
+        virtual unsigned long getActiveBgColor() const { return _activeBgClr; }
+        virtual unsigned long getCheckedActiveBgColor() const { return getActiveBgColor(); }
+        virtual unsigned long getDisabledFgColor() const { return _disabledFgClr; }
+
+        virtual bool canBeToggled() const { return true; }
+
+        virtual const std::string& getText() const { return _text; }
+
+        void setStatusFlag(ButtonStatus flag);
+        void clearStatusFlag(ButtonStatus flag);
+        bool getStatusFlag(ButtonStatus flag) const;
 };
 
 }

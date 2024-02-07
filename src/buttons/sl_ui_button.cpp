@@ -36,7 +36,7 @@ int UiButton::getTextY() const {
 }
 
 int UiButton::getImageY(const BmpPtr& bmp) const {
-    return _height >> 1;
+    return (_height >> 1) - 20;
 }
 
 int UiButton::getImageX(const BmpPtr& bmp) const {

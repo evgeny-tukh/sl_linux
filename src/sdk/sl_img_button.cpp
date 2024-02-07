@@ -7,4 +7,7 @@ Ui::ImgButton::ImgButton(Ui::Wnd& parent, const std::string& folder, uint16_t cm
     loadImage(Ui::Button::ImageIndex::Normal, folder + "/normal.bmp");
     loadImage(Ui::Button::ImageIndex::Disabled, folder + "/disabled.bmp");
     loadImage(Ui::Button::ImageIndex::Hovered, folder + "/hovered.bmp");
+    loadImage(Ui::Button::ImageIndex::CheckedPressed, folder + "/checked_pressed.bmp");
+    loadImage(Ui::Button::ImageIndex::CheckedNormal, folder + "/checked_normal.bmp");
+    loadImage(Ui::Button::ImageIndex::CheckedHovered, folder + "/checked_hovered.bmp");
 }

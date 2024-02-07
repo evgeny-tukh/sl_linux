@@ -9,12 +9,18 @@ set(BUT_SOURCES
     src/buttons/sl_ui_button.cpp
     src/buttons/sl_name_edit_button.cpp
     src/buttons/sl_harbour_mode_button.cpp
+    src/buttons/sl_settings_button.cpp
+    src/buttons/sl_range_ext_button.cpp
+    src/buttons/sl_range_red_button.cpp
 )
 
 set(BUT_HEADERS
     src/buttons/sl_ui_button.h
     src/buttons/sl_name_edit_button.h
     src/buttons/sl_harbour_mode_button.h
+    src/buttons/sl_settings_button.h
+    src/buttons/sl_range_ext_button.h
+    src/buttons/sl_range_red_button.h
 )
 
 set(SDK_SOURCES

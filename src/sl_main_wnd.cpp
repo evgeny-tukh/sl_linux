@@ -2,8 +2,9 @@
 #include "sl_util.h"
 
 namespace {
-    const int X = 100, Y = 100, WIDTH = 1200, HEIGHT = 800;
+    const int X = 100, Y = 100, WIDTH = 1800, HEIGHT = 800;
 }
+
 
 SearchMasterWnd::SearchMasterWnd(Display *display):
     Ui::Wnd(display, X, Y, WIDTH, HEIGHT, /*parent.handle()*/RootWindow(display, DefaultScreen(display))) {
@@ -19,15 +20,11 @@ void SearchMasterWnd::create() {
     Ui::Wnd::create();
     selectInput(ButtonPressMask|ButtonReleaseMask|EnterWindowMask|LeaveWindowMask|SubstructureRedirectMask|StructureNotifyMask|SubstructureNotifyMask |ExposureMask |KeyPressMask);
 
-    _butNameEdit.reset(new NameEditButton(*this));
-    addChild((uint16_t) Ui::Resources::ToggleName, _butNameEdit);
-    _butNameEdit->create();
-    _butNameEdit->show(true);
-
-    _butHarbourModeSwitch.reset(new HarbourModeButton(*this));
-    addChild((uint16_t) Ui::Resources::ToggleHarbourMode, _butHarbourModeSwitch);
-    _butHarbourModeSwitch->create();
-    _butHarbourModeSwitch->show(true);
+    initButton<NameEditButton>(_butNameEdit, Ui::Resources::ToggleName);
+    initButton<HarbourModeButton>(_butHarbourModeSwitch, Ui::Resources::ToggleHarbourMode);
+    initButton<SettingsButton>(_butSettings, Ui::Resources::Settings);
+    initButton<RangeExtendButton>(_butRangeExt, Ui::Resources::RangeExt);
+    initButton<RangeReduceButton>(_butRangeRed, Ui::Resources::RangeRed);
 }
 
 void SearchMasterWnd::paint(GC ctx) const {
