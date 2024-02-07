@@ -12,6 +12,10 @@ set(BUT_SOURCES
     src/buttons/sl_settings_button.cpp
     src/buttons/sl_range_ext_button.cpp
     src/buttons/sl_range_red_button.cpp
+    src/buttons/sl_light_on_button.cpp
+    src/buttons/sl_light_off_button.cpp
+    src/buttons/sl_dimmer_ext_button.cpp
+    src/buttons/sl_dimmer_red_button.cpp
 )
 
 set(BUT_HEADERS
@@ -21,6 +25,10 @@ set(BUT_HEADERS
     src/buttons/sl_settings_button.h
     src/buttons/sl_range_ext_button.h
     src/buttons/sl_range_red_button.h
+    src/buttons/sl_light_on_button.h
+    src/buttons/sl_light_off_button.h
+    src/buttons/sl_dimmer_ext_button.h
+    src/buttons/sl_dimmer_red_button.h
 )
 
 set(SDK_SOURCES

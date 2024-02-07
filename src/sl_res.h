@@ -13,6 +13,10 @@ enum class Resources: uint16_t {
     Settings,
     RangeExt,
     RangeRed,
+    LightOn,
+    LightOff,
+    IncreaseDimmer,
+    DecreaseDimmer,
 };
 
 }

@@ -25,6 +25,10 @@ void SearchMasterWnd::create() {
     initButton<SettingsButton>(_butSettings, Ui::Resources::Settings);
     initButton<RangeExtendButton>(_butRangeExt, Ui::Resources::RangeExt);
     initButton<RangeReduceButton>(_butRangeRed, Ui::Resources::RangeRed);
+    initButton<LightOnButton>(_butLightOn, Ui::Resources::LightOn);
+    initButton<LightOffButton>(_butLightOff, Ui::Resources::LightOff);
+    initButton<DimmerExtendButton>(_butDimmerExt, Ui::Resources::IncreaseDimmer);
+    initButton<DimmerReduceButton>(_butDimmerRed, Ui::Resources::DecreaseDimmer);
 }
 
 void SearchMasterWnd::paint(GC ctx) const {
