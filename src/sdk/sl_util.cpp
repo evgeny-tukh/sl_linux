@@ -72,12 +72,9 @@ void Ui::Util::fillRondedRect(Display *display, Drawable drawable, GC ctx, int x
     for (int i = 270; i <= 360; ++ i, ++ count)
         circle.get(i, x + radius - 1, y + radius - 1, vertices[count]);
     XFillPolygon(display, drawable, ctx, vertices.data(), count, Convex, CoordModeOrigin);
-    /*XFillRectangle(display, drawable, ctx, x - 1, y + radius, width + 2, height - radius * 2 + 1);
-    XFillRectangle(display, drawable, ctx, x + radius - 1, y, width - radius * 2 + 2, radius);
-    XFillRectangle(display, drawable, ctx, x + radius - 1, y + height - radius + 1, width - radius * 2 + 2, radius);
-    XSetArcMode(display, ctx, ArcPieSlice);
-    XFillArc(display, drawable, ctx, x - 1, y - 1, radius * 2, radius * 2 + 1, QUARTER, QUARTER);
-    XFillArc(display, drawable, ctx, x + width - radius * 2, y - 1, radius * 2 + 1, radius * 2 + 1, QUARTER, -QUARTER);
-    XFillArc(display, drawable, ctx, x - 1, y + height - radius * 2, radius * 2 + 1, radius * 2 + 1, QUARTER * 2, QUARTER);
-    XFillArc(display, drawable, ctx, x + width - radius * 2, y + height - radius * 2, radius * 2 + 1, radius * 2 + 1, 0, -QUARTER);*/
+}
+
+void Ui::Util::getScreenSize(Display *display, uint16_t& width, uint16_t& height) {
+    width = DisplayWidth(display, DefaultScreen(display));
+    height = DisplayHeight(display, DefaultScreen(display));
 }

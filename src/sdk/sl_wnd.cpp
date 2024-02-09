@@ -170,10 +170,27 @@ void Ui::Wnd::eventLoop(std::function<bool(Wnd& wnd, XEvent&)> cb) {
 }
 
 void Ui::Wnd::onConfigurationChanged(XConfigureEvent& evt) {
-    if (evt.width != _width)
+    bool sizeChanged = false;
+
+    if (evt.width != _width) {
         _width = evt.width;
-    if (evt.height != _height)
+        sizeChanged = true;
+    }
+    
+    if (evt.height != _height) {
         _height = evt.height;
+        sizeChanged = true;
+    }
+
+    if (sizeChanged) {
+        bool notifyChildren = false;
+        onSizeChanged(_width, _height, notifyChildren);
+
+        if (notifyChildren) {
+            for (auto child: _children)
+                child.second->onParentSizeChanged(_width, _height);
+        }
+    }
 }
 
 void Ui::Wnd::paint(GC ctx) const {
@@ -211,9 +228,13 @@ Ui::Wnd *Ui::Wnd::findChildById(uint16_t id) const {
     return (pos == _children.end()) ? nullptr : pos->second.get();
 }
 
+void Ui::Wnd::resize(uint16_t width, uint16_t height) {
+    XResizeWindow(_display, _wnd, width, height);
+    _width = width;
+    _height = height;
+}
+
 void Ui::Wnd::forceRedraw() {
-    //XClearArea(_display, _wnd, 0, 0, _width, _height, true);
-    //XFlush(_display);
     XExposeEvent evt;
     evt.count = 0;
     evt.display = _display;
@@ -228,4 +249,61 @@ void Ui::Wnd::forceRedraw() {
 
 void Ui::Wnd::textOut(int x, int y, GC ctx, const char *txt) const {
     XDrawString(_display, _wnd, ctx, x, y, txt, strlen(txt));
+}
+
+void Ui::Wnd::onSizeChanged(int width, int height, bool& notifyChildren) {
+    notifyChildren = true;
+}
+
+void Ui::Wnd::onParentSizeChanged(int width, int height) {
+    applyAnchorage();
+}
+
+void Ui::Wnd::setAnchorage(int flags, int xOffset, int yOffset) {
+    _anchorage.flags = flags;
+    _anchorage.xOffset = xOffset;
+    _anchorage.yOffset = yOffset;
+}
+
+void Ui::Wnd::setAnchorage(int flags) {
+    XWindowAttributes parentAttrs;
+
+    XGetWindowAttributes(_display, _parent, &parentAttrs);
+    
+    _anchorage.flags = flags;
+
+    if (flags & (int) AnchorageFlags::Left)
+        _anchorage.xOffset = _x;
+    else if (flags & (int) AnchorageFlags::Right)
+        _anchorage.xOffset = parentAttrs.width - _width - _x;
+    
+    if (flags & (int) AnchorageFlags::Top)
+        _anchorage.yOffset = _y;
+    else if (flags & (int) AnchorageFlags::Bottom)
+        _anchorage.yOffset = parentAttrs.height - _height - _y;
+}
+
+void Ui::Wnd::applyAnchorage() {
+    if (_anchorage.flags) {
+        XWindowAttributes parentAttrs;
+        int x, y;
+
+        XGetWindowAttributes(_display, _parent, &parentAttrs);
+
+        if (_anchorage.flags & (int) AnchorageFlags::Left)
+            x = _anchorage.xOffset;
+        else if (_anchorage.flags & (int) AnchorageFlags::Right)
+            x = parentAttrs.width - _anchorage.xOffset - _width;
+        else
+            x = _x;
+
+        if (_anchorage.flags & (int) AnchorageFlags::Top)
+            y = _anchorage.yOffset;
+        else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
+            y = parentAttrs.height - _anchorage.yOffset - _height;
+        else
+            y = _y;
+
+        XMoveWindow(_display, _wnd, x, y);
+    }
 }

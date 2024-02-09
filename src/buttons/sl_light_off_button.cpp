@@ -5,10 +5,9 @@
 namespace {
 const std::string FOLDER {"/home/jeca/work/sl/bin/res/buttonImages/light"};
 const char BUT_TEXT[] {"LIGHT OFF"};
-const int BOTTOM_OFFSET = 250;
-const int RIGHT_OFFSET = 250;
 }
 
 LightOffButton::LightOffButton(Ui::Wnd& parent): 
-    UiButton(parent, FOLDER, BUT_TEXT, parent.width() - RIGHT_OFFSET, parent.height() - BOTTOM_OFFSET) {
+    UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::THIRD_ROW_BOTTOM);
 }

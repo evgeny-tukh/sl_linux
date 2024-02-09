@@ -122,9 +122,11 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
 
     _butShowSM->create();
     _butShowSM->connect([this] (Ui::Event&) {
+        uint16_t width, height;
+        Ui::Util::getScreenSize(_display, width, height);
         _smWindow->create();
         _smWindow->show(true);
-        //_smWindow->forceRedraw();
+        _smWindow->resize(width, height);
         _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
     });
     _butShowSM->show(true);
@@ -140,8 +142,6 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _butRangeDec->show(true);
 
     _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
-    //addChild((uint16_t) Ui::Resources::SeacrhMaster, _smWindow);
-    //_smWindow->create();
 }
 
 void MainWnd::paint(GC ctx) const {

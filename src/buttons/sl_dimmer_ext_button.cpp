@@ -5,10 +5,9 @@
 namespace {
 const std::string FOLDER {"/home/jeca/work/sl/bin/res/buttonImages/dimmer"};
 const char BUT_TEXT[] {"DIMMER +"};
-const int BOTTOM_OFFSET = 400;
-const int RIGHT_OFFSET = 100;
 }
 
 DimmerExtendButton::DimmerExtendButton(Ui::Wnd& parent): 
-    UiButton(parent, FOLDER, BUT_TEXT, parent.width() - RIGHT_OFFSET, parent.height() - BOTTOM_OFFSET) {
+    UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::THIRD_COL_RIGHT, UiButtonsLayout::SECOND_ROW_BOTTOM);
 }

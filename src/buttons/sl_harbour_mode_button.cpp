@@ -5,12 +5,11 @@
 namespace {
 const std::string FOLDER {"/home/jeca/work/sl/bin/res/buttonImages/sound"};
 const char BUT_TEXT[] {"HRB MODE"};
-const int Y = 30;
-const int RIGHT_OFFSET = 250;
 }
 
 HarbourModeButton::HarbourModeButton(Ui::Wnd& parent): 
-    UiButton(parent, FOLDER, BUT_TEXT, parent.width() - RIGHT_OFFSET, Y) {
+    UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
     setCheckable(true);
     setChecked(false);
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
 }

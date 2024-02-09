@@ -47,3 +47,6 @@ void SearchMasterWnd::paint(GC ctx) const {
     _img->putTo(*this, 100, 100, 0, 0, ctx);
 }
 
+void onParentSizeChanged(int width, int height) {
+    
+}

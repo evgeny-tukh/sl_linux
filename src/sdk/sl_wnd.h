@@ -12,6 +12,22 @@ namespace Ui {
 
 class Wnd {
     public:
+        enum AnchorageFlags {
+            NoAnchorage = 0,
+            Left = 1,
+            Top = 2,
+            Right = 4,
+            Bottom = 8,
+        };
+
+        struct Anchorage {
+            int flags;
+            int xOffset;
+            int yOffset;
+
+            Anchorage(): flags(0), xOffset(0), yOffset(0) {}
+        };
+
         enum class Property {
             X,
             Y,
@@ -64,7 +80,13 @@ class Wnd {
 
         int width() const { return _width; }
         int height() const { return _height; }
+
+        void resize(uint16_t width, uint16_t height);
         
+        void setAnchorage(int flags, int xOffset, int yOffset);
+        void setAnchorage(int flags);
+        void applyAnchorage();
+
     protected:
         Window _wnd;
         Window _parent;
@@ -76,6 +98,7 @@ class Wnd {
         int _height;
         int _x;
         int _y;
+        Anchorage _anchorage;
         std::unordered_map<uint16_t, std::shared_ptr<Wnd>> _children;
 
         virtual uint32_t getDefaultPropValue(Property prop);
@@ -86,6 +109,8 @@ class Wnd {
         virtual void onButtonRelease(XButtonReleasedEvent& evt) {}
         virtual void onMouseEnter(XCrossingEvent& evt) {}
         virtual void onMouseLeave(XCrossingEvent& evt) {}
+        virtual void onParentSizeChanged(int width, int height);
+        virtual void onSizeChanged(int width, int height, bool& notifyChildren);
 
         virtual void paint(GC ctx) const;
 
