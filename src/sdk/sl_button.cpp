@@ -119,13 +119,13 @@ void Ui::Button::drawText(GC ctx, bool fillBgRect) const {
         fg = getDisabledFgColor();
 
     if (fillBgRect) {
-        XSetForeground(_display, ctx, getBgColor());
+        XSetForeground(_display, ctx, bg);
         XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
     }
     
     auto& text = getText();
 
-    XSetForeground(_display, ctx, getFgColor());
+    XSetForeground(_display, ctx, fg);
     XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), text.c_str(), text.length());
     XUnloadFont(_display, font->fid);
 }

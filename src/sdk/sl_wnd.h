@@ -8,26 +8,12 @@
 
 #include <X11/Xlib.h> 
 
+#include "sl_drawable.h"
+
 namespace Ui {
 
-class Wnd {
+class Wnd: public DrawableObject {
     public:
-        enum AnchorageFlags {
-            NoAnchorage = 0,
-            Left = 1,
-            Top = 2,
-            Right = 4,
-            Bottom = 8,
-        };
-
-        struct Anchorage {
-            int flags;
-            int xOffset;
-            int yOffset;
-
-            Anchorage(): flags(0), xOffset(0), yOffset(0) {}
-        };
-
         enum class Property {
             X,
             Y,
@@ -68,7 +54,7 @@ class Wnd {
 
         void selectInput(long mask) const;
 
-        void show(bool showFlag) const;
+        void show(bool showFlag) override;
 
         void eventLoop(std::function<bool(Wnd& wnd, XEvent&)> cb);
 
@@ -78,27 +64,13 @@ class Wnd {
         Wnd *findChildByHandle(Window handle) const;
         Wnd *findChildById(uint16_t id) const;
 
-        int width() const { return _width; }
-        int height() const { return _height; }
-
-        void resize(uint16_t width, uint16_t height);
-        
-        void setAnchorage(int flags, int xOffset, int yOffset);
-        void setAnchorage(int flags);
-        void applyAnchorage();
+        void resize(uint16_t width, uint16_t height) override;
+        void move(int x, int y) override;
 
     protected:
         Window _wnd;
-        Window _parent;
-        Display *_display;
-        unsigned long _bgClr;
         unsigned long _borderClr;
         int _bordwerWidth;
-        int _width;
-        int _height;
-        int _x;
-        int _y;
-        Anchorage _anchorage;
         std::unordered_map<uint16_t, std::shared_ptr<Wnd>> _children;
 
         virtual uint32_t getDefaultPropValue(Property prop);
@@ -107,12 +79,10 @@ class Wnd {
         virtual void onPaint(XExposeEvent& evt);
         virtual void onButtonPress(XButtonPressedEvent& evt) {}
         virtual void onButtonRelease(XButtonReleasedEvent& evt) {}
-        virtual void onMouseEnter(XCrossingEvent& evt) {}
-        virtual void onMouseLeave(XCrossingEvent& evt) {}
-        virtual void onParentSizeChanged(int width, int height);
+        virtual void onParentSizeChanged(int width, int height) override;
         virtual void onSizeChanged(int width, int height, bool& notifyChildren);
 
-        virtual void paint(GC ctx) const;
+        void paint(GC ctx) const override;
 
         void textOut(int x, int y, GC ctx, const char *txt) const;
 };

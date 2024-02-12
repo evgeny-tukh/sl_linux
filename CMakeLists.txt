@@ -33,6 +33,7 @@ set(BUT_HEADERS
 
 set(SDK_SOURCES
     src/sdk/sl_button.cpp
+    src/sdk/sl_drawable.cpp
     src/sdk/sl_wnd.cpp
     src/sdk/sl_button.cpp
     src/sdk/sl_event.cpp
@@ -43,6 +44,7 @@ set(SDK_SOURCES
 
 set(SDK_HEADERS
     src/sdk/sl_button.h
+    src/sdk/sl_drawable.h
     src/sdk/sl_wnd.h
     src/sdk/sl_button.h
     src/sdk/sl_event.h

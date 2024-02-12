@@ -31,29 +31,19 @@ Ui::Wnd::Properties& Ui::Wnd::Properties::populate(Ui::Wnd::Properties& props, u
 }
 
 Ui::Wnd::Wnd(Display *display, int x, int y, int width, int height, Window parent):
+    DrawableObject(display, x, y, width, height, parent),
     _wnd(0),
-    _parent(parent),
-    _display(display),
-    _bgClr(getDefaultPropValue(Property::BgColor)),
     _borderClr(getDefaultPropValue(Property::BorderColor)),
-    _bordwerWidth(getDefaultPropValue(Property::BorderWidth)),
-    _width(width),
-    _height(height),
-    _x(x),
-    _y(y) {
+    _bordwerWidth(getDefaultPropValue(Property::BorderWidth)) {
+    _bgClr = getDefaultPropValue(Property::BgColor);
 }
 
 Ui::Wnd::Wnd(Display *display, Properties& props, Window parent):
+    DrawableObject(display, props.get(Wnd::Property::X), props.get(Wnd::Property::Y), props.get(Wnd::Property::Width), props.get(Wnd::Property::Height), parent),
     _wnd(0),
-    _parent(parent),
-    _display(display),
-    _bgClr(props.get(Wnd::Property::BgColor)),
     _borderClr(props.get(Wnd::Property::BorderColor)),
-    _bordwerWidth(props.get(Wnd::Property::BorderWidth)),
-    _width(props.get(Wnd::Property::Width)),
-    _height(props.get(Wnd::Property::Height)),
-    _x(props.get(Wnd::Property::X)),
-    _y(props.get(Wnd::Property::Y)) {
+    _bordwerWidth(props.get(Wnd::Property::BorderWidth)) {
+    _bgClr = props.get(Wnd::Property::BgColor);
     
     auto screen = DefaultScreen(display);
     
@@ -122,7 +112,7 @@ void Ui::Wnd::selectInput(long mask) const {
     XSelectInput(_display, _wnd, mask);
 }
 
-void Ui::Wnd::show (bool showFlag) const {
+void Ui::Wnd::show (bool showFlag) {
     if (showFlag) {
         XMapWindow(_display, _wnd);
         XMapSubwindows(_display, _wnd);
@@ -229,9 +219,13 @@ Ui::Wnd *Ui::Wnd::findChildById(uint16_t id) const {
 }
 
 void Ui::Wnd::resize(uint16_t width, uint16_t height) {
+    DrawableObject::resize(width, height);
     XResizeWindow(_display, _wnd, width, height);
-    _width = width;
-    _height = height;
+}
+
+void Ui::Wnd::move(int x, int y) {
+    DrawableObject::move(x, y);
+    XMoveWindow(_display, _wnd, x, y);
 }
 
 void Ui::Wnd::forceRedraw() {
@@ -259,51 +253,3 @@ void Ui::Wnd::onParentSizeChanged(int width, int height) {
     applyAnchorage();
 }
 
-void Ui::Wnd::setAnchorage(int flags, int xOffset, int yOffset) {
-    _anchorage.flags = flags;
-    _anchorage.xOffset = xOffset;
-    _anchorage.yOffset = yOffset;
-}
-
-void Ui::Wnd::setAnchorage(int flags) {
-    XWindowAttributes parentAttrs;
-
-    XGetWindowAttributes(_display, _parent, &parentAttrs);
-    
-    _anchorage.flags = flags;
-
-    if (flags & (int) AnchorageFlags::Left)
-        _anchorage.xOffset = _x;
-    else if (flags & (int) AnchorageFlags::Right)
-        _anchorage.xOffset = parentAttrs.width - _width - _x;
-    
-    if (flags & (int) AnchorageFlags::Top)
-        _anchorage.yOffset = _y;
-    else if (flags & (int) AnchorageFlags::Bottom)
-        _anchorage.yOffset = parentAttrs.height - _height - _y;
-}
-
-void Ui::Wnd::applyAnchorage() {
-    if (_anchorage.flags) {
-        XWindowAttributes parentAttrs;
-        int x, y;
-
-        XGetWindowAttributes(_display, _parent, &parentAttrs);
-
-        if (_anchorage.flags & (int) AnchorageFlags::Left)
-            x = _anchorage.xOffset;
-        else if (_anchorage.flags & (int) AnchorageFlags::Right)
-            x = parentAttrs.width - _anchorage.xOffset - _width;
-        else
-            x = _x;
-
-        if (_anchorage.flags & (int) AnchorageFlags::Top)
-            y = _anchorage.yOffset;
-        else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
-            y = parentAttrs.height - _anchorage.yOffset - _height;
-        else
-            y = _y;
-
-        XMoveWindow(_display, _wnd, x, y);
-    }
-}
