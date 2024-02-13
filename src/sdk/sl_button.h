@@ -89,7 +89,6 @@ class Button: public Wnd {
         virtual void drawText(GC ctx, bool fillBgRect = true) const;
         virtual void drawImage(GC ctx) const;
 
-        virtual const std::string& getFontName() const;
         virtual int getTextY() const;
         virtual int getImageX(const BmpPtr&) const;
         virtual int getImageY(const BmpPtr&) const;

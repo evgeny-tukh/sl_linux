@@ -24,6 +24,8 @@ class DrawableObject {
             Anchorage(): flags(0), xOffset(0), yOffset(0) {}
         };
 
+        static const std::string& getDefaultFontName();
+        
         DrawableObject(Display *display, int x, int y, int width, int height, Window parent);
 
         void setBgColor(unsigned long color) { _bgClr = color; }
@@ -56,6 +58,8 @@ class DrawableObject {
         int _y;
         bool _visible;
         Anchorage _anchorage;
+
+        virtual const std::string& getFontName() const;
 
     private:
         virtual void paint(GC ctx) const {}

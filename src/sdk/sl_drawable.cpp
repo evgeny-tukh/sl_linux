@@ -1,4 +1,14 @@
+#include <string>
+
 #include "sl_drawable.h"
+
+namespace {
+    const static std::string DEF_FONT_NAME{"*7x14*"};
+}
+
+const std::string& Ui::DrawableObject::getDefaultFontName() {
+    return DEF_FONT_NAME;
+}
 
 Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, Window parent):
     _display(display),
@@ -67,3 +77,8 @@ void Ui::DrawableObject::move(int x, int y) {
     _x = x;
     _y = y;
 }
+
+const std::string& Ui::DrawableObject::getFontName() const {
+    return DEF_FONT_NAME;
+}
+

@@ -86,12 +86,6 @@ void Ui::Button::connect(Event::EventHandler handler) {
     _handler = handler;
 }
 
-const std::string& Ui::Button::getFontName() const {
-    const static std::string DEF_FONT_NAME{"*7x14*"};
-
-    return DEF_FONT_NAME;
-}
-
 int Ui::Button::getTextY() const {
     return (_height >> 1) + 5;
 }

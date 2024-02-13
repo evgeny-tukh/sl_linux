@@ -36,6 +36,7 @@ set(SDK_SOURCES
     src/sdk/sl_drawable.cpp
     src/sdk/sl_wnd.cpp
     src/sdk/sl_button.cpp
+    src/sdk/sl_text.cpp
     src/sdk/sl_event.cpp
     src/sdk/sl_bitmap.cpp
     src/sdk/sl_util.cpp
@@ -47,6 +48,7 @@ set(SDK_HEADERS
     src/sdk/sl_drawable.h
     src/sdk/sl_wnd.h
     src/sdk/sl_button.h
+    src/sdk/sl_text.h
     src/sdk/sl_event.h
     src/sdk/sl_bitmap.h
     src/sdk/sl_util.h
