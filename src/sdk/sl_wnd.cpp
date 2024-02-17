@@ -192,30 +192,53 @@ void Ui::Wnd::onPaint(XExposeEvent& evt) {
 
     GC ctx = XCreateGC(_display, _wnd, 0, nullptr);
     paint(ctx);
+
+    for (auto child: _children) {
+        if (!child.second->isWindow()) {
+            child.second->updateUi();
+            child.second->paint(ctx);
+        }
+    }
+
     XFreeGC(_display, ctx);
     XFlush(_display);
 
-    for (auto child: _children)
-        child.second->onPaint(evt);
+    for (auto child: _children) {
+        if (child.second->isWindow()) {
+            Wnd *window = dynamic_cast<Wnd *>(child.second.get());
+
+            if (window) {
+                window->updateUi();
+                window->onPaint(evt);
+            }
+        }
+    }
 }
 
-Ui::Wnd *Ui::Wnd::addChild(uint16_t id, std::shared_ptr<Wnd> wnd) {
-    _children.emplace(std::pair<uint16_t, std::shared_ptr<Wnd>>(id, wnd));
-    return wnd.get();
+Ui::DrawableObject *Ui::Wnd::addChild(uint16_t id, std::shared_ptr<DrawableObject> child) {
+    _children.emplace(std::pair<uint16_t, std::shared_ptr<DrawableObject>>(id, child));
+    return child.get();
 }
 
 Ui::Wnd *Ui::Wnd::findChildByHandle(Window handle) const {
     for (auto child: _children) {
-        if (child.second->handle() == handle)
-            return child.second.get();
+        if (child.second->isWindow()) {
+            Wnd *window = dynamic_cast<Wnd *>(child.second.get());
+
+            if (window && window->handle() == handle)
+                return window;
+        }
     }
     return nullptr;
 }
 
-Ui::Wnd *Ui::Wnd::findChildById(uint16_t id) const {
+Ui::DrawableObject *Ui::Wnd::findChildById(uint16_t id) const {
     auto pos = _children.find(id);
 
-    return (pos == _children.end()) ? nullptr : pos->second.get();
+    if (pos == _children.end())
+        return nullptr;
+
+    return dynamic_cast<Wnd *>(pos->second.get());
 }
 
 void Ui::Wnd::resize(uint16_t width, uint16_t height) {
@@ -253,3 +276,13 @@ void Ui::Wnd::onParentSizeChanged(int width, int height) {
     applyAnchorage();
 }
 
+std::shared_ptr<Ui::Wnd> Ui::Wnd::attach(Display *display, Window wnd) {
+    XWindowAttributes attrs;
+    XGetWindowAttributes(display, wnd, &attrs);
+
+    std::shared_ptr<Ui::Wnd> result = std::make_shared<Wnd>(display, attrs.x, attrs.y, attrs.width, attrs.height, attrs.root);
+
+    result->_wnd = wnd;
+
+    return result;
+}

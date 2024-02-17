@@ -30,6 +30,8 @@ class Wnd: public DrawableObject {
             Command,
         };
 
+        static std::shared_ptr<Wnd> attach(Display *display, Window wnd);
+
         class Properties: public std::unordered_map<Property, uint32_t> {
             public:
                 Properties() {}
@@ -60,18 +62,20 @@ class Wnd: public DrawableObject {
 
         void forceRedraw();
 
-        Wnd *addChild(uint16_t id, std::shared_ptr<Wnd> wnd);
+        DrawableObject *addChild(uint16_t id, std::shared_ptr<DrawableObject> child);
         Wnd *findChildByHandle(Window handle) const;
-        Wnd *findChildById(uint16_t id) const;
+        DrawableObject *findChildById(uint16_t id) const;
 
         void resize(uint16_t width, uint16_t height) override;
         void move(int x, int y) override;
+
+        virtual bool isWindow() const { return true; }
 
     protected:
         Window _wnd;
         unsigned long _borderClr;
         int _bordwerWidth;
-        std::unordered_map<uint16_t, std::shared_ptr<Wnd>> _children;
+        std::unordered_map<uint16_t, std::shared_ptr<DrawableObject>> _children;
 
         virtual uint32_t getDefaultPropValue(Property prop);
 

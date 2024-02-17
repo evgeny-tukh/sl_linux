@@ -37,6 +37,7 @@ struct BitmapInfoHeader {
 
 class Bitmap {
     public:
+        Bitmap(Display *);
         Bitmap(Wnd& compatibleWnd);
         ~Bitmap();
 
@@ -44,8 +45,8 @@ class Bitmap {
         bool loadBmp(const char *file);
         bool loadBmpFile(const char *file);
 
-        bool drawTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
-        bool putTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr);
+        bool drawTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr) const;
+        bool putTo(const Wnd& wnd, int destX, int destY, int srcX = 0, int srcY = 0, GC ctx = nullptr) const;
 
         unsigned int width() const { return _width; }
         unsigned int height() const { return _height; }

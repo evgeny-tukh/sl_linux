@@ -20,6 +20,22 @@ union Rgb {
 };
 #pragma pack()
 
+namespace {
+std::shared_ptr<Ui::Wnd> defWnd;
+
+Ui::Wnd& getDefWnd(Display *display) {
+    if (!defWnd) {
+        defWnd = Ui::Wnd::attach(display, DefaultRootWindow(display));
+    }
+
+    return *defWnd;
+}
+
+}
+
+Ui::Bitmap::Bitmap(Display *display): _compatibleWnd(getDefWnd(display)) {
+}
+
 Ui::Bitmap::Bitmap(Wnd& compatibleWnd):
     _compatibleWnd(compatibleWnd),
     _width(0),
@@ -76,7 +92,7 @@ bool Ui::Bitmap::loadXbm(const char *file) {
     return result == BitmapSuccess;
 }
 
-bool Ui::Bitmap::drawTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY, GC ctx) {
+bool Ui::Bitmap::drawTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY, GC ctx) const {
     if (!_image)
         return false;
 
@@ -90,7 +106,7 @@ bool Ui::Bitmap::drawTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY
     return result;
 }
 
-bool Ui::Bitmap::putTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY, GC ctx) {
+bool Ui::Bitmap::putTo(const Wnd& wnd, int destX, int destY, int srcX, int srcY, GC ctx) const {
     if (!_img)
         return false;
 

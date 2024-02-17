@@ -74,6 +74,27 @@ void Ui::Util::fillRondedRect(Display *display, Drawable drawable, GC ctx, int x
     XFillPolygon(display, drawable, ctx, vertices.data(), count, Convex, CoordModeOrigin);
 }
 
+void Ui::Util::drawRondedRect(Display *display, Drawable drawable, GC ctx, int x, int y, int width, int height, int radius) {
+    std::vector<XPoint> vertices;
+    Circle circle(radius);
+
+    vertices.resize(91 * 4 + 1);
+
+    int count = 0;
+    for (int i = 0; i <= 90; ++ i, ++ count)
+        circle.get(i, x + width - 1 - radius, y + radius - 1, vertices[count]);
+    for (int i = 90; i <= 180; ++ i, ++ count)
+        circle.get(i, x + width - 1 - radius, y + height - 1 - radius, vertices[count]);
+    for (int i = 180; i <= 270; ++ i, ++ count)
+        circle.get(i, x + radius - 1, y + height - 1 - radius, vertices[count]);
+    for (int i = 270; i <= 360; ++ i, ++ count)
+        circle.get(i, x + radius - 1, y + radius - 1, vertices[count]);
+    vertices[count].x = vertices.front().x;
+    vertices[count].y = vertices.front().y;
+    ++count;
+    XDrawLines(display, drawable, ctx, vertices.data(), count, CoordModeOrigin);
+}
+
 void Ui::Util::getScreenSize(Display *display, uint16_t& width, uint16_t& height) {
     width = DisplayWidth(display, DefaultScreen(display));
     height = DisplayHeight(display, DefaultScreen(display));

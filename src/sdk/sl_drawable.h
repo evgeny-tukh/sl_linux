@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include <X11/Xlib.h> 
 
@@ -25,7 +26,7 @@ class DrawableObject {
         };
 
         static const std::string& getDefaultFontName();
-        
+
         DrawableObject(Display *display, int x, int y, int width, int height, Window parent);
 
         void setBgColor(unsigned long color) { _bgClr = color; }
@@ -48,6 +49,12 @@ class DrawableObject {
         virtual void onMouseEnter(XCrossingEvent& evt) {}
         virtual void onMouseLeave(XCrossingEvent& evt) {}
 
+        virtual bool isWindow() const { return false; }
+
+        virtual void paint(GC ctx) const {}
+
+        virtual void updateUi() {}
+
     protected:
         Window _parent;
         Display *_display;
@@ -60,9 +67,6 @@ class DrawableObject {
         Anchorage _anchorage;
 
         virtual const std::string& getFontName() const;
-
-    private:
-        virtual void paint(GC ctx) const {}
 };
 
 }
