@@ -17,6 +17,9 @@ enum class Resources: uint16_t {
     LightOff,
     IncreaseDimmer,
     DecreaseDimmer,
+
+    Hello,
+    HDG,
 };
 
 }

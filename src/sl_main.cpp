@@ -14,6 +14,8 @@
 #include "sl_res.h"
 #include "sl_main_wnd.h"
 #include "sl_util.h"
+#include "sl_text.h"
+#include "sl_red_label.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -46,6 +48,8 @@ class MainWnd: public Ui::Wnd {
         Ui::Button *_butShowSM;
         std::shared_ptr<RangeIncButton> _butRangeInc;
         std::shared_ptr<RangeDecButton> _butRangeDec;
+        std::shared_ptr<Ui::Text> _hello;
+        std::shared_ptr<RedLabel> _hdg;
         std::shared_ptr<SearchMasterWnd> _smWindow;
         bool _closeDisabled;
 
@@ -140,6 +144,18 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     addChild((uint16_t) Ui::Resources::DecreaseRange, _butRangeDec);
     _butRangeDec->create();
     _butRangeDec->show(true);
+
+    _hello.reset(new Ui::Text(_display, "Hello", 300, 300, 100, 30, _wnd));
+    addChild((uint16_t) Ui::Resources::Hello, _hello);
+    _hello->setBorder(true);
+    _hello->setAlignment((int) Ui::Text::Alignment::HCenter | (int) Ui::Text::Alignment::VCenter);
+    _hello->show(true);
+
+    _hdg.reset(new RedLabel(_display, "HDG", 400, 400, 100, 30, _wnd));
+    addChild((uint16_t) Ui::Resources::HDG, _hdg);
+    _hello->setBorder(true);
+    _hello->setAlignment((int) Ui::Text::Alignment::Center);
+    _hdg->show(true);
 
     _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
 }

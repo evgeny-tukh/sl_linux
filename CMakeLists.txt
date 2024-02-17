@@ -5,30 +5,48 @@ project (SearchMaster)
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+set (CTRL_SOURCES
+    src/ui/controls/sl_labeled_value.cpp
+)
+
+set (CTRL_HEADERS
+    src/ui/controls/sl_labeled_value.h
+)
+
+set (LBL_SOURCES
+    src/ui/labels/sl_red_label.cpp
+    src/ui/labels/sl_value_field.cpp
+)
+
+set (LBL_HEADERS
+    src/ui/labels/sl_red_label.h
+    src/ui/labels/sl_value_field.h
+)
+
 set(BUT_SOURCES
-    src/buttons/sl_ui_button.cpp
-    src/buttons/sl_name_edit_button.cpp
-    src/buttons/sl_harbour_mode_button.cpp
-    src/buttons/sl_settings_button.cpp
-    src/buttons/sl_range_ext_button.cpp
-    src/buttons/sl_range_red_button.cpp
-    src/buttons/sl_light_on_button.cpp
-    src/buttons/sl_light_off_button.cpp
-    src/buttons/sl_dimmer_ext_button.cpp
-    src/buttons/sl_dimmer_red_button.cpp
+    src/ui/buttons/sl_ui_button.cpp
+    src/ui/buttons/sl_name_edit_button.cpp
+    src/ui/buttons/sl_harbour_mode_button.cpp
+    src/ui/buttons/sl_settings_button.cpp
+    src/ui/buttons/sl_range_ext_button.cpp
+    src/ui/buttons/sl_range_red_button.cpp
+    src/ui/buttons/sl_light_on_button.cpp
+    src/ui/buttons/sl_light_off_button.cpp
+    src/ui/buttons/sl_dimmer_ext_button.cpp
+    src/ui/buttons/sl_dimmer_red_button.cpp
 )
 
 set(BUT_HEADERS
-    src/buttons/sl_ui_button.h
-    src/buttons/sl_name_edit_button.h
-    src/buttons/sl_harbour_mode_button.h
-    src/buttons/sl_settings_button.h
-    src/buttons/sl_range_ext_button.h
-    src/buttons/sl_range_red_button.h
-    src/buttons/sl_light_on_button.h
-    src/buttons/sl_light_off_button.h
-    src/buttons/sl_dimmer_ext_button.h
-    src/buttons/sl_dimmer_red_button.h
+    src/ui/buttons/sl_ui_button.h
+    src/ui/buttons/sl_name_edit_button.h
+    src/ui/buttons/sl_harbour_mode_button.h
+    src/ui/buttons/sl_settings_button.h
+    src/ui/buttons/sl_range_ext_button.h
+    src/ui/buttons/sl_range_red_button.h
+    src/ui/buttons/sl_light_on_button.h
+    src/ui/buttons/sl_light_off_button.h
+    src/ui/buttons/sl_dimmer_ext_button.h
+    src/ui/buttons/sl_dimmer_red_button.h
 )
 
 set(SDK_SOURCES
@@ -41,6 +59,7 @@ set(SDK_SOURCES
     src/sdk/sl_bitmap.cpp
     src/sdk/sl_util.cpp
     src/sdk/sl_img_button.cpp
+    src/sdk/sl_img_container.cpp
 )
 
 set(SDK_HEADERS
@@ -53,6 +72,7 @@ set(SDK_HEADERS
     src/sdk/sl_bitmap.h
     src/sdk/sl_util.h
     src/sdk/sl_img_button.h
+    src/sdk/sl_img_container.h
 )
 
 set(SOURCES
@@ -73,6 +93,8 @@ add_executable(SearchMaster
     ${SDK_SOURCES}
     ${SOURCES}
     ${BUT_SOURCES}
+    ${LBL_SOURCES}
+    ${CTRL_SOURCES}
 )
 
 set_target_properties(SearchMaster
@@ -86,7 +108,9 @@ set_target_properties(SearchMaster
 include_directories(
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/src/sdk
-    ${PROJECT_SOURCE_DIR}/src/buttons
+    ${PROJECT_SOURCE_DIR}/src/ui/buttons
+    ${PROJECT_SOURCE_DIR}/src/ui/labels
+    ${PROJECT_SOURCE_DIR}/src/ui/controls
 )
 
 target_link_libraries(SearchMaster

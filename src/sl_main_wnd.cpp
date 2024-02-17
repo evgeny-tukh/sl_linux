@@ -29,6 +29,8 @@ void SearchMasterWnd::create() {
     initButton<LightOffButton>(_butLightOff, Ui::Resources::LightOff);
     initButton<DimmerExtendButton>(_butDimmerExt, Ui::Resources::IncreaseDimmer);
     initButton<DimmerReduceButton>(_butDimmerRed, Ui::Resources::DecreaseDimmer);
+
+    initLabeledValue(_hdg, "HDG", [] { return "000.0"; }, 400, 200, Ui::Resources::HDG);
 }
 
 void SearchMasterWnd::paint(GC ctx) const {

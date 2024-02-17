@@ -22,6 +22,7 @@
 #include "sl_light_off_button.h"
 #include "sl_dimmer_ext_button.h"
 #include "sl_dimmer_red_button.h"
+#include "sl_labeled_value.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -42,6 +43,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<LightOffButton> _butLightOff;
         std::shared_ptr<DimmerExtendButton> _butDimmerExt;
         std::shared_ptr<DimmerReduceButton> _butDimmerRed;
+        std::shared_ptr<LabeledValue> _hdg;
 
         void paint(GC ctx) const override;
 
@@ -51,5 +53,11 @@ class SearchMasterWnd: public Ui::Wnd {
             addChild((uint16_t) id, button);
             button->create();
             button->show(true);
+        }
+
+        void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, ValueField::Getter valueGetter, int x, int y, Ui::Resources id) {
+            ctrl.reset(new LabeledValue(_display, label, valueGetter, x, y, _wnd));
+            addChild((uint16_t) id, ctrl);
+            ctrl->show(true);
         }
 };
