@@ -20,6 +20,11 @@ enum class Resources: uint16_t {
 
     Hello,
     HDG,
+    COG,
+    STW,
+    SOG,
+    LAT,
+    LON,
 };
 
 }

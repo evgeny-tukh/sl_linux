@@ -80,6 +80,9 @@ set(SOURCES
     src/sl_main_wnd.cpp
     src/sl_range_inc_but.cpp
     src/sl_range_dec_but.cpp
+    src/sl_value_storage.cpp
+    src/sl_tools.cpp
+    src/sl_text_constants.cpp
 )
 
 set(HEADERS
@@ -87,6 +90,9 @@ set(HEADERS
     src/sl_main_wnd.h
     src/sl_range_inc_but.h
     src/sl_range_dec_but.h
+    src/sl_value_storage.h
+    src/sl_tools.h
+    src/sl_text_constants.h
 )
 
 add_executable(SearchMaster

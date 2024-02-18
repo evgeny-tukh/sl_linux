@@ -1,5 +1,7 @@
 #include "sl_main_wnd.h"
 #include "sl_util.h"
+#include "sl_tools.h"
+#include "sl_text_constants.h"
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1800, HEIGHT = 800;
@@ -30,7 +32,30 @@ void SearchMasterWnd::create() {
     initButton<DimmerExtendButton>(_butDimmerExt, Ui::Resources::IncreaseDimmer);
     initButton<DimmerReduceButton>(_butDimmerRed, Ui::Resources::DecreaseDimmer);
 
-    initLabeledValue(_hdg, "HDG", [] { return "000.0"; }, 400, 200, Ui::Resources::HDG);
+    initLabeledValue(_hdg, TextConstants::HDG, 400, 200, Ui::Resources::HDG);
+    initLabeledValue(_lat, TextConstants::LAT, 400, 300, Ui::Resources::LAT, 150);
+    initLabeledValue(_lon, TextConstants::LON, 400, 400, Ui::Resources::LON, 150);
+
+    _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
+    _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
+    _storage.setValue(TextConstants::LON, 29.5, ValueStorage::Format::Lon);
+}
+
+std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
+    auto text = _storage.getStringValue(label).c_str();
+    return text;
+}
+
+void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width) {
+    ValueField::Getter getter = [this, label] () {
+        return getValueOfParameter(label);
+    };
+
+    ctrl.reset(new LabeledValue(_display, label, getter, x, y, _wnd, width));
+    addChild((uint16_t) id, ctrl);
+    ctrl->show(true);
+
+    _valueDisplays.emplace(std::pair<std::string, std::shared_ptr<LabeledValue>&>(label, ctrl));
 }
 
 void SearchMasterWnd::paint(GC ctx) const {

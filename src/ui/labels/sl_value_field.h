@@ -7,7 +7,7 @@
 
 class ValueField: public Ui::Text {
     public:
-        typedef std::function<const char *()> Getter;
+        typedef std::function<std::string()> Getter;
 
         ValueField(Display *display, Getter getter, int x, int y, int width, int height, Window parent);
 

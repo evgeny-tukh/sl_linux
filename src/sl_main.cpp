@@ -16,6 +16,7 @@
 #include "sl_util.h"
 #include "sl_text.h"
 #include "sl_red_label.h"
+#include "sl_text_constants.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -151,7 +152,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _hello->setAlignment((int) Ui::Text::Alignment::HCenter | (int) Ui::Text::Alignment::VCenter);
     _hello->show(true);
 
-    _hdg.reset(new RedLabel(_display, "HDG", 400, 400, 100, 30, _wnd));
+    _hdg.reset(new RedLabel(_display, TextConstants::HDG, 400, 400, 100, 30, _wnd));
     addChild((uint16_t) Ui::Resources::HDG, _hdg);
     _hello->setBorder(true);
     _hello->setAlignment((int) Ui::Text::Alignment::Center);

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 #include <X11/Xlib.h> 
 
@@ -23,6 +25,7 @@
 #include "sl_dimmer_ext_button.h"
 #include "sl_dimmer_red_button.h"
 #include "sl_labeled_value.h"
+#include "sl_value_storage.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -33,6 +36,8 @@ class SearchMasterWnd: public Ui::Wnd {
     protected:
         long int _yellowClr;
         std::unique_ptr<Ui::Bitmap> _img;
+        std::unordered_map<std::string, std::shared_ptr<LabeledValue>&> _valueDisplays;
+        ValueStorage _storage;
 
         std::shared_ptr<NameEditButton> _butNameEdit;
         std::shared_ptr<HarbourModeButton> _butHarbourModeSwitch;
@@ -44,6 +49,10 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<DimmerExtendButton> _butDimmerExt;
         std::shared_ptr<DimmerReduceButton> _butDimmerRed;
         std::shared_ptr<LabeledValue> _hdg;
+        std::shared_ptr<LabeledValue> _lat;
+        std::shared_ptr<LabeledValue> _lon;
+
+        void updateValues();
 
         void paint(GC ctx) const override;
 
@@ -55,9 +64,7 @@ class SearchMasterWnd: public Ui::Wnd {
             button->show(true);
         }
 
-        void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, ValueField::Getter valueGetter, int x, int y, Ui::Resources id) {
-            ctrl.reset(new LabeledValue(_display, label, valueGetter, x, y, _wnd));
-            addChild((uint16_t) id, ctrl);
-            ctrl->show(true);
-        }
+        void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width = 100);
+
+        std::string getValueOfParameter(const char *label) const;
 };
