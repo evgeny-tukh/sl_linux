@@ -24,7 +24,7 @@ std::string Tools::formatAngle(double angle) {
             result += '.';
     }
 
-    return result;
+    return result + '\xb0';
 }
 
 std::string Tools::formatMinutes(double value) {

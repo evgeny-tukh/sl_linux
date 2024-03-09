@@ -1,7 +1,7 @@
 #include "sl_main_wnd.h"
 #include "sl_util.h"
 #include "sl_tools.h"
-#include "sl_text_constants.h"
+#include "sl_constants.h"
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1800, HEIGHT = 800;
@@ -39,6 +39,14 @@ void SearchMasterWnd::create() {
     _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
     _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
     _storage.setValue(TextConstants::LON, 29.5, ValueStorage::Format::Lon);
+
+    _lampIndicator.reset(new LampDirIndicator(_display, [this] () { return _storage.getStringValue(Types::DataType::BRG_1); }, 400, 600, 1, _wnd));
+    addChild(1111, _lampIndicator);
+    _lampIndicator->show(true);
+
+    _lampIndicators.reset(new LampDirIndicators(_display, 700, 600, _wnd));
+    addChild((uint16_t) Ui::Resources::LAMP_BRGS, _lampIndicators);
+    _lampIndicators->show(true);
 }
 
 std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
@@ -59,7 +67,7 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
 }
 
 void SearchMasterWnd::paint(GC ctx) const {
-    auto font = XLoadQueryFont(_display, "*12x24*");
+    /*auto font = XLoadQueryFont(_display, "*12x24*");
     XSetFont(_display, ctx, font->fid);
     XSetPlaneMask(_display, ctx, AllPlanes);
     XSetForeground(_display, ctx, WhitePixel(_display, DefaultScreen(_display)));
@@ -71,7 +79,7 @@ void SearchMasterWnd::paint(GC ctx) const {
     XFillArc(_display, _wnd, ctx, 200, 200, 100, 100, 0, 360 * 64);
     textOut(120, 100, ctx, "NAME");
     XUnloadFont(_display, font->fid);
-    _img->putTo(*this, 100, 100, 0, 0, ctx);
+    _img->putTo(*this, 100, 100, 0, 0, ctx);*/
 }
 
 void onParentSizeChanged(int width, int height) {

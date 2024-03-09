@@ -7,10 +7,18 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 set (CTRL_SOURCES
     src/ui/controls/sl_labeled_value.cpp
+    src/ui/controls/sl_value.cpp
+    src/ui/controls/sl_angle_value.cpp
+    src/ui/controls/sl_lamp_dir_indicator.cpp
+    src/ui/controls/sl_lamp_dir_indicators.cpp
 )
 
 set (CTRL_HEADERS
     src/ui/controls/sl_labeled_value.h
+    src/ui/controls/sl_value.h
+    src/ui/controls/sl_angle_value.h
+    src/ui/controls/sl_lamp_dir_indicator.h
+    src/ui/controls/sl_lamp_dir_indicators.h
 )
 
 set (LBL_SOURCES
@@ -82,7 +90,7 @@ set(SOURCES
     src/sl_range_dec_but.cpp
     src/sl_value_storage.cpp
     src/sl_tools.cpp
-    src/sl_text_constants.cpp
+    src/sl_constants.cpp
 )
 
 set(HEADERS
@@ -92,7 +100,7 @@ set(HEADERS
     src/sl_range_dec_but.h
     src/sl_value_storage.h
     src/sl_tools.h
-    src/sl_text_constants.h
+    src/sl_constants.h
 )
 
 add_executable(SearchMaster

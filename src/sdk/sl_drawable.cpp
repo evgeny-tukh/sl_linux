@@ -82,3 +82,22 @@ const std::string& Ui::DrawableObject::getFontName() const {
     return DEF_FONT_NAME;
 }
 
+bool Ui::DrawableObject::styleFlag(uint32_t mask) const {
+    return _style & mask;
+}
+
+void Ui::DrawableObject::setStyle(uint32_t mask, uint32_t value) {
+    _style &= (~mask);
+    _style |= value;
+}
+
+void Ui::DrawableObject::setStyle(uint32_t mask, bool flag) {
+    if (flag)    
+        _style |= mask;
+    else
+        _style &= (~mask);
+}
+
+void Ui::DrawableObject::drawLine(GC ctx, int x1, int y1, int x2, int y2) const {
+    XDrawLine(_display, _parent, ctx, _x + x1, _y + y1, _x + x2, _y + y2);
+}

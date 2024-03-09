@@ -13,7 +13,8 @@ void Ui::Text::paint(GC ctx) const {
     if (_visible && !_text.empty()) {
         XFontStruct *font = XLoadQueryFont(_display, getFontName().c_str());
         if (font) {
-            int textWidth = XTextWidth(font, _text.c_str(), _text.length());
+            const auto& text = getText();
+            int textWidth = XTextWidth(font, text.c_str(), text.length());
             int textHeight = font->ascent + font->descent;
             XSetFont(_display, ctx, font->fid);
             
@@ -43,7 +44,7 @@ void Ui::Text::paint(GC ctx) const {
             else if (isAlignedTo(Alignment::VCenter))
                 textY = _y + _height - ((_height - textHeight) >> 1) - 1;
 
-            XDrawString(_display, _parent, ctx, textX, textY, _text.c_str(), _text.length());
+            XDrawString(_display, _parent, ctx, textX, textY, text.c_str(), text.length());
             XUnloadFont(_display, font->fid);
         }
     }

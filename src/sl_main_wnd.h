@@ -26,6 +26,9 @@
 #include "sl_dimmer_red_button.h"
 #include "sl_labeled_value.h"
 #include "sl_value_storage.h"
+#include "sl_value.h"
+#include "sl_lamp_dir_indicator.h"
+#include "sl_lamp_dir_indicators.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -51,6 +54,9 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<LabeledValue> _hdg;
         std::shared_ptr<LabeledValue> _lat;
         std::shared_ptr<LabeledValue> _lon;
+        std::shared_ptr<Value> _lampDirection[3];
+        std::shared_ptr<LampDirIndicator> _lampIndicator;
+        std::shared_ptr<LampDirIndicators> _lampIndicators;
 
         void updateValues();
 

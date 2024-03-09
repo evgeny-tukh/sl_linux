@@ -4,7 +4,8 @@
 
 class LabeledValue: public Ui::DrawableObject {
     public:
-        LabeledValue(Display *display, const char *label, ValueField::Getter valueGetter, int x, int y, Window parent, int width = 100);
+        LabeledValue(Display *display, const char *label, ValueField::Getter valueGetter, int x, int y, Window parent, int width);
+        LabeledValue(Display *display, const char *label, ValueField::Getter valueGetter, int x, int y, Window parent);
 
         void show(bool showFlag) override;
 

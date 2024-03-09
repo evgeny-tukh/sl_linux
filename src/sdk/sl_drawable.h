@@ -55,10 +55,18 @@ class DrawableObject {
 
         virtual void updateUi() {}
 
+        uint32_t style() const { return _style; }
+        bool styleFlag(uint32_t mask) const;
+        void setStyle(uint32_t mask, uint32_t value);
+        void setStyle(uint32_t mask, bool flag);
+
+        void drawLine(GC ctx, int x1, int y1, int x2, int y2) const;
+
     protected:
         Window _parent;
         Display *_display;
         unsigned long _bgClr;
+        uint32_t _style;
         int _width;
         int _height;
         int _x;

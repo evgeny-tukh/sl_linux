@@ -7,9 +7,14 @@
 
 class ValueField: public Ui::Text {
     public:
-        typedef std::function<std::string()> Getter;
+        enum Style {
+            Border = 1,
+        };
 
-        ValueField(Display *display, Getter getter, int x, int y, int width, int height, Window parent);
+        typedef std::function<std::string()> Getter;
+        typedef std::function<void(GC ctx)> Painter;
+
+        ValueField(Display *display, Getter getter, int x, int y, int width, int height, Window parent, Painter painter = nullptr);
 
         void updateUi() override;
 
@@ -17,4 +22,5 @@ class ValueField: public Ui::Text {
 
     protected:
         Getter _getter;
+        Painter _painter;
 };

@@ -16,7 +16,7 @@
 #include "sl_util.h"
 #include "sl_text.h"
 #include "sl_red_label.h"
-#include "sl_text_constants.h"
+#include "sl_constants.h"
 
 enum class Controls: uint16_t {
     OK,

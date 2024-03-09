@@ -60,6 +60,8 @@ class Text: public DrawableObject {
 
         const std::string& getFontName() const override;
 
+        virtual const std::string& getText() const { return _text; }
+
         bool isAlignedTo(Alignment alignment) const { return (_alignment & (int) alignment) != 0; }
 };
 

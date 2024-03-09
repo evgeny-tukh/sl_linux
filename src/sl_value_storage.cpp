@@ -33,6 +33,10 @@ std::string ValueStorage::getStringValue(const char *name) const {
     }
 }
 
+std::string ValueStorage::getStringValue(Types::DataType type) const {
+    return getStringValue(getDataTypeName(type));
+}
+
 bool ValueStorage::getValue(const char *name, double& value) const {
     auto pos = _values.find(name);
 
