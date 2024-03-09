@@ -1,11 +1,21 @@
+#include <sl_value_storage.h>
+
 #include "sl_lamp_dir_indicators.h"
 
-LampDirIndicators::LampDirIndicators(Display *display, int x, int y, Window parent):
-    Ui::DrawableObject::DrawableObject(display, x, y, LampDirIndicator::getLampIndicatorWidth(), LampDirIndicator::getLampIndicatorHeight() * 3, parent) {
+LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
+    Ui::DrawableObject::DrawableObject(display, x, y, LampDirIndicator::getLampIndicatorWidth(), LampDirIndicator::getLampIndicatorHeight() * 3, parent),
+    _storage(storage) {
+    static Types::DataType types[3] {
+        Types::DataType::BRG_1,
+        Types::DataType::BRG_2,
+        Types::DataType::BRG_3,
+    };
     for (int i = 0; i < 3; ++i) {
         _indicators[i] = std::make_unique<LampDirIndicator>(
             display,
-            [i]() { return "val of" + std::to_string(i + 1); },
+            [i, this]() {
+                return _storage.getStringValue(types[i]);
+            },
             x,
             y + LampDirIndicator::getLampIndicatorHeight() * i,
             i,

@@ -24,6 +24,9 @@ extern const char *STW;
 extern const char *SOG;
 extern const char *LAT;
 extern const char *LON;
+extern const char *BRG_1;
+extern const char *BRG_2;
+extern const char *BRG_3;
 
 }
 

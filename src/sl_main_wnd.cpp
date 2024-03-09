@@ -39,12 +39,14 @@ void SearchMasterWnd::create() {
     _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
     _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
     _storage.setValue(TextConstants::LON, 29.5, ValueStorage::Format::Lon);
+    _storage.setValue(TextConstants::BRG_1, 123.5, ValueStorage::Format::Angle);
+    _storage.setValue(TextConstants::BRG_3, 281.4, ValueStorage::Format::Angle);
 
     _lampIndicator.reset(new LampDirIndicator(_display, [this] () { return _storage.getStringValue(Types::DataType::BRG_1); }, 400, 600, 1, _wnd));
     addChild(1111, _lampIndicator);
     _lampIndicator->show(true);
 
-    _lampIndicators.reset(new LampDirIndicators(_display, 700, 600, _wnd));
+    _lampIndicators.reset(new LampDirIndicators(_storage, _display, 700, 600, _wnd));
     addChild((uint16_t) Ui::Resources::LAMP_BRGS, _lampIndicators);
     _lampIndicators->show(true);
 }
