@@ -10,13 +10,34 @@ const std::string& Ui::DrawableObject::getDefaultFontName() {
     return DEF_FONT_NAME;
 }
 
-Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, Window parent):
+Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, DrawableObject *parent):
+    _parentDrawable(parent),
     _display(display),
     _x(x),
     _y(y),
     _width(width),
     _height(height),
-    _parent(parent) {
+    _parent(0) {
+}
+
+Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, Window parentWnd):
+    _parentDrawable(nullptr),
+    _display(display),
+    _x(x),
+    _y(y),
+    _width(width),
+    _height(height),
+    _parent(parentWnd) {
+}
+
+Window Ui::DrawableObject::parent() const {
+    if (_parent)
+        return _parent;
+
+    if (_parentDrawable)
+        return _parentDrawable->parent();
+
+    return 0;
 }
 
 void Ui::DrawableObject::setAnchorage(int flags, int xOffset, int yOffset) {

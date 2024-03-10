@@ -9,5 +9,5 @@ const char BUT_TEXT[] {"SETTINGS"};
 
 SettingsButton::SettingsButton(Ui::Wnd& parent): 
     UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
-    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::FIRST_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::THIRD_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
 }

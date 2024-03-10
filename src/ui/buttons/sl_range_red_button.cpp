@@ -9,5 +9,5 @@ const char BUT_TEXT[] {"RANGE -"};
 
 RangeReduceButton::RangeReduceButton(Ui::Wnd& parent): 
     UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
-    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::FIRST_COL_RIGHT, UiButtonsLayout::THIRD_ROW_BOTTOM);
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::THIRD_COL_RIGHT, UiButtonsLayout::THIRD_ROW_BOTTOM);
 }

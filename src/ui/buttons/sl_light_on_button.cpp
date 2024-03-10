@@ -9,5 +9,5 @@ const char BUT_TEXT[] {"LIGHT ON"};
 
 LightOnButton::LightOnButton(Ui::Wnd& parent): 
     UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
-    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::SECOND_ROW_BOTTOM);
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Bottom, UiButtonsLayout::FOURTH_COL_RIGHT, UiButtonsLayout::SECOND_ROW_BOTTOM);
 }

@@ -27,7 +27,10 @@ class DrawableObject {
 
         static const std::string& getDefaultFontName();
 
+        Window parent() const;
+        
         DrawableObject(Display *display, int x, int y, int width, int height, Window parent);
+        DrawableObject(Display *display, int x, int y, int width, int height, DrawableObject *parent);
 
         void setBgColor(unsigned long color) { _bgClr = color; }
         unsigned long bgColor() const { return _bgClr; }
@@ -65,6 +68,7 @@ class DrawableObject {
     protected:
         Window _parent;
         Display *_display;
+        DrawableObject *_parentDrawable;
         unsigned long _bgClr;
         uint32_t _style;
         int _width;

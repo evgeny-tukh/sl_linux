@@ -2,8 +2,8 @@
 #include "sl_lamp_dir_indicator.h"
 
 namespace {
-const int WIDTH = 200;
-const int LBL_WIDTH = 80;
+const int WIDTH = 140;
+const int LBL_WIDTH = 40;
 const int HEIGHT = 50;
 }
 

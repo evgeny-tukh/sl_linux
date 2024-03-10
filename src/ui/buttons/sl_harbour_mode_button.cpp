@@ -11,5 +11,5 @@ HarbourModeButton::HarbourModeButton(Ui::Wnd& parent):
     UiButton(parent, FOLDER, BUT_TEXT, 0, 0) {
     setCheckable(true);
     setChecked(false);
-    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
+    setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::FOURTH_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
 }
