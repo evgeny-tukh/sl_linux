@@ -103,7 +103,7 @@ class Button: public Wnd {
 
         virtual bool canBeToggled() const { return true; }
 
-        virtual const std::string& getText() const { return _text; }
+        virtual std::string getText() const { return _text; }
 
         void setStatusFlag(ButtonStatus flag);
         void clearStatusFlag(ButtonStatus flag);

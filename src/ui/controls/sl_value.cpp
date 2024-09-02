@@ -11,6 +11,6 @@ Value::Value(Display *display, Getter getter, int x, int y, Window parent, const
     _postfix(postfix) {
 }
 
-const std::string& Value::getText() const {
+std::string Value::getText() const {
     return _prefix + _text + _postfix;
 }

@@ -4,7 +4,7 @@
 namespace {
 const int WIDTH = 140;
 const int LBL_WIDTH = 40;
-const int HEIGHT = 50;
+const int HEIGHT = 35;
 }
 
 LampDirIndicator::LampDirIndicator(Display *display, ValueField::Getter valueGetter, int x, int y, int lampIndex, Window parent):

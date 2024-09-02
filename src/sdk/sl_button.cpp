@@ -117,7 +117,7 @@ void Ui::Button::drawText(GC ctx, bool fillBgRect) const {
         XFillRectangle(_display, _wnd, ctx, _bordwerWidth, _bordwerWidth, _width - _bordwerWidth * 2, _height - _bordwerWidth * 2);
     }
     
-    auto& text = getText();
+    auto text = getText();
 
     XSetForeground(_display, ctx, fg);
     XDrawString(_display, _wnd, ctx, (_width - textWidth) >> 1, getTextY(), text.c_str(), text.length());

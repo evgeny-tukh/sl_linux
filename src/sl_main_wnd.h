@@ -20,6 +20,8 @@
 #include "sl_settings_button.h"
 #include "sl_range_ext_button.h"
 #include "sl_range_red_button.h"
+#include "sl_scan_ext_button.h"
+#include "sl_scan_red_button.h"
 #include "sl_light_on_button.h"
 #include "sl_light_off_button.h"
 #include "sl_dimmer_ext_button.h"
@@ -47,6 +49,8 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<SettingsButton> _butSettings;
         std::shared_ptr<RangeExtendButton> _butRangeExt;
         std::shared_ptr<RangeReduceButton> _butRangeRed;
+        std::shared_ptr<ScanExtendButton> _butScanExt;
+        std::shared_ptr<ScanReduceButton> _butScanRed;
         std::shared_ptr<LightOnButton> _butLightOn;
         std::shared_ptr<LightOffButton> _butLightOff;
         std::shared_ptr<DimmerExtendButton> _butDimmerExt;

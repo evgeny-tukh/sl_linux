@@ -9,7 +9,7 @@ namespace UiButtonsLayout {
     const int SECOND_ROW_BOTTOM = 160;
     const int THIRD_ROW_BOTTOM = 10;
     const int FIRST_COL_RIGHT = 610;
-    const int SECOND_COL_RIGHT = 420;
+    const int SECOND_COL_RIGHT = 460;
     const int THIRD_COL_RIGHT = 310;
     const int FOURTH_COL_RIGHT = 160;
     const int FIFTH_COL_RIGHT = 10;

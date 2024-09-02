@@ -3,6 +3,12 @@
 
 #include "sl_lamp_dir_indicators.h"
 
+namespace {
+const char *LABEL { "BRG" };
+const int LBL_WIDTH = 40;
+const int LBL_HEIGHT = 35;
+}
+
 LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
     Ui::DrawableObject::DrawableObject(display, x, y, LampDirIndicator::getLampIndicatorWidth(), LampDirIndicator::getLampIndicatorHeight() * 3, parent),
     _storage(storage) {
@@ -11,6 +17,7 @@ LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *displ
         Types::DataType::BRG_2,
         Types::DataType::BRG_3,
     };
+
     setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
     applyAnchorage();
     for (int i = 0; i < 3; ++i) {
@@ -25,7 +32,10 @@ LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *displ
             parent
         );
     }
-    _label = std::make_unique<RedLabel>(display, "BRG.", 0, 0, 100, 30, parent);
+
+    _label = std::make_unique<RedLabel>(display, LABEL, 0, 0, LBL_WIDTH, LBL_HEIGHT, this);
+    _label->setAnchorage(AnchorageFlags::ParentBase);
+    _label->applyAnchorage();
 }
 
 void LampDirIndicators::show(bool showFlag) {

@@ -11,6 +11,7 @@ class Value: public ValueField {
     protected:
         std::string _prefix;
         std::string _postfix;
+        std::string _compoundText;
 
-        const std::string& getText() const override;
+        std::string getText() const override;
 };

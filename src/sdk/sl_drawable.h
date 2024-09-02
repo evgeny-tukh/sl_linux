@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <functional>
 
 #include <X11/Xlib.h> 
 
@@ -15,6 +16,7 @@ class DrawableObject {
             Top = 2,
             Right = 4,
             Bottom = 8,
+            ParentBase = 16,
         };
 
         struct Anchorage {
@@ -77,6 +79,18 @@ class DrawableObject {
         int _y;
         bool _visible;
         Anchorage _anchorage;
+
+        // Find a window that actually owns the drawable
+        // If the drawable is window the function returns its own handle
+        Window getOwner();
+
+        // Calculates both hor & ver offsets related to (0, 0) of owner window client area
+        // If the drawable is window the function returns 0, 0
+        // All anchorages are taking into account
+        void getOwnerClientOffset(int& xOffset, int& yOffset);
+
+        // Enumerates all drawables up until own window
+        void enumDrawablesUntilOwnWindow(std::function<void(DrawableObject *)>);
 
         virtual const std::string& getFontName() const;
 };

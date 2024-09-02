@@ -39,6 +39,19 @@ class Text: public DrawableObject {
             bool transparent = true,
             bool border = false
         );
+        Text(
+            Display *display,
+            const char *text,
+            int x,
+            int y,
+            int width,
+            int height,
+            DrawableObject *parent,
+            int alignment = (int) Alignment::HCenter | (int) Alignment::VCenter,
+            const char *fontName = "",
+            bool transparent = true,
+            bool border = false
+        );
 
         void setFgColor(unsigned long color) { _fgClr = color; }
         unsigned long fgColor() const { return _fgClr; }
@@ -60,7 +73,7 @@ class Text: public DrawableObject {
 
         const std::string& getFontName() const override;
 
-        virtual const std::string& getText() const { return _text; }
+        virtual std::string getText() const { return _text; }
 
         bool isAlignedTo(Alignment alignment) const { return (_alignment & (int) alignment) != 0; }
 };

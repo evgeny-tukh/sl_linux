@@ -27,6 +27,8 @@ void SearchMasterWnd::create() {
     initButton<SettingsButton>(_butSettings, Ui::Resources::Settings);
     initButton<RangeExtendButton>(_butRangeExt, Ui::Resources::RangeExt);
     initButton<RangeReduceButton>(_butRangeRed, Ui::Resources::RangeRed);
+    initButton<ScanExtendButton>(_butScanExt, Ui::Resources::ScanExt);
+    initButton<ScanReduceButton>(_butScanRed, Ui::Resources::ScanRed);
     initButton<LightOnButton>(_butLightOn, Ui::Resources::LightOn);
     initButton<LightOffButton>(_butLightOff, Ui::Resources::LightOff);
     initButton<DimmerExtendButton>(_butDimmerExt, Ui::Resources::IncreaseDimmer);

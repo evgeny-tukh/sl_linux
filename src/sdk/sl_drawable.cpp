@@ -18,6 +18,16 @@ Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, in
     _width(width),
     _height(height),
     _parent(0) {
+
+    // looking for first windowed parent and take Window of it
+    while (parent) {
+        if (parent->_parent) {
+            _parent = parent->_parent;
+            break;
+        }
+
+        parent = parent->_parentDrawable;
+    }
 }
 
 Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, Window parentWnd):
@@ -47,41 +57,66 @@ void Ui::DrawableObject::setAnchorage(int flags, int xOffset, int yOffset) {
 }
 
 void Ui::DrawableObject::setAnchorage(int flags) {
-    XWindowAttributes parentAttrs;
+    int parentWidth, parentHeight;
 
-    XGetWindowAttributes(_display, _parent, &parentAttrs);
+    if ((flags & (int) AnchorageFlags::ParentBase) == 0) {
+        XWindowAttributes parentAttrs;
+
+        XGetWindowAttributes(_display, _parent, &parentAttrs);
+
+        parentWidth = parentAttrs.width;
+        parentHeight = parentAttrs.height;
+    } else {
+        parentWidth = _parentDrawable->_width;
+        parentHeight = _parentDrawable->_height;
+    }
     
     _anchorage.flags = flags;
 
     if (flags & (int) AnchorageFlags::Left)
         _anchorage.xOffset = _x;
     else if (flags & (int) AnchorageFlags::Right)
-        _anchorage.xOffset = parentAttrs.width - _width - _x;
+        _anchorage.xOffset = parentWidth - _width - _x;
     
     if (flags & (int) AnchorageFlags::Top)
         _anchorage.yOffset = _y;
     else if (flags & (int) AnchorageFlags::Bottom)
-        _anchorage.yOffset = parentAttrs.height - _height - _y;
+        _anchorage.yOffset = parentHeight - _height - _y;
 }
 
 void Ui::DrawableObject::applyAnchorage() {
     if (_anchorage.flags) {
-        XWindowAttributes parentAttrs;
-        int x, y;
+        int parentWidth, parentHeight;
 
-        XGetWindowAttributes(_display, _parent, &parentAttrs);
+        if ((_anchorage.flags & (int) AnchorageFlags::ParentBase) == 0) {
+            XWindowAttributes parentAttrs;
+
+            XGetWindowAttributes(_display, _parent, &parentAttrs);
+
+            parentWidth = parentAttrs.width;
+            parentHeight = parentAttrs.height;
+        } else {
+            parentWidth = _parentDrawable->_width;
+            parentHeight = _parentDrawable->_height;
+        }
+    
+        int x, y;
 
         if (_anchorage.flags & (int) AnchorageFlags::Left)
             x = _anchorage.xOffset;
         else if (_anchorage.flags & (int) AnchorageFlags::Right)
-            x = parentAttrs.width - _anchorage.xOffset - _width;
+            x = parentWidth - _anchorage.xOffset - _width;
+        else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
+            x = _parentDrawable->_x + _x;
         else
             x = _x;
 
         if (_anchorage.flags & (int) AnchorageFlags::Top)
             y = _anchorage.yOffset;
         else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
-            y = parentAttrs.height - _anchorage.yOffset - _height;
+            y = parentHeight - _anchorage.yOffset - _height;
+        else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
+            y = _parentDrawable->_y + _y;
         else
             y = _y;
 
@@ -121,4 +156,31 @@ void Ui::DrawableObject::setStyle(uint32_t mask, bool flag) {
 
 void Ui::DrawableObject::drawLine(GC ctx, int x1, int y1, int x2, int y2) const {
     XDrawLine(_display, _parent, ctx, _x + x1, _y + y1, _x + x2, _y + y2);
+}
+
+// Find a window that actually owns the drawable
+// If the drawable is window the function returns its own handle
+Window Ui::DrawableObject::getOwner() {
+
+}
+
+// Calculates both hor & ver offsets related to (0, 0) of owner window client area
+// If the drawable is window the function returns 0, 0
+// All anchorages are taking into account
+void Ui::DrawableObject::getOwnerClientOffset(int& xOffset, int& yOffset) {
+
+}
+
+// Enumerates all drawables up until own window
+void Ui::DrawableObject::enumDrawablesUntilOwnWindow(std::function<void(Ui::DrawableObject *)> cb) {
+    Ui::DrawableObject *drawable = this;
+
+    while (!drawable->isWindow()) {
+        cb(drawable);
+
+        drawable = drawable->_parentDrawable;
+    }
+
+    if (drawable)
+        cb(drawable);
 }
