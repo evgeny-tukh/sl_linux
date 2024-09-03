@@ -24,6 +24,9 @@ enum class DataType {
     FOCUS_1,
     FOCUS_2,
     FOCUS_3,
+    SYSTEM_1,
+    SYSTEM_2,
+    SYSTEM_3,
 };
 
 }

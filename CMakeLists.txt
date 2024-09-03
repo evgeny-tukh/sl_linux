@@ -16,6 +16,7 @@ set (CTRL_SOURCES
     src/ui/controls/sl_lamp_status_indicators.cpp
     src/ui/controls/sl_lamp_dist_indicators.cpp
     src/ui/controls/sl_lamp_focus_indicators.cpp
+    src/ui/controls/sl_lamp_system_indicators.cpp
     src/ui/controls/sl_lamp_generic_indicators.cpp
 )
 
@@ -29,6 +30,7 @@ set (CTRL_HEADERS
     src/ui/controls/sl_lamp_status_indicators.h
     src/ui/controls/sl_lamp_dist_indicators.h
     src/ui/controls/sl_lamp_focus_indicators.h
+    src/ui/controls/sl_lamp_system_indicators.h
     src/ui/controls/sl_lamp_generic_indicators.h
 )
 
