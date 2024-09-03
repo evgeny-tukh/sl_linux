@@ -36,6 +36,7 @@
 #include "sl_lamp_focus_indicators.h"
 #include "sl_lamp_dist_indicators.h"
 #include "sl_lamp_system_indicators.h"
+#include "sl_display.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
@@ -71,6 +72,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<LampDistIndicators> _lampDistIndicators;
         std::shared_ptr<LampFocusIndicators> _lampFocusIndicators;
         std::shared_ptr<LampSystemIndicators> _lampSystemIndicators;
+        std::shared_ptr<TargetDisplay> _targetDisplay;
 
         void updateValues();
 
@@ -87,4 +89,6 @@ class SearchMasterWnd: public Ui::Wnd {
         void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width = 100, int height = 0);
 
         std::string getValueOfParameter(const char *label) const;
+
+        //void onSizeChanged(int width, int height, bool& notifyChildren) override;
 };

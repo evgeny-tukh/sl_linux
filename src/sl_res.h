@@ -20,6 +20,8 @@ enum class Resources: uint16_t {
     IncreaseDimmer,
     DecreaseDimmer,
 
+    TargetDisplay,
+
     Hello,
     HDG,
     COG,

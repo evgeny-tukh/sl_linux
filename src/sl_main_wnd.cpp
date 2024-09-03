@@ -2,6 +2,7 @@
 #include "sl_util.h"
 #include "sl_tools.h"
 #include "sl_constants.h"
+#include "sl_display.h"
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1500, HEIGHT = 800;
@@ -55,6 +56,15 @@ void SearchMasterWnd::create() {
     _info->setupLayout(0, 0);
     _info->applyAnchorage();
 
+    _targetDisplay.reset(new TargetDisplay(_storage, _display, _wnd));
+    addChild((uint16_t) Ui::Resources::TargetDisplay, _targetDisplay);
+    _targetDisplay->create();
+    _targetDisplay->show(true);
+    _targetDisplay->setAnchorage(AnchorageFlags::FitLeft, 20, 20, 700, 0);
+    _targetDisplay->applyAnchorage();
+    _targetDisplay->moveToCurrentPos();
+    _targetDisplay->setupLayout();
+
     _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
     _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
     _storage.setValue(TextConstants::LON, 29.5, ValueStorage::Format::Lon);
@@ -91,6 +101,10 @@ std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
     return text;
 }
 
+/*void SearchMasterWnd::onSizeChanged(int width, int height, bool& notifyChildren) {
+    _targetDisplay->setupLayout();
+}*/
+
 void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width, int height) {
     ValueField::Getter getter = [this, label] () {
         return getValueOfParameter(label);
@@ -108,8 +122,4 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
 }
 
 void SearchMasterWnd::paint(GC ctx) {
-}
-
-void onParentSizeChanged(int width, int height) {
-    
 }

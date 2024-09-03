@@ -18,6 +18,7 @@ set (CTRL_SOURCES
     src/ui/controls/sl_lamp_focus_indicators.cpp
     src/ui/controls/sl_lamp_system_indicators.cpp
     src/ui/controls/sl_lamp_generic_indicators.cpp
+    src/ui/controls/sl_display.cpp
 )
 
 set (CTRL_HEADERS
@@ -32,6 +33,7 @@ set (CTRL_HEADERS
     src/ui/controls/sl_lamp_focus_indicators.h
     src/ui/controls/sl_lamp_system_indicators.h
     src/ui/controls/sl_lamp_generic_indicators.h
+    src/ui/controls/sl_display.h
 )
 
 set (LBL_SOURCES
@@ -108,6 +110,7 @@ set(SOURCES
     src/sl_value_storage.cpp
     src/sl_tools.cpp
     src/sl_constants.cpp
+    src/sl_vessel_shape.cpp
 )
 
 set(HEADERS
@@ -118,6 +121,7 @@ set(HEADERS
     src/sl_value_storage.h
     src/sl_tools.h
     src/sl_constants.h
+    src/sl_vessel_shape.h
 )
 
 add_executable(SearchMaster

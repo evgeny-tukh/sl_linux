@@ -99,3 +99,14 @@ void Ui::Util::getScreenSize(Display *display, uint16_t& width, uint16_t& height
     width = DisplayWidth(display, DefaultScreen(display));
     height = DisplayHeight(display, DefaultScreen(display));
 }
+
+int Ui::Util::setLineWidth(Display *display, GC ctx, int width) {
+    XGCValues savedValues, newValues;
+
+    newValues.line_width = width;
+
+    XGetGCValues(display, ctx, GCLineWidth, &savedValues);
+    XChangeGC(display, ctx, GCLineWidth, &newValues);
+
+    return savedValues.line_width;
+}

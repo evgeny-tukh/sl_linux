@@ -18,12 +18,15 @@ class DrawableObject {
             Right = 4,
             Bottom = 8,
             ParentBase = 16,
+            FitLeft = 32,
         };
 
         struct Anchorage {
             int flags;
             int xOffset;
             int yOffset;
+            int xMax;
+            int yMax;
 
             Anchorage(): flags(0), xOffset(0), yOffset(0) {}
         };
@@ -38,7 +41,7 @@ class DrawableObject {
         void setBgColor(unsigned long color) { _bgClr = color; }
         unsigned long bgColor() const { return _bgClr; }
         
-        void setAnchorage(int flags, int xOffset, int yOffset);
+        void setAnchorage(int flags, int xOffset, int yOffset, int xMax = 0, int yMax = 0);
         void setAnchorage(int flags);
         void applyAnchorage();
 

@@ -61,10 +61,12 @@ Window Ui::DrawableObject::parent() const {
     return 0;
 }
 
-void Ui::DrawableObject::setAnchorage(int flags, int xOffset, int yOffset) {
+void Ui::DrawableObject::setAnchorage(int flags, int xOffset, int yOffset, int xMax, int yMax) {
     _anchorage.flags = flags;
     _anchorage.xOffset = xOffset;
     _anchorage.yOffset = yOffset;
+    _anchorage.xMax = xMax;
+    _anchorage.yMax = yMax;
 }
 
 void Ui::DrawableObject::setAnchorage(int flags) {
@@ -113,23 +115,40 @@ void Ui::DrawableObject::applyAnchorage() {
     
         int x, y;
 
-        if (_anchorage.flags & (int) AnchorageFlags::Left)
-            x = _anchorage.xOffset;
-        else if (_anchorage.flags & (int) AnchorageFlags::Right)
-            x = parentWidth - _anchorage.xOffset - _width;
-        else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
-            x = _parentDrawable->_x + _anchorage.xOffset;
-        else
-            x = _x;
+        if (_anchorage.flags & (int) AnchorageFlags::FitLeft) {
+            int availableWidth = parentWidth - _anchorage.xMax - _anchorage.xOffset * 2;
+            int availableHeight = parentHeight - _anchorage.yMax - _anchorage.yOffset * 2;
+            int size;
 
-        if (_anchorage.flags & (int) AnchorageFlags::Top)
+            if (availableWidth < availableHeight)
+                size = availableWidth;
+            else
+                size = availableHeight;
+
+            x = _anchorage.xOffset;
             y = _anchorage.yOffset;
-        else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
-            y = parentHeight - _anchorage.yOffset - _height;
-        else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
-            y = _parentDrawable->_y + _anchorage.yOffset;
-        else
-            y = _y;
+            _width = _height = size;
+
+            resize(_width, _height);
+        } else {
+            if (_anchorage.flags & (int) AnchorageFlags::Left)
+                x = _anchorage.xOffset;
+            else if (_anchorage.flags & (int) AnchorageFlags::Right)
+                x = parentWidth - _anchorage.xOffset - _width;
+            else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
+                x = _parentDrawable->_x + _anchorage.xOffset;
+            else
+                x = _x;
+
+            if (_anchorage.flags & (int) AnchorageFlags::Top)
+                y = _anchorage.yOffset;
+            else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
+                y = parentHeight - _anchorage.yOffset - _height;
+            else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
+                y = _parentDrawable->_y + _anchorage.yOffset;
+            else
+                y = _y;
+        }
 
         move(x, y);
 

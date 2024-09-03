@@ -48,6 +48,10 @@ bool ValueStorage::getValue(const char *name, double& value) const {
     return true;
 }
 
+double ValueStorage::valueOf(Types::DataType type, double defValue) const {
+    return valueOf(getDataTypeName(type), 0.0);
+}
+
 double ValueStorage::valueOf(const char *name, double defValue) const {
     auto pos = _values.find(name);
 

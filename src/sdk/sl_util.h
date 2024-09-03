@@ -11,6 +11,7 @@ Display *openDisplay();
 void fillRondedRect(Display *display, Drawable drawable, GC ctx, int x, int y, int width, int height, int radius);
 void drawRondedRect(Display *display, Drawable drawable, GC ctx, int x, int y, int width, int height, int radius);
 void getScreenSize(Display *display, uint16_t& width, uint16_t& height);
+int setLineWidth(Display *display, GC ctx, int width);
 
 }
 }

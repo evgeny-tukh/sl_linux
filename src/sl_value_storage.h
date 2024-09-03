@@ -18,6 +18,7 @@ class ValueStorage {
         void setValue(const char *name, double value, Format format);
         bool getValue(const char *name, double& value) const;
         double valueOf(const char *name, double defValue) const;
+        double valueOf(Types::DataType type, double defValue) const;
         std::string getStringValue(const char *name) const;
         std::string getStringValue(Types::DataType type) const;
         
