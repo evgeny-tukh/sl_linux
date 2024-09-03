@@ -15,6 +15,9 @@ enum class DataType {
     ID_1,
     ID_2,
     ID_3,
+    STATUS_1,
+    STATUS_2,
+    STATUS_3,
 };
 
 }
