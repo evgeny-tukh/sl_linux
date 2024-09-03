@@ -13,7 +13,7 @@ class LabeledValue: public Ui::DrawableObject {
         RedLabel _label;
         ValueField _field;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         void updateUi() override;
 };

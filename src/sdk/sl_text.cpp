@@ -18,7 +18,7 @@ Ui::Text::Text(Display *display, const char *text, int x, int y, int width, int 
     _border(border) {
 }
 
-void Ui::Text::paint(GC ctx) const {
+void Ui::Text::paint(GC ctx) {
     if (_visible && !_text.empty()) {
         XFontStruct *font = XLoadQueryFont(_display, getFontName().c_str());
         if (font) {

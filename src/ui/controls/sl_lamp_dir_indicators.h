@@ -17,7 +17,7 @@ class LampDirIndicators: public Ui::DrawableObject {
         std::unique_ptr<LampDirIndicator> _indicators[3];
         std::unique_ptr<RedLabel> _label;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         void updateUi() override;
 };

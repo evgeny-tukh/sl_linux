@@ -11,9 +11,11 @@ class LampDirIndicator: public Ui::DrawableObject {
         static int getLampIndicatorWidth();
         static int getLampIndicatorHeight();
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         void updateUi() override;
+
+        void setupLayout(int xParam = 0, int yParam = 0) override;
 
     protected:
         ValueField _label;

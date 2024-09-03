@@ -9,7 +9,7 @@ class ImageContainer: public DrawableObject {
     public:
         ImageContainer(Display *display, const char *imgPath, int x, int y, int width, int height, Window parent);
 
-        virtual void paint(GC ctx) const;
+        virtual void paint(GC ctx);
 
     protected:
         Wnd& _parentInst;

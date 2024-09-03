@@ -54,7 +54,7 @@ class MainWnd: public Ui::Wnd {
         std::shared_ptr<SearchMasterWnd> _smWindow;
         bool _closeDisabled;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 };
 
 MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
@@ -131,7 +131,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
         Ui::Util::getScreenSize(_display, width, height);
         _smWindow->create();
         _smWindow->show(true);
-        _smWindow->resize(width, height);
+        //_smWindow->resize(width, height);
         _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
     });
     _butShowSM->show(true);
@@ -161,7 +161,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
 }
 
-void MainWnd::paint(GC ctx) const {
+void MainWnd::paint(GC ctx) {
     XSetPlaneMask(_display, ctx, AllPlanes);
     XSetForeground(_display, ctx, _borderClr);
     XSetBackground(_display, ctx, _bgClr);

@@ -71,10 +71,14 @@ class Wnd: public DrawableObject {
 
         virtual bool isWindow() const { return true; }
 
+        bool getActualSize(int& width, int& height);
+
     protected:
         Window _wnd;
         unsigned long _borderClr;
         int _bordwerWidth;
+        int _actualWidth;
+        int _actualHeight;
         std::unordered_map<uint16_t, std::shared_ptr<DrawableObject>> _children;
 
         virtual uint32_t getDefaultPropValue(Property prop);
@@ -86,7 +90,7 @@ class Wnd: public DrawableObject {
         virtual void onParentSizeChanged(int width, int height) override;
         virtual void onSizeChanged(int width, int height, bool& notifyChildren);
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         void textOut(int x, int y, GC ctx, const char *txt) const;
 };

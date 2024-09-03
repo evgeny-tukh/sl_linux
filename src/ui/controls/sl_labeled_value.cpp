@@ -17,7 +17,7 @@ LabeledValue::LabeledValue(Display *display, const char *label, ValueField::Gett
 
 }
 
-void LabeledValue::paint(GC ctx) const {
+void LabeledValue::paint(GC ctx) {
     _label.paint(ctx);
     _field.paint(ctx);
 }

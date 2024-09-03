@@ -64,7 +64,7 @@ class SearchMasterWnd: public Ui::Wnd {
 
         void updateValues();
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         template<typename ButCls>
         void initButton(std::shared_ptr<ButCls>& button, Ui::Resources id) {

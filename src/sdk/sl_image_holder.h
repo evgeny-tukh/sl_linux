@@ -46,7 +46,7 @@ class ImageHolder: public Wnd {
         void onMouseEnter(XCrossingEvent& evt) override;
         void onMouseLeave(XCrossingEvent& evt) override;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 };
 
 }

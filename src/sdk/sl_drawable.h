@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <functional>
+#include <vector>
 
 #include <X11/Xlib.h> 
 
@@ -56,7 +57,7 @@ class DrawableObject {
 
         virtual bool isWindow() const { return false; }
 
-        virtual void paint(GC ctx) const {}
+        virtual void paint(GC ctx) {}
 
         virtual void updateUi() {}
 
@@ -66,6 +67,11 @@ class DrawableObject {
         void setStyle(uint32_t mask, bool flag);
 
         void drawLine(GC ctx, int x1, int y1, int x2, int y2) const;
+
+        void addChildDrawableObject (DrawableObject *child);
+        void setParentDrawableObject (DrawableObject *parent);
+
+        virtual void setupLayout(int xParam = 0, int yParam = 0) {}
 
     protected:
         Window _parent;
@@ -79,6 +85,7 @@ class DrawableObject {
         int _y;
         bool _visible;
         Anchorage _anchorage;
+        std::vector<DrawableObject *> _childDrawables;
 
         // Find a window that actually owns the drawable
         // If the drawable is window the function returns its own handle

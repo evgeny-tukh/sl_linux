@@ -61,7 +61,7 @@ class Text: public DrawableObject {
         void setBorder(bool enable) { _border = enable; }
         void setAlignment(int mask) { _alignment = mask; }
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
     protected:
         std::string _text;

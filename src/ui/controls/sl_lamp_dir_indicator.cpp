@@ -13,16 +13,29 @@ LampDirIndicator::LampDirIndicator(Display *display, ValueField::Getter valueGet
     _value(display, valueGetter, x + LBL_WIDTH, y, WIDTH - LBL_WIDTH, HEIGHT, parent),
     _lampIndex(lampIndex) {
     _label.setStyle(ValueField::Style::Border, false);
+    _label.setParentDrawableObject(this);
     _value.setStyle(ValueField::Style::Border, false);
-    //_value.setAlignment((int) Ui::Text::Alignment::RightMiddle);
+    _value.setParentDrawableObject(this);
+    addChildDrawableObject(&_label);
+    addChildDrawableObject(&_value);
 }
+
+void LampDirIndicator::setupLayout(int xParam, int yParam) {
+    setAnchorage(AnchorageFlags::ParentBase, xParam, yParam);
+    applyAnchorage();
+    _label.setAnchorage(AnchorageFlags::ParentBase, 10 /*+ xParam, yParam*/, 0);
+    _label.applyAnchorage();
+    _value.setAnchorage(AnchorageFlags::ParentBase, 50 /*+ xParam, yParam*/, 0);
+    _value.applyAnchorage();
+}
+
 
 void LampDirIndicator::show(bool showFlag) {
     _label.show(showFlag);
     _value.show(showFlag);
 }
 
-void LampDirIndicator::paint(GC ctx) const {
+void LampDirIndicator::paint(GC ctx) {
     _label.paint(ctx);
     _value.paint(ctx);
 
@@ -32,7 +45,10 @@ void LampDirIndicator::paint(GC ctx) const {
 }
 
 void LampDirIndicator::updateUi() {
+    applyAnchorage();
+    //_label.applyAnchorage();
     _label.updateUi();
+    //_value.applyAnchorage();
     _value.updateUi();
 }
 

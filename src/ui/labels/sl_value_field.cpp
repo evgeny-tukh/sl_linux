@@ -19,7 +19,7 @@ void ValueField::updateUi() {
     _text = _getter();
 }
 
-void ValueField::paint(GC ctx) const {
+void ValueField::paint(GC ctx) {
     if (_painter) {
         _painter(ctx);
     } else {

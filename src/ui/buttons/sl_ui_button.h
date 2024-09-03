@@ -23,7 +23,7 @@ class UiButton: public Ui::ImgButton {
         long int _whiteClr;
         long int _blackClr;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
         virtual const std::string& getFontName() const override;
         virtual int getTextY() const override;

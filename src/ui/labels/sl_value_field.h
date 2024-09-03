@@ -18,7 +18,7 @@ class ValueField: public Ui::Text {
 
         void updateUi() override;
 
-        void paint(GC ctx) const override;
+        void paint(GC ctx) override;
 
     protected:
         Getter _getter;

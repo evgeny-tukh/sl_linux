@@ -21,20 +21,25 @@ LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *displ
     setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
     applyAnchorage();
     for (int i = 0; i < 3; ++i) {
+        int yOffset = LampDirIndicator::getLampIndicatorHeight() * i + 34;
         _indicators[i] = std::make_unique<LampDirIndicator>(
             display,
             [i, this]() {
                 return _storage.getStringValue(types[i]);
             },
             _x,
-            _y + LampDirIndicator::getLampIndicatorHeight() * i + 30,
+            _y + yOffset,
             i,
             parent
         );
+        
+        addChildDrawableObject(_indicators[i].get());
+        _indicators[i]->setParentDrawableObject(this);
+        _indicators[i]->setupLayout(0, yOffset);
     }
 
     _label = std::make_unique<RedLabel>(display, LABEL, 0, 0, LBL_WIDTH, LBL_HEIGHT, this);
-    _label->setAnchorage(AnchorageFlags::ParentBase);
+    _label->setAnchorage(AnchorageFlags::ParentBase, 0, 0);
     _label->applyAnchorage();
 }
 
@@ -46,7 +51,7 @@ void LampDirIndicators::show(bool showFlag) {
     _label->show(showFlag);
 }
 
-void LampDirIndicators::paint(GC ctx) const {
+void LampDirIndicators::paint(GC ctx) {
     for (int i = 0; i < 3; ++i) {
         if (_indicators[i])
             _indicators[i]->paint(ctx);

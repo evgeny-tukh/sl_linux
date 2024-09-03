@@ -131,7 +131,7 @@ void Ui::Button::drawImage(GC ctx) const {
         bmp->putTo(*this, getImageX(bmp), getImageY(bmp), 0, 0, ctx);
 }
 
-void Ui::Button::paint(GC ctx) const {
+void Ui::Button::paint(GC ctx) {
     if (getStatusFlag(ButtonStatus::Text)) {
         drawText(ctx);
     }

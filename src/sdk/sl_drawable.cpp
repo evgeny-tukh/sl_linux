@@ -28,6 +28,9 @@ Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, in
 
         parent = parent->_parentDrawable;
     }
+
+    if (parent)
+        parent->addChildDrawableObject(this);
 }
 
 Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, int height, Window parentWnd):
@@ -38,6 +41,14 @@ Ui::DrawableObject::DrawableObject(Display *display, int x, int y, int width, in
     _width(width),
     _height(height),
     _parent(parentWnd) {
+}
+
+void Ui::DrawableObject::addChildDrawableObject (DrawableObject *child) {
+    _childDrawables.push_back(child);
+}
+
+void Ui::DrawableObject::setParentDrawableObject (DrawableObject *parent) {
+    _parentDrawable = parent;
 }
 
 Window Ui::DrawableObject::parent() const {
@@ -107,7 +118,7 @@ void Ui::DrawableObject::applyAnchorage() {
         else if (_anchorage.flags & (int) AnchorageFlags::Right)
             x = parentWidth - _anchorage.xOffset - _width;
         else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
-            x = _parentDrawable->_x + _x;
+            x = _parentDrawable->_x + _anchorage.xOffset;
         else
             x = _x;
 
@@ -116,11 +127,14 @@ void Ui::DrawableObject::applyAnchorage() {
         else if (_anchorage.flags & (int) AnchorageFlags::Bottom)
             y = parentHeight - _anchorage.yOffset - _height;
         else if (_anchorage.flags & (int) AnchorageFlags::ParentBase)
-            y = _parentDrawable->_y + _y;
+            y = _parentDrawable->_y + _anchorage.yOffset;
         else
             y = _y;
 
         move(x, y);
+
+        for (auto child: _childDrawables)
+            child->applyAnchorage();
     }
 }
 

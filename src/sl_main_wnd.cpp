@@ -4,7 +4,7 @@
 #include "sl_constants.h"
 
 namespace {
-    const int X = 100, Y = 100, WIDTH = 1800, HEIGHT = 800;
+    const int X = 100, Y = 100, WIDTH = 1500, HEIGHT = 800;
 }
 
 
@@ -70,7 +70,7 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
     _valueDisplays.emplace(std::pair<std::string, std::shared_ptr<LabeledValue>&>(label, ctrl));
 }
 
-void SearchMasterWnd::paint(GC ctx) const {
+void SearchMasterWnd::paint(GC ctx) {
     /*auto font = XLoadQueryFont(_display, "*12x24*");
     XSetFont(_display, ctx, font->fid);
     XSetPlaneMask(_display, ctx, AllPlanes);

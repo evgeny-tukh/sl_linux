@@ -46,7 +46,7 @@ int UiButton::getImageX(const BmpPtr& bmp) const {
     return (_height - bmp->width()) >> 1;
 }
 
-void UiButton::paint(GC ctx) const {
+void UiButton::paint(GC ctx) {
     XSetForeground(_display, ctx, getBgColor());
     XSetBackground(_display, ctx, getBgColor());
     XSetPlaneMask(_display, ctx, AllPlanes);

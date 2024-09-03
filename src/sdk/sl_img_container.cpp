@@ -7,6 +7,6 @@ Ui::ImageContainer::ImageContainer(Display *display, const char *imgPath, int x,
     _bmp.loadBmpFile(imgPath);
 }
 
-void Ui::ImageContainer::paint(GC ctx) const {
+void Ui::ImageContainer::paint(GC ctx) {
     _bmp.putTo(_parentInst, _x, _y, 0, 0, ctx);
 }

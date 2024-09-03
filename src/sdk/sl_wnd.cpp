@@ -34,7 +34,9 @@ Ui::Wnd::Wnd(Display *display, int x, int y, int width, int height, Window paren
     DrawableObject(display, x, y, width, height, parent),
     _wnd(0),
     _borderClr(getDefaultPropValue(Property::BorderColor)),
-    _bordwerWidth(getDefaultPropValue(Property::BorderWidth)) {
+    _bordwerWidth(getDefaultPropValue(Property::BorderWidth)),
+    _actualWidth(0),
+    _actualHeight(0) {
     _bgClr = getDefaultPropValue(Property::BgColor);
 }
 
@@ -183,7 +185,7 @@ void Ui::Wnd::onConfigurationChanged(XConfigureEvent& evt) {
     }
 }
 
-void Ui::Wnd::paint(GC ctx) const {
+void Ui::Wnd::paint(GC ctx) {
 }
 
 void Ui::Wnd::onPaint(XExposeEvent& evt) {
@@ -270,6 +272,8 @@ void Ui::Wnd::textOut(int x, int y, GC ctx, const char *txt) const {
 
 void Ui::Wnd::onSizeChanged(int width, int height, bool& notifyChildren) {
     notifyChildren = true;
+    _actualWidth = width;
+    _actualHeight = height;
 }
 
 void Ui::Wnd::onParentSizeChanged(int width, int height) {
@@ -285,4 +289,15 @@ std::shared_ptr<Ui::Wnd> Ui::Wnd::attach(Display *display, Window wnd) {
     result->_wnd = wnd;
 
     return result;
+}
+
+bool Ui::Wnd::getActualSize(int& width, int& height) {
+    if (_actualWidth > 0 && _actualHeight > 0){
+        width = _actualWidth;
+        height = _actualHeight;
+
+        return true;
+    }
+
+    return false;
 }
