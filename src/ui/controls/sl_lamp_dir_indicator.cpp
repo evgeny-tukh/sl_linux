@@ -23,9 +23,9 @@ LampDirIndicator::LampDirIndicator(Display *display, ValueField::Getter valueGet
 void LampDirIndicator::setupLayout(int xParam, int yParam) {
     setAnchorage(AnchorageFlags::ParentBase, xParam, yParam);
     applyAnchorage();
-    _label.setAnchorage(AnchorageFlags::ParentBase, 10 /*+ xParam, yParam*/, 0);
+    _label.setAnchorage(AnchorageFlags::ParentBase, 0 /*+ xParam, yParam*/, 0);
     _label.applyAnchorage();
-    _value.setAnchorage(AnchorageFlags::ParentBase, 50 /*+ xParam, yParam*/, 0);
+    _value.setAnchorage(AnchorageFlags::ParentBase, 40 /*+ xParam, yParam*/, 0);
     _value.applyAnchorage();
 }
 

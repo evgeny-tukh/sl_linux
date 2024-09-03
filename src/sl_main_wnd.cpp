@@ -42,11 +42,11 @@ void SearchMasterWnd::create() {
     _hdg->setupLayout(0, 0);
     _hdg->applyAnchorage();
 
-    _lat->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT, UiButtonsLayout::THIRD_ROW_Y);
+    _lat->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT - 15, UiButtonsLayout::THIRD_ROW_Y);
     _lat->setupLayout(0, 0);
     _lat->applyAnchorage();
 
-    _lon->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT - 160, UiButtonsLayout::THIRD_ROW_Y);
+    _lon->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT - 175, UiButtonsLayout::THIRD_ROW_Y);
     _lon->setupLayout(0, 0);
     _lon->applyAnchorage();
 

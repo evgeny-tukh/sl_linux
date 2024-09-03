@@ -17,5 +17,5 @@ LampGenericIndicators::Types types {
 };
 
 LampSystemIndicators::LampSystemIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
-    LampGenericIndicators(LABEL, types, storage, display, x, y, WIDTH, -345, parent) {
+    LampGenericIndicators(LABEL, types, storage, display, x, y, WIDTH, -350, parent) {
 }
