@@ -13,6 +13,7 @@ set (CTRL_SOURCES
     src/ui/controls/sl_lamp_dir_indicator.cpp
     src/ui/controls/sl_lamp_dir_indicators.cpp
     src/ui/controls/sl_lamp_id_indicators.cpp
+    src/ui/controls/sl_lamp_generic_indicators.cpp
 )
 
 set (CTRL_HEADERS
@@ -23,6 +24,7 @@ set (CTRL_HEADERS
     src/ui/controls/sl_lamp_dir_indicator.h
     src/ui/controls/sl_lamp_dir_indicators.h
     src/ui/controls/sl_lamp_id_indicators.h
+    src/ui/controls/sl_lamp_generic_indicators.h
 )
 
 set (LBL_SOURCES

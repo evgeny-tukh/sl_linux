@@ -1,3 +1,4 @@
+#include <array>
 #include <sl_value_storage.h>
 #include <sl_ui_button.h>
 
@@ -9,15 +10,28 @@ const int WIDTH = 50;
 const int HEIGHT = 35;
 }
 
+#if 1
+LampGenericIndicators::Types types {
+    Types::DataType::ID_1,
+    Types::DataType::ID_2,
+    Types::DataType::ID_3,
+};
+
+LampIdIndicators::LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
+    LampGenericIndicators(LABEL, types, storage, display, x, y, WIDTH, 95, parent) {
+
+}
+#else
+Types::DataType types[3] {
+    Types::DataType::ID_1,
+    Types::DataType::ID_2,
+    Types::DataType::ID_3,
+};
+}
+
 LampIdIndicators::LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
     Ui::DrawableObject::DrawableObject(display, x, y, LampIdIndicators::getLampIndicatorWidth(), LampIdIndicators::getLampIndicatorHeight() * 3, parent),
     _storage(storage) {
-    static Types::DataType types[3] {
-        Types::DataType::ID_1,
-        Types::DataType::ID_2,
-        Types::DataType::ID_3,
-    };
-
     setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT + 95, UiButtonsLayout::SECOND_ROW_Y);
     applyAnchorage();
     for (int i = 0; i < 3; ++i) {
@@ -78,3 +92,4 @@ int LampIdIndicators::getLampIndicatorHeight() {
     return HEIGHT;
 }
 
+#endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <sl_drawable.h>
 #include <sl_red_label.h>
 #include <sl_value_field.h>
