@@ -21,6 +21,9 @@ enum class DataType {
     DIST_1,
     DIST_2,
     DIST_3,
+    FOCUS_1,
+    FOCUS_2,
+    FOCUS_3,
 };
 
 }

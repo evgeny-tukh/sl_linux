@@ -32,6 +32,7 @@ enum class Resources: uint16_t {
     LAMP_IDS,
     LAMP_STATUSES,
     LAMP_RANGES,
+    LAMP_FOCUSES,
 };
 
 }

@@ -159,6 +159,13 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _hdg->show(true);
 
     _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
+
+    uint16_t width, height;
+    Ui::Util::getScreenSize(_display, width, height);
+    _smWindow->create();
+    _smWindow->show(true);
+    _smWindow->resize(width, height);
+    _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
 }
 
 void MainWnd::paint(GC ctx) {

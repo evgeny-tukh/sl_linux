@@ -33,6 +33,7 @@
 #include "sl_lamp_dir_indicators.h"
 #include "sl_lamp_id_indicators.h"
 #include "sl_lamp_status_indicators.h"
+#include "sl_lamp_focus_indicators.h"
 #include "sl_lamp_dist_indicators.h"
 
 class SearchMasterWnd: public Ui::Wnd {
@@ -67,6 +68,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<LampIdIndicators> _lampIdIndicators;
         std::shared_ptr<LampStatusIndicators> _lampStatusIndicators;
         std::shared_ptr<LampDistIndicators> _lampDistIndicators;
+        std::shared_ptr<LampFocusIndicators> _lampFocusIndicators;
 
         void updateValues();
 

@@ -67,6 +67,10 @@ void SearchMasterWnd::create() {
     _lampDistIndicators.reset(new LampDistIndicators(_storage, _display, 700, 600, _wnd));
     addChild((uint16_t) Ui::Resources::LAMP_RANGES, _lampDistIndicators);
     _lampDistIndicators->show(true);
+
+    _lampFocusIndicators.reset(new LampFocusIndicators(_storage, _display, 700, 600, _wnd));
+    addChild((uint16_t) Ui::Resources::LAMP_FOCUSES, _lampFocusIndicators);
+    _lampFocusIndicators->show(true);
 }
 
 std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
