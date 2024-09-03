@@ -29,6 +29,7 @@ enum class Resources: uint16_t {
     LON,
 
     LAMP_BRGS,
+    LAMP_IDS,
 };
 
 }

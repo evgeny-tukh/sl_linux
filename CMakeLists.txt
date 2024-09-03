@@ -7,18 +7,22 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 set (CTRL_SOURCES
     src/ui/controls/sl_labeled_value.cpp
+    src/ui/controls/sl_simple_value.cpp
     src/ui/controls/sl_value.cpp
     src/ui/controls/sl_angle_value.cpp
     src/ui/controls/sl_lamp_dir_indicator.cpp
     src/ui/controls/sl_lamp_dir_indicators.cpp
+    src/ui/controls/sl_lamp_id_indicators.cpp
 )
 
 set (CTRL_HEADERS
     src/ui/controls/sl_labeled_value.h
+    src/ui/controls/sl_simlpe_value.h
     src/ui/controls/sl_value.h
     src/ui/controls/sl_angle_value.h
     src/ui/controls/sl_lamp_dir_indicator.h
     src/ui/controls/sl_lamp_dir_indicators.h
+    src/ui/controls/sl_lamp_id_indicators.h
 )
 
 set (LBL_SOURCES

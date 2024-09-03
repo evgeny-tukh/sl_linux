@@ -52,9 +52,13 @@ void SearchMasterWnd::create() {
     addChild(1111, _lampIndicator);
     _lampIndicator->show(true);
 
-    _lampIndicators.reset(new LampDirIndicators(_storage, _display, 700, 600, _wnd));
-    addChild((uint16_t) Ui::Resources::LAMP_BRGS, _lampIndicators);
-    _lampIndicators->show(true);
+    _lampDirIndicators.reset(new LampDirIndicators(_storage, _display, 700, 600, _wnd));
+    addChild((uint16_t) Ui::Resources::LAMP_BRGS, _lampDirIndicators);
+    _lampDirIndicators->show(true);
+
+    _lampIdIndicators.reset(new LampIdIndicators(_storage, _display, 700, 600, _wnd));
+    addChild((uint16_t) Ui::Resources::LAMP_IDS, _lampIdIndicators);
+    _lampIdIndicators->show(true);
 }
 
 std::string SearchMasterWnd::getValueOfParameter(const char *label) const {

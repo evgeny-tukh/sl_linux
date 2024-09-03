@@ -12,6 +12,9 @@ enum class DataType {
     BRG_1,
     BRG_2,
     BRG_3,
+    ID_1,
+    ID_2,
+    ID_3,
 };
 
 }
