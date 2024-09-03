@@ -9,6 +9,7 @@ const char *TextConstants::LON {"LONGITUDE"};
 const char *TextConstants::BRG_1 {"BRG_1"};
 const char *TextConstants::BRG_2 {"BRG_2"};
 const char *TextConstants::BRG_3 {"BRG_3"};
+const char *TextConstants::INFO {"INFO"};
 
 const char *getDataTypeName(Types::DataType type) {
     switch (type) {

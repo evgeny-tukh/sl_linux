@@ -11,9 +11,14 @@ LabeledValue::LabeledValue(Display *display, const char *label, ValueField::Gett
 }
 
 LabeledValue::LabeledValue(Display *display, const char *label, ValueField::Getter valueGetter, int x, int y, Window parent, int width):
-    Ui::DrawableObject(display, x, y, width, LABEL_HEIGHT + FIELD_HEIGHT, parent),
+    LabeledValue(display, label, valueGetter, x, y, parent, width, LABEL_HEIGHT + FIELD_HEIGHT) {
+}
+
+
+LabeledValue::LabeledValue(Display *display, const char *label, ValueField::Getter valueGetter, int x, int y, Window parent, int width, int height):
+    Ui::DrawableObject(display, x, y, width, height, parent),
     _label(display, label, x, y, width, LABEL_HEIGHT, parent),
-    _field(display, valueGetter, x, y + LABEL_HEIGHT, width, FIELD_HEIGHT, parent) {
+    _field(display, valueGetter, x, y + LABEL_HEIGHT, width, height - LABEL_HEIGHT, parent) {
     _label.setParentDrawableObject(this);
     _field.setParentDrawableObject(this);
     addChildDrawableObject(&_label);

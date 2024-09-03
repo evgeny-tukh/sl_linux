@@ -63,6 +63,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::shared_ptr<LabeledValue> _hdg;
         std::shared_ptr<LabeledValue> _lat;
         std::shared_ptr<LabeledValue> _lon;
+        std::shared_ptr<LabeledValue> _info;
         std::shared_ptr<Value> _lampDirection[3];
         std::shared_ptr<LampDirIndicators> _lampDirIndicators;
         std::shared_ptr<LampIdIndicators> _lampIdIndicators;
@@ -83,7 +84,7 @@ class SearchMasterWnd: public Ui::Wnd {
             button->show(true);
         }
 
-        void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width = 100);
+        void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width = 100, int height = 0);
 
         std::string getValueOfParameter(const char *label) const;
 };

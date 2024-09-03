@@ -27,6 +27,7 @@ enum class Resources: uint16_t {
     SOG,
     LAT,
     LON,
+    INFO,
 
     LAMP_BRGS,
     LAMP_IDS,

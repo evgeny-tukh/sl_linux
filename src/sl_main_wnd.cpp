@@ -37,6 +37,7 @@ void SearchMasterWnd::create() {
     initLabeledValue(_hdg, TextConstants::HDG, 400, 200, Ui::Resources::HDG);
     initLabeledValue(_lat, TextConstants::LAT, 400, 300, Ui::Resources::LAT, 150);
     initLabeledValue(_lon, TextConstants::LON, 400, 400, Ui::Resources::LON, 150);
+    initLabeledValue(_info, TextConstants::INFO, 400, 400, Ui::Resources::INFO, 580, 180);
 
     _hdg->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::FIRST_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
     _hdg->setupLayout(0, 0);
@@ -49,6 +50,10 @@ void SearchMasterWnd::create() {
     _lon->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT - 175, UiButtonsLayout::THIRD_ROW_Y);
     _lon->setupLayout(0, 0);
     _lon->applyAnchorage();
+
+    _info->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT - 445, UiButtonsLayout::THIRD_ROW_Y + 75);
+    _info->setupLayout(0, 0);
+    _info->applyAnchorage();
 
     _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
     _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
@@ -86,12 +91,16 @@ std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
     return text;
 }
 
-void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width) {
+void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width, int height) {
     ValueField::Getter getter = [this, label] () {
         return getValueOfParameter(label);
     };
 
-    ctrl.reset(new LabeledValue(_display, label, getter, x, y, _wnd, width));
+    if (height > 0)
+        ctrl.reset(new LabeledValue(_display, label, getter, x, y, _wnd, width, height));
+    else
+        ctrl.reset(new LabeledValue(_display, label, getter, x, y, _wnd, width));
+
     addChild((uint16_t) id, ctrl);
     ctrl->show(true);
 
@@ -99,19 +108,6 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
 }
 
 void SearchMasterWnd::paint(GC ctx) {
-    /*auto font = XLoadQueryFont(_display, "*12x24*");
-    XSetFont(_display, ctx, font->fid);
-    XSetPlaneMask(_display, ctx, AllPlanes);
-    XSetForeground(_display, ctx, WhitePixel(_display, DefaultScreen(_display)));
-    XSetBackground(_display, ctx, WhitePixel(_display, DefaultScreen(_display)));
-    XFillRectangle(_display, _wnd, ctx, 50, 50, 800, 400);
-    XSetForeground(_display, ctx, BlackPixel(_display, DefaultScreen(_display)));
-    XFillRectangle(_display, _wnd, ctx, 60, 60, 780, 380);
-    XSetForeground(_display, ctx, _yellowClr);
-    XFillArc(_display, _wnd, ctx, 200, 200, 100, 100, 0, 360 * 64);
-    textOut(120, 100, ctx, "NAME");
-    XUnloadFont(_display, font->fid);
-    _img->putTo(*this, 100, 100, 0, 0, ctx);*/
 }
 
 void onParentSizeChanged(int width, int height) {
