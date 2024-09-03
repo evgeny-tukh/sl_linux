@@ -253,6 +253,10 @@ void Ui::Wnd::move(int x, int y) {
     XMoveWindow(_display, _wnd, x, y);
 }
 
+void Ui::Wnd::moveToCurrentPos() {
+    XMoveWindow(_display, _wnd, _x, _y);
+}
+
 void Ui::Wnd::forceRedraw() {
     XExposeEvent evt;
     evt.count = 0;

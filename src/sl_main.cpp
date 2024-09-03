@@ -131,7 +131,7 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
         Ui::Util::getScreenSize(_display, width, height);
         _smWindow->create();
         _smWindow->show(true);
-        //_smWindow->resize(width, height);
+        _smWindow->resize(width, height);
         _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
     });
     _butShowSM->show(true);

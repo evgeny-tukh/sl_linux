@@ -9,6 +9,8 @@ class LabeledValue: public Ui::DrawableObject {
 
         void show(bool showFlag) override;
 
+        void setupLayout(int xOffset, int yOffset) override;
+
     protected:
         RedLabel _label;
         ValueField _field;

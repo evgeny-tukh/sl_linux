@@ -1,8 +1,8 @@
 #include "sl_labeled_value.h"
 
 namespace {
-const int LABEL_HEIGHT = 40;
-const int FIELD_HEIGHT = 40;
+const int LABEL_HEIGHT = 35;
+const int FIELD_HEIGHT = 35;
 const int WIDTH = 100;
 }
 
@@ -14,7 +14,18 @@ LabeledValue::LabeledValue(Display *display, const char *label, ValueField::Gett
     Ui::DrawableObject(display, x, y, width, LABEL_HEIGHT + FIELD_HEIGHT, parent),
     _label(display, label, x, y, width, LABEL_HEIGHT, parent),
     _field(display, valueGetter, x, y + LABEL_HEIGHT, width, FIELD_HEIGHT, parent) {
+    _label.setParentDrawableObject(this);
+    _field.setParentDrawableObject(this);
+    addChildDrawableObject(&_label);
+    addChildDrawableObject(&_field);
+}
 
+void LabeledValue::setupLayout(int xOffset, int yOffset) {
+    applyAnchorage();
+    _label.setAnchorage(AnchorageFlags::ParentBase, xOffset, yOffset);
+    _label.applyAnchorage();
+    _field.setAnchorage(AnchorageFlags::ParentBase, xOffset, yOffset + LABEL_HEIGHT);
+    _field.applyAnchorage();
 }
 
 void LabeledValue::paint(GC ctx) {
@@ -23,6 +34,7 @@ void LabeledValue::paint(GC ctx) {
 }
 
 void LabeledValue::updateUi() {
+    applyAnchorage();
     _field.updateUi();
 }
 

@@ -38,6 +38,10 @@ void SearchMasterWnd::create() {
     initLabeledValue(_lat, TextConstants::LAT, 400, 300, Ui::Resources::LAT, 150);
     initLabeledValue(_lon, TextConstants::LON, 400, 400, Ui::Resources::LON, 150);
 
+    _hdg->setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::FIRST_COL_RIGHT, UiButtonsLayout::TOP_ROW_Y);
+    _hdg->setupLayout(0, 0);
+    _hdg->applyAnchorage();
+
     _storage.setValue(TextConstants::HDG, 56.4, ValueStorage::Format::Angle);
     _storage.setValue(TextConstants::LAT, 59.5, ValueStorage::Format::Lat);
     _storage.setValue(TextConstants::LON, 29.5, ValueStorage::Format::Lon);

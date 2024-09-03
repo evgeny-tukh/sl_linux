@@ -46,9 +46,7 @@ void LampDirIndicator::paint(GC ctx) {
 
 void LampDirIndicator::updateUi() {
     applyAnchorage();
-    //_label.applyAnchorage();
     _label.updateUi();
-    //_value.applyAnchorage();
     _value.updateUi();
 }
 

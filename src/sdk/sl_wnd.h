@@ -68,6 +68,7 @@ class Wnd: public DrawableObject {
 
         void resize(uint16_t width, uint16_t height) override;
         void move(int x, int y) override;
+        void moveToCurrentPos();
 
         virtual bool isWindow() const { return true; }
 
