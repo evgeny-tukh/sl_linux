@@ -7,6 +7,7 @@
 namespace UiButtonsLayout {
     const int TOP_ROW_Y = 10;
     const int SECOND_ROW_Y = 160;
+    const int THIRD_ROW_Y = 310;
     const int SECOND_ROW_BOTTOM = 160;
     const int THIRD_ROW_BOTTOM = 10;
     const int FIRST_COL_RIGHT = 610;
