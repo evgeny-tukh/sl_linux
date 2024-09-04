@@ -102,6 +102,24 @@ set(SDK_HEADERS
     src/sdk/sl_img_container.h
 )
 
+set(NMEA_SOURCES
+    src/nmea/sl_nmea_parser.cpp
+)
+
+set(NMEA_HEADERS
+    src/nmea/sl_nmea_parser.h
+    src/nmea/sl_nmea_sentence.h
+    src/nmea/sl_hdt_sentence.h
+)
+
+set(IO_SOURCES
+    src/io/sl_generic_channel.cpp
+)
+
+set(IO_HEADERS
+    src/io/sl_generic_channel.h
+)
+
 set(SOURCES
     src/sl_main.cpp
     src/sl_main_wnd.cpp
@@ -130,6 +148,8 @@ add_executable(SearchMaster
     ${BUT_SOURCES}
     ${LBL_SOURCES}
     ${CTRL_SOURCES}
+    ${NMEA_SOURCES}
+    ${IO_SOURCES}
 )
 
 set_target_properties(SearchMaster
@@ -146,11 +166,14 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src/ui/buttons
     ${PROJECT_SOURCE_DIR}/src/ui/labels
     ${PROJECT_SOURCE_DIR}/src/ui/controls
+    ${PROJECT_SOURCE_DIR}/src/nmea
+    ${PROJECT_SOURCE_DIR}/src/io
 )
 
 target_link_libraries(SearchMaster
     X11
     Imlib2
+    pthread
 )
 
 add_compile_options(
