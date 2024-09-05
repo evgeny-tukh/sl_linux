@@ -9,7 +9,9 @@ Parser::Parser(const char *source): _valid(false) {
     if (source[0] != '$' && source[1] != '$')
         return;
 
-    if (!validateCrc(source))
+    _valid = validateCrc(source);
+    
+    if (!_valid)
         return;
 
     _parts.emplace_back();

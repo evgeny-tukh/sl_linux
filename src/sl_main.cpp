@@ -17,6 +17,7 @@
 #include "sl_text.h"
 #include "sl_red_label.h"
 #include "sl_constants.h"
+#include <io/sl_udp_channel.h>
 
 enum class Controls: uint16_t {
     OK,
@@ -53,6 +54,7 @@ class MainWnd: public Ui::Wnd {
         std::shared_ptr<RedLabel> _hdg;
         std::shared_ptr<SearchMasterWnd> _smWindow;
         bool _closeDisabled;
+        Io::UdpChannel _reader;
 
         void paint(GC ctx) override;
 };
@@ -63,6 +65,18 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _butClose(nullptr),
     _butShowSM(nullptr),
     _closeDisabled(false) {
+    Io::UdpConfig cfg;
+    cfg.type = Io::UdpConfig::TYPE;
+    cfg.port = 8888;
+    cfg.bindAddr = "192.168.0.52";
+
+    _reader.configure(&cfg);
+    _reader.setReadCb([this] (std::vector<uint8_t>& data) {
+        _smWindow->processNmea((const char *) data.data(), data.size());
+    });
+    _reader.open();
+    _reader.start();
+
     auto screen = DefaultScreen(display);
     auto borderClr = BlackPixel(display, screen);
     auto bgClr = WhitePixel(display, screen);
@@ -157,15 +171,6 @@ MainWnd::MainWnd(Display *display, Ui::Wnd::Properties& props):
     _hello->setBorder(true);
     _hello->setAlignment((int) Ui::Text::Alignment::Center);
     _hdg->show(true);
-
-    _smWindow.reset(new SearchMasterWnd(Ui::Util::openDisplay()));
-
-    uint16_t width, height;
-    Ui::Util::getScreenSize(_display, width, height);
-    _smWindow->create();
-    _smWindow->show(true);
-    _smWindow->resize(width, height);
-    _smWindow->eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
 }
 
 void MainWnd::paint(GC ctx) {
@@ -177,6 +182,8 @@ void MainWnd::paint(GC ctx) {
 }
 
 int main(int argCount, char *args[]) {
+    //XInitThreads();
+
     Display *display = Ui::Util::openDisplay();
 
     if (!display) {
@@ -184,7 +191,7 @@ int main(int argCount, char *args[]) {
         return 0;
     }
 
-    Ui::Wnd::Properties props;
+    /*Ui::Wnd::Properties props;
     props[Ui::Wnd::Property::X] = Const::LEFT;
     props[Ui::Wnd::Property::Y] = Const::TOP;
     props[Ui::Wnd::Property::Width] = Const::WIDTH;
@@ -194,7 +201,33 @@ int main(int argCount, char *args[]) {
     props[Ui::Wnd::Property::BorderWidth] = Const::BORDER_WIDTH;
     
     MainWnd wndMain(display, props);
-    wndMain.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
+    wndMain.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });*/
+
+    Io::UdpConfig cfg;
+    cfg.type = Io::UdpConfig::TYPE;
+    cfg.port = 8888;
+    cfg.bindAddr = "192.168.0.52";
+
+    Io::UdpChannel reader;
+
+    SearchMasterWnd smWindow(display);
+
+    reader.configure(&cfg);
+    reader.setReadCb([&smWindow] (std::vector<uint8_t>& data) {
+        smWindow.processNmea((const char *) data.data(), data.size());
+    });
+
+    uint16_t width, height;
+    Ui::Util::getScreenSize(display, width, height);
+    smWindow.create();
+    smWindow.show(true);
+    smWindow.resize(width, height);
+
+    reader.open();
+    reader.start();
+
+    smWindow.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
+
 
     XCloseDisplay(display);
 

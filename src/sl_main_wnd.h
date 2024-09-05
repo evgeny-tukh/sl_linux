@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <thread>
+#include <chrono>
+#include <atomic>
 
 #include <X11/Xlib.h> 
 
@@ -41,14 +44,19 @@
 class SearchMasterWnd: public Ui::Wnd {
     public:
         SearchMasterWnd(Display *display);
+        ~SearchMasterWnd();
 
         void create() override;
+
+        void processNmea(const char *nmea, size_t size);
 
     protected:
         long int _yellowClr;
         std::unique_ptr<Ui::Bitmap> _img;
         std::unordered_map<std::string, std::shared_ptr<LabeledValue>&> _valueDisplays;
         ValueStorage _storage;
+        std::thread _watchdog;
+        std::atomic_bool _running;
 
         std::shared_ptr<NameEditButton> _butNameEdit;
         std::shared_ptr<HarbourModeButton> _butHarbourModeSwitch;
@@ -78,6 +86,8 @@ class SearchMasterWnd: public Ui::Wnd {
 
         void paint(GC ctx) override;
 
+        void onPaint(XExposeEvent& evt) override;
+
         template<typename ButCls>
         void initButton(std::shared_ptr<ButCls>& button, Ui::Resources id) {
             button.reset(new ButCls(*this));
@@ -89,6 +99,8 @@ class SearchMasterWnd: public Ui::Wnd {
         void initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, const char *label, int x, int y, Ui::Resources id, int width = 100, int height = 0);
 
         std::string getValueOfParameter(const char *label) const;
+
+        void watchdogProc();
 
         //void onSizeChanged(int width, int height, bool& notifyChildren) override;
 };

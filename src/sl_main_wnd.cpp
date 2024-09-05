@@ -1,8 +1,12 @@
+#include <stdlib.h>
+#include <memory.h>
 #include "sl_main_wnd.h"
 #include "sl_util.h"
 #include "sl_tools.h"
 #include "sl_constants.h"
 #include "sl_display.h"
+#include <nmea/sl_nmea_parser.h>
+#include <nmea/sl_hdt_sentence.h>
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1500, HEIGHT = 800;
@@ -17,6 +21,13 @@ SearchMasterWnd::SearchMasterWnd(Display *display):
     _yellowClr = Ui::Util::allocateColor(255, 127, 0, display);
     _img.reset(new Ui::Bitmap(*this));
     _img->loadBmpFile("/home/jeca/work/sl/bin/res/buttonImages/name/hovered.bmp");
+}
+
+SearchMasterWnd::~SearchMasterWnd() {
+    _running.store(false);
+
+    if (_watchdog.joinable())
+        _watchdog.join();
 }
 
 void SearchMasterWnd::create() {
@@ -94,6 +105,9 @@ void SearchMasterWnd::create() {
     _lampSystemIndicators.reset(new LampSystemIndicators(_storage, _display, 700, 600, _wnd));
     addChild((uint16_t) Ui::Resources::LAMP_SYSTEMS, _lampSystemIndicators);
     _lampSystemIndicators->show(true);
+
+    _running.store(true);
+    _watchdog = std::thread([this] () { watchdogProc(); });
 }
 
 std::string SearchMasterWnd::getValueOfParameter(const char *label) const {
@@ -122,4 +136,52 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
 }
 
 void SearchMasterWnd::paint(GC ctx) {
+    //XClearArea(_display, _wnd, 0, 0, _width, _height, true);
+}
+
+void SearchMasterWnd::processNmea(const char *nmea, size_t size) {
+    if (nmea && size > 0) {
+        std::string source(nmea, nmea + size);
+        Nmea::Parser parser(source.c_str());
+
+        if (parser.size() > 0) {
+            auto type = parser.type();
+
+            if (type.compare("HDT") == 0) {
+                Nmea::HDT hdt(parser);
+
+                if (hdt.valid())
+                    _storage.setValue(Types::DataType::HDG, hdt.heading(), ValueStorage::Format::Angle);
+            }
+        }
+    }
+}
+
+void SearchMasterWnd::watchdogProc() {
+    Display *display = XOpenDisplay(nullptr);
+
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    while (_running.load()) {
+        XEvent evt;
+
+        memset(&evt, 0, sizeof(evt));
+
+        updateUi();
+
+        evt.xexpose.type = Expose;
+        evt.xexpose.display = display;
+        evt.xexpose.window = _wnd;
+
+        auto result = XSendEvent(display, _wnd, 0, ExposureMask, &evt);
+        XFlush(display);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    }
+
+    XCloseDisplay(display);
+}
+
+void SearchMasterWnd::onPaint(XExposeEvent& evt) {
+    Ui::Wnd::onPaint(evt);
 }

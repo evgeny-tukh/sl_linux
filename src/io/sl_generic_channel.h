@@ -29,15 +29,15 @@ class GenericChannel {
 
         void setPauseMs(uint32_t pause) { _pauseMs = pause; }
 
+        virtual bool open();
+        virtual bool close();
+
     protected:
         uint32_t _pauseMs;
         std::atomic_bool _running;
         std::atomic_bool _opened;
         std::thread _runner;
         Cb _cb;
-
-        virtual bool open();
-        virtual bool close();
 
         void runnerProc();
 

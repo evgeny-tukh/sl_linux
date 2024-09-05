@@ -114,10 +114,12 @@ set(NMEA_HEADERS
 
 set(IO_SOURCES
     src/io/sl_generic_channel.cpp
+    src/io/sl_udp_channel.cpp
 )
 
 set(IO_HEADERS
     src/io/sl_generic_channel.h
+    src/io/sl_udp_channel.cpp
 )
 
 set(SOURCES

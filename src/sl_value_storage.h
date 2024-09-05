@@ -16,6 +16,7 @@ class ValueStorage {
         };
 
         void setValue(const char *name, double value, Format format);
+        void setValue(Types::DataType dataType, double value, Format format);
         bool getValue(const char *name, double& value) const;
         double valueOf(const char *name, double defValue) const;
         double valueOf(Types::DataType type, double defValue) const;

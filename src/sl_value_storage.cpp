@@ -11,6 +11,17 @@ void ValueStorage::setValue(const char *name, double value, Format format) {
     }
 }
 
+void ValueStorage::setValue(Types::DataType dataType, double value, Format format) {
+    auto name = getDataTypeName(dataType);
+    auto pos = _values.find(name);
+
+    if (pos == _values.end()) {
+        _values.emplace(std::pair<std::string, std::pair<double, Format>>(name, std::pair<double, Format>(value, format)));
+    } else {
+        pos->second.first = value;
+    }
+}
+
 std::string ValueStorage::getStringValue(const char *name) const {
     auto pos = _values.find(name);
 
