@@ -18,12 +18,13 @@ void SimpleValue::setupLayout(int xOffset, int yOffset) {
     applyAnchorage();
     _field.setAnchorage(AnchorageFlags::ParentBase, EDGE, yOffset + EDGE);
     _field.applyAnchorage();
+    _field.setBgColor(0);
 }
 
 void SimpleValue::paint(GC ctx) {
     _field.paint(ctx);
 
-    //Ui::Util::drawRondedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
+    //Ui::Util::drawRoundedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
 }
 
 void SimpleValue::updateUi() {

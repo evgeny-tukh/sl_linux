@@ -6,7 +6,7 @@ namespace {
 }
 
 ValueField::ValueField(Display *display, Getter getter, int x, int y, int width, int height, Window parent, Painter painter):
-    Ui::Text(display, "", x, y, width,  height, parent, (int) Text::Alignment::Center, FONT_NAME),
+    Ui::Text(display, "", x, y, width,  height, parent, (int) Text::Alignment::Center, FONT_NAME, false),
     _getter(getter),
     _painter(painter) {
 
@@ -26,6 +26,6 @@ void ValueField::paint(GC ctx) {
         Ui::Text::paint(ctx);
 
         if (styleFlag(Style::Border))
-            Ui::Util::drawRondedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
+            Ui::Util::drawRoundedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
     }
 }

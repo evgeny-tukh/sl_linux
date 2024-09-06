@@ -74,7 +74,7 @@ void Ui::Util::fillRondedRect(Display *display, Drawable drawable, GC ctx, int x
     XFillPolygon(display, drawable, ctx, vertices.data(), count, Convex, CoordModeOrigin);
 }
 
-void Ui::Util::drawRondedRect(Display *display, Drawable drawable, GC ctx, int x, int y, int width, int height, int radius) {
+void Ui::Util::drawRoundedRect(Display *display, Drawable drawable, GC ctx, int x, int y, int width, int height, int radius) {
     std::vector<XPoint> vertices;
     Circle circle(radius);
 

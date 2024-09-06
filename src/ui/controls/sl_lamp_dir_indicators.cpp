@@ -36,6 +36,7 @@ LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *displ
         addChildDrawableObject(_indicators[i].get());
         _indicators[i]->setParentDrawableObject(this);
         _indicators[i]->setupLayout(0, yOffset);
+        _indicators[i]->setBgColor(0);
     }
 
     _label = std::make_unique<RedLabel>(display, LABEL, 0, 0, LBL_WIDTH, LBL_HEIGHT, this);

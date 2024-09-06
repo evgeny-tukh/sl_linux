@@ -60,6 +60,7 @@ class Text: public DrawableObject {
 
         void setBorder(bool enable) { _border = enable; }
         void setAlignment(int mask) { _alignment = mask; }
+        void setTransparent(bool transparent) { _transparent = transparent; }
 
         void paint(GC ctx) override;
 

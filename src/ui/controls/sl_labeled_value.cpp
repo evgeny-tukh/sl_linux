@@ -31,6 +31,7 @@ void LabeledValue::setupLayout(int xOffset, int yOffset) {
     _label.applyAnchorage();
     _field.setAnchorage(AnchorageFlags::ParentBase, xOffset, yOffset + LABEL_HEIGHT);
     _field.applyAnchorage();
+    _field.setBgColor(0);
 }
 
 void LabeledValue::paint(GC ctx) {

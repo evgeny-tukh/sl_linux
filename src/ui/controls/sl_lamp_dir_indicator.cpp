@@ -25,8 +25,10 @@ void LampDirIndicator::setupLayout(int xParam, int yParam) {
     applyAnchorage();
     _label.setAnchorage(AnchorageFlags::ParentBase, 0 /*+ xParam, yParam*/, 0);
     _label.applyAnchorage();
+    _label.setBgColor(0);
     _value.setAnchorage(AnchorageFlags::ParentBase, 40 /*+ xParam, yParam*/, 0);
     _value.applyAnchorage();
+    _value.setBgColor(0);
 }
 
 
@@ -39,7 +41,7 @@ void LampDirIndicator::paint(GC ctx) {
     _label.paint(ctx);
     _value.paint(ctx);
 
-    Ui::Util::drawRondedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
+    Ui::Util::drawRoundedRect(_display, _parent, ctx, _x, _y, _width, _height, 5);
     XSetForeground(_display, ctx, _label.fgColor());
     drawLine(ctx, LBL_WIDTH, 0, LBL_WIDTH, HEIGHT - 2);
 }

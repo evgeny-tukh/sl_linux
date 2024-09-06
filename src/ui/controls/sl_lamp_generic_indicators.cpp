@@ -28,6 +28,7 @@ LampGenericIndicators::LampGenericIndicators(const char *label, Types& types, co
         _indicators[i]->setParentDrawableObject(this);
         _indicators[i]->setAnchorage(AnchorageFlags::ParentBase, 0, yOffset);
         _indicators[i]->setupLayout(0, yOffset);
+        _indicators[i]->setBgColor(0);
     }
 
     _label = std::make_unique<RedLabel>(display, label, 0, 0, width, getIndicatorHeight(), this);
