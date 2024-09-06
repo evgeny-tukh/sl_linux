@@ -7,6 +7,7 @@
 #include "sl_display.h"
 #include <nmea/sl_nmea_parser.h>
 #include <nmea/sl_hdt_sentence.h>
+#include <nmea/sl_gll_sentence.h>
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1500, HEIGHT = 800;
@@ -152,6 +153,17 @@ void SearchMasterWnd::processNmea(const char *nmea, size_t size) {
 
                 if (hdt.valid())
                     _storage.setValue(Types::DataType::HDG, hdt.heading(), ValueStorage::Format::Angle);
+            } else if (type.compare("GLL") == 0) {
+                Nmea::GLL gll(parser);
+
+                if (gll.valid()) {
+                    double lat, lon;
+
+                    if (gll.getLat(lat) && gll.getLon(lon)) {
+                        _storage.setValue(Types::DataType::LAT, lat, ValueStorage::Format::Lat);
+                        _storage.setValue(Types::DataType::LON, lon, ValueStorage::Format::Lon);
+                    }
+                }
             }
         }
     }

@@ -14,11 +14,11 @@ const char *TextConstants::INFO {"INFO"};
 const char *getDataTypeName(Types::DataType type) {
     switch (type) {
         case Types::DataType::HDG: return TextConstants::HDG;
-        case Types::DataType::COG: return TextConstants::HDG;
-        case Types::DataType::STW: return TextConstants::HDG;
-        case Types::DataType::SOG: return TextConstants::HDG;
-        case Types::DataType::LAT: return TextConstants::HDG;
-        case Types::DataType::LON: return TextConstants::HDG;
+        case Types::DataType::COG: return TextConstants::COG;
+        case Types::DataType::STW: return TextConstants::STW;
+        case Types::DataType::SOG: return TextConstants::SOG;
+        case Types::DataType::LAT: return TextConstants::LAT;
+        case Types::DataType::LON: return TextConstants::LON;
         case Types::DataType::BRG_1: return TextConstants::BRG_1;
         case Types::DataType::BRG_2: return TextConstants::BRG_2;
         case Types::DataType::BRG_3: return TextConstants::BRG_3;

@@ -8,7 +8,7 @@ class HDT: public Sentence {
     public:
         HDT(const Parser& parser): Sentence(parser) {}
 
-        bool valid() const {
+        bool valid() const override {
             return Sentence::valid() && _parser.size() > 2 && !_parser.omitted(1) && !_parser.omitted(2) && _parser.asChar(2) == 'T';
         }
 

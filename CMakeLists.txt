@@ -104,12 +104,15 @@ set(SDK_HEADERS
 
 set(NMEA_SOURCES
     src/nmea/sl_nmea_parser.cpp
+    src/nmea/sl_nmea_sentence.cpp
+    src/nmea/sl_gll_sentence.cpp
 )
 
 set(NMEA_HEADERS
     src/nmea/sl_nmea_parser.h
     src/nmea/sl_nmea_sentence.h
     src/nmea/sl_hdt_sentence.h
+    src/nmea/sl_gll_sentence.h
 )
 
 set(IO_SOURCES
