@@ -18,6 +18,9 @@
 #include "sl_red_label.h"
 #include "sl_constants.h"
 #include <io/sl_udp_channel.h>
+#include <io/sl_channel_host.h>
+
+#include <nmea/sl_sentence_processor.h>
 
 enum class Controls: uint16_t {
     OK,
@@ -191,31 +194,7 @@ int main(int argCount, char *args[]) {
         return 0;
     }
 
-    /*Ui::Wnd::Properties props;
-    props[Ui::Wnd::Property::X] = Const::LEFT;
-    props[Ui::Wnd::Property::Y] = Const::TOP;
-    props[Ui::Wnd::Property::Width] = Const::WIDTH;
-    props[Ui::Wnd::Property::Height] = Const::HEIGHT;
-    props[Ui::Wnd::Property::BorderColor] = BlackPixel(display, DefaultScreen(display));
-    props[Ui::Wnd::Property::BgColor] = WhitePixel(display, DefaultScreen(display));
-    props[Ui::Wnd::Property::BorderWidth] = Const::BORDER_WIDTH;
-    
-    MainWnd wndMain(display, props);
-    wndMain.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });*/
-
-    Io::UdpConfig cfg;
-    cfg.type = Io::UdpConfig::TYPE;
-    cfg.port = 8888;
-    cfg.bindAddr = "192.168.0.52";
-
-    Io::UdpChannel reader;
-
     SearchMasterWnd smWindow(display);
-
-    reader.configure(&cfg);
-    reader.setReadCb([&smWindow] (std::vector<uint8_t>& data) {
-        smWindow.processNmea((const char *) data.data(), data.size());
-    });
 
     uint16_t width, height;
     Ui::Util::getScreenSize(display, width, height);
@@ -223,11 +202,34 @@ int main(int argCount, char *args[]) {
     smWindow.show(true);
     smWindow.resize(width, height);
 
-    reader.open();
-    reader.start();
+    Io::ChannelHost channelHost;
+
+    channelHost.addChannel("nmea", Io::ChannelHost::UDP);
+    channelHost.addChannel("ais", Io::ChannelHost::UDP);
+
+    auto nmeaParser = [&smWindow] (std::vector<uint8_t>& data) {
+        smWindow.processNmea((const char *) data.data(), data.size());
+    };
+    
+    Io::UdpConfig cfg;
+    cfg.type = Io::UdpConfig::TYPE;
+    cfg.port = 8888;
+    cfg.bindAddr = "192.168.0.52";
+
+    channelHost.configure("nmea", &cfg);
+    channelHost.setReadCb("nmea", nmeaParser);
+
+    cfg.port = 8889;
+    channelHost.configure("ais", &cfg);
+    channelHost.setReadCb("ais", nmeaParser);
+
+    channelHost.openAll();
+    channelHost.startAll();
 
     smWindow.eventLoop([] (Ui::Wnd& wnd, XEvent&) { return true; });
 
+    channelHost.stopAll();
+    channelHost.closeAll();
 
     XCloseDisplay(display);
 

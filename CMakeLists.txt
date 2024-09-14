@@ -104,6 +104,7 @@ set(SDK_HEADERS
 
 set(NMEA_SOURCES
     src/nmea/sl_nmea_parser.cpp
+    src/nmea/sl_sentence_processor.cpp
     src/nmea/sl_nmea_sentence.cpp
     src/nmea/sl_gll_sentence.cpp
 )
@@ -113,16 +114,19 @@ set(NMEA_HEADERS
     src/nmea/sl_nmea_sentence.h
     src/nmea/sl_hdt_sentence.h
     src/nmea/sl_gll_sentence.h
+    src/nmea/sl_sentence_processor.h
 )
 
 set(IO_SOURCES
     src/io/sl_generic_channel.cpp
     src/io/sl_udp_channel.cpp
+    src/io/sl_channel_host.cpp
 )
 
 set(IO_HEADERS
     src/io/sl_generic_channel.h
     src/io/sl_udp_channel.cpp
+    src/io/sl_channel_host.h
 )
 
 set(SOURCES

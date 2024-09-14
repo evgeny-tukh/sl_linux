@@ -5,9 +5,15 @@
 #include "sl_tools.h"
 #include "sl_constants.h"
 #include "sl_display.h"
+
+#include <nmea/sl_sentence_processor.h>
+
+#if 0
 #include <nmea/sl_nmea_parser.h>
 #include <nmea/sl_hdt_sentence.h>
 #include <nmea/sl_gll_sentence.h>
+#include <nmea/sl_vdm_sentence.h>
+#endif
 
 namespace {
     const int X = 100, Y = 100, WIDTH = 1500, HEIGHT = 800;
@@ -141,6 +147,8 @@ void SearchMasterWnd::paint(GC ctx) {
 }
 
 void SearchMasterWnd::processNmea(const char *nmea, size_t size) {
+    Nmea::processSentence(nmea, size, _storage);
+    #if 0
     if (nmea && size > 0) {
         std::string source(nmea, nmea + size);
         Nmea::Parser parser(source.c_str());
@@ -164,9 +172,15 @@ void SearchMasterWnd::processNmea(const char *nmea, size_t size) {
                         _storage.setValue(Types::DataType::LON, lon, ValueStorage::Format::Lon);
                     }
                 }
+            } else if (type.compare("VDM") == 0) {
+                Nmea::VDM vdm(parser);
+
+                if (vdm.valid()) {
+                }
             }
         }
     }
+    #endif
 }
 
 void SearchMasterWnd::watchdogProc() {
