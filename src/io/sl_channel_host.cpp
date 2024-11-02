@@ -49,13 +49,9 @@ void ChannelHost::addChannel(const std::string& name, Type type) {
 
     switch (type) {
         case Type::UDP:
-            channel = new UdpChannel(); break;
-        default:
-            channel = nullptr;
+            _channels.emplace(std::pair<std::string, GenericChannel *>(name, new UdpChannel(_storage)));
+            break;
     }
-
-    if (channel)
-        _channels.emplace(std::pair<std::string, GenericChannel *>(name, channel));
 }
 
 }

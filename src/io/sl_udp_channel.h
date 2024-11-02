@@ -13,7 +13,7 @@ struct UdpConfig: GenericConfig {
 
 class UdpChannel: public GenericChannel {
     public:
-        UdpChannel(): GenericChannel() {}
+        UdpChannel(ValueStorage& storage): GenericChannel(storage) {}
         virtual ~UdpChannel() {}
 
         void configure(const GenericConfig *cfg) override;

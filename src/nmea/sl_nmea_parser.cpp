@@ -3,6 +3,14 @@
 namespace Nmea {
 
 Parser::Parser(const char *source): _valid(false) {
+    parse(source);
+}
+
+void Parser::parse(const char *source) {
+    _valid = false;
+
+    _parts.clear();
+
     if (!source || !*source)
         return;
 

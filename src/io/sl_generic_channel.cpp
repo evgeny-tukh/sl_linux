@@ -2,7 +2,7 @@
 
 namespace Io {
 
-GenericChannel::GenericChannel(): _pauseMs(50) {
+GenericChannel::GenericChannel(ValueStorage& storage): _pauseMs(50), _storage(storage), _conwayer(storage) {
     _running.store(false);
     _opened.store(false);
 }
@@ -15,8 +15,10 @@ GenericChannel::~GenericChannel() {
 void GenericChannel::runnerProc() {
     std::vector<uint8_t> data;
     while(_running.load()) {
-        if (getData(data) && _cb)
-            _cb(data);
+        //if (getData(data) && _cb)
+        //    _cb(data);
+        if (getData(data))
+            _conwayer.process((const char *) data.data(), data.size());
 
         std::this_thread::sleep_for(std::chrono::microseconds(_pauseMs));
     }

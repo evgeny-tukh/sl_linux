@@ -6,8 +6,6 @@
 #include "sl_constants.h"
 #include "sl_display.h"
 
-#include <nmea/sl_sentence_processor.h>
-
 #if 0
 #include <nmea/sl_nmea_parser.h>
 #include <nmea/sl_hdt_sentence.h>
@@ -20,8 +18,9 @@ namespace {
 }
 
 
-SearchMasterWnd::SearchMasterWnd(Display *display):
-    Ui::Wnd(display, X, Y, WIDTH, HEIGHT, /*parent.handle()*/RootWindow(display, DefaultScreen(display))) {
+SearchMasterWnd::SearchMasterWnd(Display *display, ValueStorage & storage):
+    Ui::Wnd(display, X, Y, WIDTH, HEIGHT, /*parent.handle()*/RootWindow(display, DefaultScreen(display))),
+    _storage(storage) {
     auto screen = DefaultScreen(display);
     _borderClr = WhitePixel(display, screen);
     _bgClr = BlackPixel(display, screen);
@@ -144,43 +143,6 @@ void SearchMasterWnd::initLabeledValue(std::shared_ptr<LabeledValue>& ctrl, cons
 
 void SearchMasterWnd::paint(GC ctx) {
     //XClearArea(_display, _wnd, 0, 0, _width, _height, true);
-}
-
-void SearchMasterWnd::processNmea(const char *nmea, size_t size) {
-    Nmea::processSentence(nmea, size, _storage);
-    #if 0
-    if (nmea && size > 0) {
-        std::string source(nmea, nmea + size);
-        Nmea::Parser parser(source.c_str());
-
-        if (parser.size() > 0) {
-            auto type = parser.type();
-
-            if (type.compare("HDT") == 0) {
-                Nmea::HDT hdt(parser);
-
-                if (hdt.valid())
-                    _storage.setValue(Types::DataType::HDG, hdt.heading(), ValueStorage::Format::Angle);
-            } else if (type.compare("GLL") == 0) {
-                Nmea::GLL gll(parser);
-
-                if (gll.valid()) {
-                    double lat, lon;
-
-                    if (gll.getLat(lat) && gll.getLon(lon)) {
-                        _storage.setValue(Types::DataType::LAT, lat, ValueStorage::Format::Lat);
-                        _storage.setValue(Types::DataType::LON, lon, ValueStorage::Format::Lon);
-                    }
-                }
-            } else if (type.compare("VDM") == 0) {
-                Nmea::VDM vdm(parser);
-
-                if (vdm.valid()) {
-                }
-            }
-        }
-    }
-    #endif
 }
 
 void SearchMasterWnd::watchdogProc() {

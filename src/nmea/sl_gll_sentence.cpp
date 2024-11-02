@@ -6,13 +6,13 @@ bool GLL::valid() const {
     if (!Sentence::valid() || size() < 8)
         return false;
 
-    for (size_t i = 1; i < 6; ++i) {
+    for (size_t i = 1; i < 7; ++i) {
         if (omitted(i))
             return false;
     }
 
-    //if (_parser.asChar(6) != 'A')
-    //    return false;
+    if (_parser.asChar(6) != 'A')
+        return false;
 
     switch (_parser.asChar(7)) {
         case 'A':

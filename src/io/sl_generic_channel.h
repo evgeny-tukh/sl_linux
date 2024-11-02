@@ -7,6 +7,9 @@
 #include <functional>
 #include <string>
 
+#include <sl_value_storage.h>
+#include <nmea/sl_sentence_conwayer.h>
+
 namespace Io {
 
 struct GenericConfig {
@@ -17,7 +20,7 @@ class GenericChannel {
     public:
         using Cb = std::function<void(std::vector<uint8_t>&)>;
 
-        GenericChannel();
+        GenericChannel(ValueStorage&);
         virtual ~GenericChannel();
 
         virtual void configure(const GenericConfig *cfg) {}
@@ -33,6 +36,8 @@ class GenericChannel {
         virtual bool close();
 
     protected:
+        ValueStorage& _storage;
+        Nmea::Conwayer _conwayer;
         uint32_t _pauseMs;
         std::atomic_bool _running;
         std::atomic_bool _opened;

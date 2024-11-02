@@ -20,8 +20,6 @@
 #include <io/sl_udp_channel.h>
 #include <io/sl_channel_host.h>
 
-#include <nmea/sl_sentence_processor.h>
-
 enum class Controls: uint16_t {
     OK,
     Cancel,
@@ -43,6 +41,7 @@ namespace Const {
 
 Context ctx;
 
+#if 0
 class MainWnd: public Ui::Wnd {
     public:
         MainWnd(Display *display, Ui::Wnd::Properties& props);
@@ -183,6 +182,7 @@ void MainWnd::paint(GC ctx) {
     XSetFunction(_display, ctx, GXcopy);
     XDrawString(_display, _wnd, ctx, 50, 50, "hello!", 6);
 }
+#endif
 
 int main(int argCount, char *args[]) {
     //XInitThreads();
@@ -194,7 +194,9 @@ int main(int argCount, char *args[]) {
         return 0;
     }
 
-    SearchMasterWnd smWindow(display);
+    ValueStorage storage;
+
+    SearchMasterWnd smWindow(display, storage);
 
     uint16_t width, height;
     Ui::Util::getScreenSize(display, width, height);
@@ -202,26 +204,20 @@ int main(int argCount, char *args[]) {
     smWindow.show(true);
     smWindow.resize(width, height);
 
-    Io::ChannelHost channelHost;
+    Io::ChannelHost channelHost(storage);
 
     channelHost.addChannel("nmea", Io::ChannelHost::UDP);
     channelHost.addChannel("ais", Io::ChannelHost::UDP);
 
-    auto nmeaParser = [&smWindow] (std::vector<uint8_t>& data) {
-        smWindow.processNmea((const char *) data.data(), data.size());
-    };
-    
     Io::UdpConfig cfg;
     cfg.type = Io::UdpConfig::TYPE;
     cfg.port = 8888;
     cfg.bindAddr = "192.168.0.52";
 
     channelHost.configure("nmea", &cfg);
-    channelHost.setReadCb("nmea", nmeaParser);
 
     cfg.port = 8889;
     channelHost.configure("ais", &cfg);
-    channelHost.setReadCb("ais", nmeaParser);
 
     channelHost.openAll();
     channelHost.startAll();

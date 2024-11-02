@@ -1,10 +1,11 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <memory>
 
 #include <io/sl_generic_channel.h>
+#include <sl_value_storage.h>
 
 namespace Io {
 
@@ -14,7 +15,7 @@ class ChannelHost {
             UDP,
         };
 
-        ChannelHost() {}
+        ChannelHost(ValueStorage& storage): _storage(storage) {}
         ~ChannelHost();
 
         void startAll();
@@ -29,7 +30,8 @@ class ChannelHost {
         void addChannel(const std::string& name, Type type);
 
     private:
-        std::map<std::string, GenericChannel *> _channels;
+        ValueStorage& _storage;
+        std::unordered_map<std::string, GenericChannel *> _channels;
 };
 
 }

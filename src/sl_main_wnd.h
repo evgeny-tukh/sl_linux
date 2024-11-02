@@ -43,18 +43,16 @@
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
-        SearchMasterWnd(Display *display);
+        SearchMasterWnd(Display *display, ValueStorage& storage);
         ~SearchMasterWnd();
 
         void create() override;
-
-        void processNmea(const char *nmea, size_t size);
 
     protected:
         long int _yellowClr;
         std::unique_ptr<Ui::Bitmap> _img;
         std::unordered_map<std::string, std::shared_ptr<LabeledValue>&> _valueDisplays;
-        ValueStorage _storage;
+        ValueStorage& _storage;
         std::thread _watchdog;
         std::atomic_bool _running;
 

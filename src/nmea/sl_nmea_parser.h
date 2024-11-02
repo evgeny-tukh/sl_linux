@@ -9,6 +9,7 @@ namespace Nmea {
 class Parser {
     public:
         Parser(const char *source);
+        Parser(): _valid(false) {}
 
         bool isPropietary() const;
         std::string talkerID() const;
@@ -23,6 +24,8 @@ class Parser {
         bool valid() const { return _valid; }
 
         size_t size() const { return _parts.size(); }
+
+        void parse(const char *source);
         
     protected:
         std::vector<std::string> _parts;
