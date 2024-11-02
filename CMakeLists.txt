@@ -107,6 +107,7 @@ set(NMEA_SOURCES
     src/nmea/sl_sentence_conwayer.cpp
     src/nmea/sl_nmea_sentence.cpp
     src/nmea/sl_gll_sentence.cpp
+    src/nmea/sl_ttm_sentence.cpp
 )
 
 set(NMEA_HEADERS
@@ -114,6 +115,7 @@ set(NMEA_HEADERS
     src/nmea/sl_nmea_sentence.h
     src/nmea/sl_hdt_sentence.h
     src/nmea/sl_gll_sentence.h
+    src/nmea/sl_ttm_sentence.h
     src/nmea/sl_sentence_conwayer.h
 )
 
@@ -137,6 +139,7 @@ set(SOURCES
     src/sl_value_storage.cpp
     src/sl_tools.cpp
     src/sl_constants.cpp
+    src/sl_geo.cpp
     src/sl_vessel_shape.cpp
 )
 
@@ -149,6 +152,7 @@ set(HEADERS
     src/sl_tools.h
     src/sl_constants.h
     src/sl_vessel_shape.h
+    src/sl_geo.h
 )
 
 add_executable(SearchMaster

@@ -27,6 +27,7 @@ class Conwayer {
         void processGLL();
         void processHDT();
         void processVDM();
+        void processTTM();
 };
 
 }

@@ -71,3 +71,23 @@ double ValueStorage::valueOf(const char *name, double defValue) const {
 
     return pos->second.first;
 }
+
+Target& ValueStorage::checkAddTarget(uint32_t id, const std::string& name) {
+    auto pos = _targets.find(id);
+
+    if (pos == _targets.end())
+        pos = _targets.emplace(std::pair<uint32_t, Target>(id, Target(id, name))).first;
+
+    return pos->second;
+}
+
+void ValueStorage::removeLostTargets() {
+
+}
+
+void ValueStorage::enumTargets(std::function<void(const Target&)> cb) const {
+    for (auto const targetItem: _targets) {
+        cb(targetItem.second);
+    }
+
+}

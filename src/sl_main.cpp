@@ -195,6 +195,7 @@ int main(int argCount, char *args[]) {
     }
 
     ValueStorage storage;
+    storage.setValue(Types::DataType::DSPLY_RNG, 1852.0 * 2, ValueStorage::Format::Double);
 
     SearchMasterWnd smWindow(display, storage);
 

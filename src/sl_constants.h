@@ -27,6 +27,8 @@ enum class DataType {
     SYSTEM_1,
     SYSTEM_2,
     SYSTEM_3,
+
+    DSPLY_RNG,
 };
 
 }
@@ -43,6 +45,8 @@ extern const char *BRG_1;
 extern const char *BRG_2;
 extern const char *BRG_3;
 extern const char *INFO;
+
+extern const char *DSPLY_RNG;
 
 }
 

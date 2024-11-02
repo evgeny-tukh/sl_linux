@@ -4,10 +4,13 @@
 #include "sl_hdt_sentence.h"
 #include "sl_gll_sentence.h"
 #include "sl_vdm_sentence.h"
+#include "sl_ttm_sentence.h"
 #include "sl_nmea_parser.h"
 
 #include <sl_value_storage.h>
 #include "sl_sentence_conwayer.h"
+#include <sl_target.h>
+#include <sl_geo.h>
 
 namespace Nmea {
 
@@ -49,6 +52,7 @@ Conwayer::Conwayer(ValueStorage& storage): _storage(storage) {
     _lines.emplace(std::pair<std::string, std::function<void()>>("GLL", [this] () { processGLL(); }));
     _lines.emplace(std::pair<std::string, std::function<void()>>("HDT", [this] () { processHDT(); }));
     _lines.emplace(std::pair<std::string, std::function<void()>>("VDM", [this] () { processVDM(); }));
+    _lines.emplace(std::pair<std::string, std::function<void()>>("TTM", [this] () { processTTM(); }));
 }
 
 void Conwayer::process(const char *nmea, size_t size) {
@@ -89,6 +93,31 @@ void Conwayer::processVDM() {
     Nmea::VDM vdm(_parser);
 
     if (vdm.valid()) {
+    }
+}
+
+void Conwayer::processTTM() {
+    Nmea::TTM ttm(_parser);
+
+    if (ttm.valid()) {
+        auto& target = _storage.checkAddTarget(ttm.targetID(), ttm.name());
+
+        double brg = ttm.bearing();
+        double rng = ttm.range();
+        double hdg = _storage.valueOf(Types::DataType::HDG, 0.0);
+        double lat = _storage.valueOf(Types::DataType::LAT, 0.0);
+        double lon = _storage.valueOf(Types::DataType::LON, 0.0);
+
+        if (ttm.isRelativeBearing())
+            brg += hdg;
+
+        Geo::Spherical::calcPosition(lat, lon, brg, rng * 1852.0, target.lat, target.lon);
+
+        target.speed = ttm.speed();
+        target.course = ttm.course();
+
+        if (ttm.isRelativeCourse())
+            target.course += hdg;
     }
 }
 

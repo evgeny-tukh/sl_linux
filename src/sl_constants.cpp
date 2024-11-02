@@ -10,6 +10,7 @@ const char *TextConstants::BRG_1 {"BRG_1"};
 const char *TextConstants::BRG_2 {"BRG_2"};
 const char *TextConstants::BRG_3 {"BRG_3"};
 const char *TextConstants::INFO {"INFO"};
+const char *TextConstants::DSPLY_RNG {"DSPLY_RNG"};
 
 const char *getDataTypeName(Types::DataType type) {
     switch (type) {
@@ -22,6 +23,7 @@ const char *getDataTypeName(Types::DataType type) {
         case Types::DataType::BRG_1: return TextConstants::BRG_1;
         case Types::DataType::BRG_2: return TextConstants::BRG_2;
         case Types::DataType::BRG_3: return TextConstants::BRG_3;
+        case Types::DataType::DSPLY_RNG: return TextConstants::DSPLY_RNG;
         default: return "";        
     }
 }
