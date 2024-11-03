@@ -6,7 +6,9 @@
 
 #include <X11/Xlib.h> 
 
-class VesselShape {
+using Points = std::vector<std::pair<int, int>>;
+
+class GenericShape {
     public:
         struct Pt {
             Pt(int xArg, int yArg);
@@ -16,12 +18,12 @@ class VesselShape {
             double angle;
         };
 
-        VesselShape();
-        VesselShape(int centerX, int centerY);
+        GenericShape(Points&);
+        GenericShape(Points&, int centerX, int centerY);
 
         void getShape(double angle, int centerX, int centerY, std::vector<XPoint>& shape, double multiplicator = 1);
 
-    private:
+    protected:
         int _centerX;
         int _centerY;
 
@@ -29,4 +31,14 @@ class VesselShape {
         std::array<std::pair<double, double>, 360> _sinCosTable;
 
         void addPoint(int x, int y);
+};
+
+class VesselShape: public GenericShape {
+    public:
+        VesselShape();
+};
+
+class TargetShape: public GenericShape {
+    public:
+        TargetShape();
 };

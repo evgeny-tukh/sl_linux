@@ -2,10 +2,13 @@
 
 namespace {
 
-const int CENTER_X = 8;
-const int CENTER_Y = 25;
+const int VESSEL_CENTER_X = 8;
+const int VESSEL_CENTER_Y = 25;
 
-std::vector<std::pair<int, int>> initShape {
+const int TARGET_CENTER_X = 6;
+const int TARGET_CENTER_Y = 8;
+
+Points initVesselShape {
     {8, 0},
     {5, 1},
     {2, 4},
@@ -26,11 +29,18 @@ std::vector<std::pair<int, int>> initShape {
     {8, 0},
 };
 
+Points initTargetShape {
+    {6, 0},
+    {12, 16},
+    {0, 16},
+    {6, 0},
+};
+
 const double PI = 3.1415926535897932384626433832795;
 const double DEG2RAD = PI / 180.0;
 }
 
-VesselShape::Pt::Pt(int xArg, int yArg): x(xArg), y(yArg) {
+GenericShape::Pt::Pt(int xArg, int yArg): x(xArg), y(yArg) {
     radius = sqrt(xArg * xArg + yArg * yArg);
     angle = asin(xArg / radius);
 
@@ -38,18 +48,18 @@ VesselShape::Pt::Pt(int xArg, int yArg): x(xArg), y(yArg) {
         angle = PI - angle;
 }
 
-VesselShape::VesselShape(): VesselShape(CENTER_X, CENTER_Y) {}
+GenericShape::GenericShape(Points& points): GenericShape(points, VESSEL_CENTER_X, VESSEL_CENTER_Y) {}
 
-VesselShape::VesselShape(int centerX, int centerY): _centerX(centerX), _centerY(centerY) {
-    for (auto& pt: initShape)
+GenericShape::GenericShape(Points& points, int centerX, int centerY): _centerX(centerX), _centerY(centerY) {
+    for (auto& pt: points)
         addPoint(pt.first, pt.second);
 }
 
-void VesselShape::addPoint(int x, int y) {
+void GenericShape::addPoint(int x, int y) {
     _points.emplace_back((double) (_centerX - x), (double) (_centerY - y));
 }
 
-void VesselShape::getShape(double angle, int centerX, int centerY, std::vector<XPoint>& shape, double multiplicator) {
+void GenericShape::getShape(double angle, int centerX, int centerY, std::vector<XPoint>& shape, double multiplicator) {
     shape.clear();
 
     for (auto& pt: _points) {
@@ -61,3 +71,10 @@ void VesselShape::getShape(double angle, int centerX, int centerY, std::vector<X
         shape.push_back(point);
     }
 }
+
+VesselShape::VesselShape(): GenericShape(initVesselShape, VESSEL_CENTER_X, VESSEL_CENTER_Y) {
+}
+
+TargetShape::TargetShape(): GenericShape(initTargetShape, TARGET_CENTER_X, TARGET_CENTER_Y) {
+}
+

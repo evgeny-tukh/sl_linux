@@ -23,6 +23,7 @@ class TargetDisplay: public Ui::Wnd {
         std::array<double, 360> _sinuses;
         std::array<double, 360> _cosinuses;
         VesselShape _vesselShape;
+        TargetShape _targetShape;
 
         void populateTicksArray();
 

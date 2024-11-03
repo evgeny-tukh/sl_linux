@@ -41,7 +41,7 @@ struct TargetDrawContext {
 }
 
 TargetDisplay::TargetDisplay(ValueStorage& storage, Display *display, Window parent):
-    Wnd(display, EDGE, EDGE, getWidthHeight(display), getWidthHeight(display), parent), _storage(storage), _vesselShape() {
+    Wnd(display, EDGE, EDGE, getWidthHeight(display), getWidthHeight(display), parent), _storage(storage), _vesselShape(), _targetShape() {
     for (int i = 0; i < 360; ++i) {
         double angle = PI * (double) i / 180.0;
         _sinuses[i] = sin(angle);
@@ -61,6 +61,7 @@ void TargetDisplay::paint(GC ctx) {
     auto bg = Ui::Util::allocateColor(0, 0, 0, _display);
     auto fg = Ui::Util::allocateColor(255, 255, 255, _display);
     auto shipBg = Ui::Util::allocateColor(255, 255, 0, _display);
+    auto targetBg = Ui::Util::allocateColor(0, 0, 255, _display);
     setBgColor(bg);
     XSetForeground(_display, ctx, bg);
     XFillRectangle(_display, _wnd, ctx, 0, 0, _width, _height);
@@ -80,8 +81,8 @@ void TargetDisplay::paint(GC ctx) {
 
     TargetDrawContext trgDrawCtx(_storage);
 
-    XSetBackground(_display, ctx, shipBg);
-    XSetForeground(_display, ctx, shipBg);
+    XSetBackground(_display, ctx, targetBg);
+    XSetForeground(_display, ctx, targetBg);
 
     _storage.enumTargets([ctx, this, &trgDrawCtx] (const Target& target) {
         double rng = Geo::Spherical::calcRange(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
@@ -101,10 +102,9 @@ void TargetDisplay::paint(GC ctx) {
         double dx = _sinuses[(int) brg] * radius;
         double dy = _cosinuses[(int) brg] * radius;
 
-        int targetX = _width / 2 + (int) dx;
-        int targetY = _height / 2 + (int) dy;
-
-        XFillArc(_display, _wnd, ctx, targetX, targetY, 50, 50, 0, 359);
+        std::vector<XPoint> shape;
+        _targetShape.getShape(target.course, (int) dx + _width / 2, (int) dy + _height / 2, shape, 2.0);
+        XFillPolygon(_display, _wnd, ctx, shape.data(), shape.size(), Nonconvex, CoordModeOrigin);
     });
 }
 
