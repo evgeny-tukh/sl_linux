@@ -4,6 +4,7 @@
 
 #include "sl_display.h"
 #include "sl_util.h"
+#include "sl_geo.h"
 
 namespace {
 
@@ -24,9 +25,22 @@ uint16_t getWidthHeight(Display *display) {
     return height - EDGE * 2;
 }
 
+struct TargetDrawContext {
+    double lat, lon, hdg, displayRng;
+
+    TargetDrawContext(ValueStorage& storage) {
+        auto lock = storage.createLock(ValueStorage::LockType::Values);
+        
+        lat = storage.valueOf(Types::DataType::LAT, 0.0);
+        lon = storage.valueOf(Types::DataType::LON, 0.0);
+        hdg = storage.valueOf(Types::DataType::HDG, 0.0);
+        displayRng = storage.valueOf(Types::DataType::DSPLY_RNG, 0.0);
+    }
+};
+
 }
 
-TargetDisplay::TargetDisplay(const ValueStorage& storage, Display *display, Window parent):
+TargetDisplay::TargetDisplay(ValueStorage& storage, Display *display, Window parent):
     Wnd(display, EDGE, EDGE, getWidthHeight(display), getWidthHeight(display), parent), _storage(storage), _vesselShape() {
     for (int i = 0; i < 360; ++i) {
         double angle = PI * (double) i / 180.0;
@@ -63,6 +77,35 @@ void TargetDisplay::paint(GC ctx) {
     XSetBackground(_display, ctx, shipBg);
     XSetForeground(_display, ctx, shipBg);
     XFillPolygon(_display, _wnd, ctx, shape.data(), shape.size(), Nonconvex, CoordModeOrigin);
+
+    TargetDrawContext trgDrawCtx(_storage);
+
+    XSetBackground(_display, ctx, shipBg);
+    XSetForeground(_display, ctx, shipBg);
+
+    _storage.enumTargets([ctx, this, &trgDrawCtx] (const Target& target) {
+        double rng = Geo::Spherical::calcRange(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
+        double brg = Geo::Spherical::calcBearing(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
+
+        brg -= trgDrawCtx.hdg;
+
+        if (brg < 0.0)
+            brg += 360.0;
+        else if (brg >= 360.0)
+            brg -= 360.0;
+
+        if (rng >= trgDrawCtx.displayRng)
+            return;
+
+        double radius = _width * 0.5 * rng / trgDrawCtx.displayRng;
+        double dx = _sinuses[(int) brg] * radius;
+        double dy = _cosinuses[(int) brg] * radius;
+
+        int targetX = _width / 2 + (int) dx;
+        int targetY = _height / 2 + (int) dy;
+
+        XFillArc(_display, _wnd, ctx, targetX, targetY, 50, 50, 0, 359);
+    });
 }
 
 void TargetDisplay::populateTicksArray() {

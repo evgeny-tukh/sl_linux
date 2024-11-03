@@ -10,14 +10,14 @@
 #if 1
 class LampIdIndicators: public LampGenericIndicators {
     public:
-        LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent);
+        LampIdIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent);
 };
 
 #else
 
 class LampIdIndicators: public Ui::DrawableObject {
     public:
-        LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent);
+        LampIdIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent);
 
         void show(bool showFlag) override;
 
@@ -25,7 +25,7 @@ class LampIdIndicators: public Ui::DrawableObject {
         static int getLampIndicatorHeight();
 
     protected:
-        const ValueStorage& _storage;
+        ValueStorage& _storage;
         std::unique_ptr<ValueField> _indicators[3];
         std::unique_ptr<RedLabel> _label;
 

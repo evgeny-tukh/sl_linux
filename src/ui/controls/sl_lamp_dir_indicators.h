@@ -8,12 +8,12 @@
 
 class LampDirIndicators: public Ui::DrawableObject {
     public:
-        LampDirIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent);
+        LampDirIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent);
 
         void show(bool showFlag) override;
 
     protected:
-        const ValueStorage& _storage;
+        ValueStorage& _storage;
         std::unique_ptr<LampDirIndicator> _indicators[3];
         std::unique_ptr<RedLabel> _label;
 

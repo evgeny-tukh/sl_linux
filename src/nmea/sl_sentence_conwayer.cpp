@@ -100,7 +100,8 @@ void Conwayer::processTTM() {
     Nmea::TTM ttm(_parser);
 
     if (ttm.valid()) {
-        auto& target = _storage.checkAddTarget(ttm.targetID(), ttm.name());
+        auto lock = _storage.createLock(ValueStorage::LockType::TargetTable);
+        auto target = _storage.checkAddTarget(ttm.targetID(), ttm.name());
 
         double brg = ttm.bearing();
         double rng = ttm.range();
@@ -111,13 +112,22 @@ void Conwayer::processTTM() {
         if (ttm.isRelativeBearing())
             brg += hdg;
 
-        Geo::Spherical::calcPosition(lat, lon, brg, rng * 1852.0, target.lat, target.lon);
+        double targetLat, targetLon;
 
-        target.speed = ttm.speed();
-        target.course = ttm.course();
+        Geo::Spherical::calcPosition(lat, lon, brg, rng * 1852.0, targetLat, targetLon);
+
+        target->second.lat = targetLat;
+        target->second.lon = targetLon;
+        target->second.speed = ttm.speed();
+        target->second.course = ttm.course();
 
         if (ttm.isRelativeCourse())
-            target.course += hdg;
+            target->second.course += hdg;
+
+        if (target->second.course >= 360.0)
+            target->second.course -= 360.0;
+
+        target->second.lastUpdate = time(nullptr);
     }
 }
 

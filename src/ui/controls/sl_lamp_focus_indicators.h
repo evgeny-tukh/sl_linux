@@ -9,5 +9,5 @@
 
 class LampFocusIndicators: public LampGenericIndicators {
     public:
-        LampFocusIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent);
+        LampFocusIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent);
 };

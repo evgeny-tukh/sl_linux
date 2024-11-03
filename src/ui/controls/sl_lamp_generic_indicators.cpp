@@ -3,7 +3,7 @@
 
 #include "sl_lamp_generic_indicators.h"
 
-LampGenericIndicators::LampGenericIndicators(const char *label, Types& types, const ValueStorage& storage, Display *display, int x, int y, int width, int offsetFromCol2, Window parent):
+LampGenericIndicators::LampGenericIndicators(const char *label, Types& types, ValueStorage& storage, Display *display, int x, int y, int width, int offsetFromCol2, Window parent):
     Ui::DrawableObject::DrawableObject(display, x, y, width, getIndicatorHeight() * types.size(), parent),
     _width(width),
     _storage(storage),

@@ -72,22 +72,30 @@ double ValueStorage::valueOf(const char *name, double defValue) const {
     return pos->second.first;
 }
 
-Target& ValueStorage::checkAddTarget(uint32_t id, const std::string& name) {
+ValueStorage::TargetTable::iterator ValueStorage::checkAddTarget(uint32_t id, const std::string& name) {
     auto pos = _targets.find(id);
 
     if (pos == _targets.end())
         pos = _targets.emplace(std::pair<uint32_t, Target>(id, Target(id, name))).first;
 
-    return pos->second;
+    return pos;
 }
 
 void ValueStorage::removeLostTargets() {
-
+    Locker lock(_trgTableLocker);
 }
 
-void ValueStorage::enumTargets(std::function<void(const Target&)> cb) const {
-    for (auto const targetItem: _targets) {
+void ValueStorage::enumTargets(std::function<void(Target&)> cb) {
+    Locker lock(_trgTableLocker);
+    for (auto targetItem: _targets) {
         cb(targetItem.second);
     }
+}
 
+std::shared_ptr<ValueStorage::Locker> ValueStorage::createLock(ValueStorage::LockType type) {
+    switch (type) {
+        case ValueStorage::LockType::Values: return std::make_shared<Locker>(_valuesLocker);
+        case ValueStorage::LockType::TargetTable: return std::make_shared<Locker>(_trgTableLocker);
+        default: return std::shared_ptr<Locker>();
+    }
 }

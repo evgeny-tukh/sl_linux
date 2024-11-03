@@ -9,5 +9,5 @@
 
 class LampStatusIndicators: public LampGenericIndicators {
     public:
-        LampStatusIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent);
+        LampStatusIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent);
 };

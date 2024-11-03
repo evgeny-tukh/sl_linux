@@ -9,7 +9,7 @@ const int LBL_WIDTH = 40;
 const int LBL_HEIGHT = 35;
 }
 
-LampDirIndicators::LampDirIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
+LampDirIndicators::LampDirIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent):
     Ui::DrawableObject::DrawableObject(display, x, y, LampDirIndicator::getLampIndicatorWidth(), LampDirIndicator::getLampIndicatorHeight() * 3, parent),
     _storage(storage) {
     static Types::DataType types[3] {

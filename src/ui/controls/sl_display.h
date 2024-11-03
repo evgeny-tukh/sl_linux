@@ -10,14 +10,14 @@
 
 class TargetDisplay: public Ui::Wnd {
     public:
-        TargetDisplay(const ValueStorage& storage, Display *display, Window parent);
+        TargetDisplay(ValueStorage& storage, Display *display, Window parent);
 
         void paint(GC ctx) override;
 
         //void setupLayout(int xParam = 0, int yParam = 0) override;
 
     private:
-        const ValueStorage& _storage;
+        ValueStorage& _storage;
         std::array<XSegment, 360> _ticks;
         std::array<XPoint, 36> _tagPos;
         std::array<double, 360> _sinuses;

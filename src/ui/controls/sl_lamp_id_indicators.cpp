@@ -17,7 +17,7 @@ LampGenericIndicators::Types types {
     Types::DataType::ID_3,
 };
 
-LampIdIndicators::LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
+LampIdIndicators::LampIdIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent):
     LampGenericIndicators(LABEL, types, storage, display, x, y, WIDTH, 90, parent) {
 
 }
@@ -29,7 +29,7 @@ Types::DataType types[3] {
 };
 }
 
-LampIdIndicators::LampIdIndicators(const ValueStorage& storage, Display *display, int x, int y, Window parent):
+LampIdIndicators::LampIdIndicators(ValueStorage& storage, Display *display, int x, int y, Window parent):
     Ui::DrawableObject::DrawableObject(display, x, y, LampIdIndicators::getLampIndicatorWidth(), LampIdIndicators::getLampIndicatorHeight() * 3, parent),
     _storage(storage) {
     setAnchorage(AnchorageFlags::Right|AnchorageFlags::Top, UiButtonsLayout::SECOND_COL_RIGHT + 95, UiButtonsLayout::SECOND_ROW_Y);
