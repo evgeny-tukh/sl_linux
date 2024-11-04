@@ -137,6 +137,7 @@ set(SOURCES
     src/sl_range_inc_but.cpp
     src/sl_range_dec_but.cpp
     src/sl_value_storage.cpp
+    src/sl_settings_storage.cpp
     src/sl_tools.cpp
     src/sl_constants.cpp
     src/sl_geo.cpp
@@ -149,6 +150,7 @@ set(HEADERS
     src/sl_range_inc_but.h
     src/sl_range_dec_but.h
     src/sl_value_storage.h
+    src/sl_settings_storage.h
     src/sl_tools.h
     src/sl_constants.h
     src/sl_vessel_shape.h

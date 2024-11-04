@@ -47,7 +47,7 @@ class TTM: public Sentence {
         }
 
         std::string name() const {
-            return _parser.asString(12);
+            return _parser.asString(11);
         }
 
         bool lost() const {

@@ -40,10 +40,11 @@
 #include "sl_lamp_dist_indicators.h"
 #include "sl_lamp_system_indicators.h"
 #include "sl_display.h"
+#include "sl_settings_storage.h"
 
 class SearchMasterWnd: public Ui::Wnd {
     public:
-        SearchMasterWnd(Display *display, ValueStorage& storage);
+        SearchMasterWnd(Display *display, ValueStorage& storage, SettingsStorage& settings);
         ~SearchMasterWnd();
 
         void create() override;
@@ -53,6 +54,7 @@ class SearchMasterWnd: public Ui::Wnd {
         std::unique_ptr<Ui::Bitmap> _img;
         std::unordered_map<std::string, std::shared_ptr<LabeledValue>&> _valueDisplays;
         ValueStorage& _storage;
+        SettingsStorage& _settings;
         std::thread _watchdog;
         std::atomic_bool _running;
 

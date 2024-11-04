@@ -25,23 +25,10 @@ uint16_t getWidthHeight(Display *display) {
     return height - EDGE * 2;
 }
 
-struct TargetDrawContext {
-    double lat, lon, hdg, displayRng;
-
-    TargetDrawContext(ValueStorage& storage) {
-        auto lock = storage.createLock(ValueStorage::LockType::Values);
-        
-        lat = storage.valueOf(Types::DataType::LAT, 0.0);
-        lon = storage.valueOf(Types::DataType::LON, 0.0);
-        hdg = storage.valueOf(Types::DataType::HDG, 0.0);
-        displayRng = storage.valueOf(Types::DataType::DSPLY_RNG, 0.0);
-    }
-};
-
 }
 
-TargetDisplay::TargetDisplay(ValueStorage& storage, Display *display, Window parent):
-    Wnd(display, EDGE, EDGE, getWidthHeight(display), getWidthHeight(display), parent), _storage(storage), _vesselShape(), _targetShape() {
+TargetDisplay::TargetDisplay(ValueStorage& storage, SettingsStorage& settings, Display *display, Window parent):
+    Wnd(display, EDGE, EDGE, getWidthHeight(display), getWidthHeight(display), parent), _storage(storage), _settings(settings), _vesselShape(), _targetShape() {
     for (int i = 0; i < 360; ++i) {
         double angle = PI * (double) i / 180.0;
         _sinuses[i] = sin(angle);
@@ -79,33 +66,42 @@ void TargetDisplay::paint(GC ctx) {
     XSetForeground(_display, ctx, shipBg);
     XFillPolygon(_display, _wnd, ctx, shape.data(), shape.size(), Nonconvex, CoordModeOrigin);
 
-    TargetDrawContext trgDrawCtx(_storage);
+    TargetDrawContext trgDrawCtx(_storage, _settings);
 
     XSetBackground(_display, ctx, targetBg);
     XSetForeground(_display, ctx, targetBg);
 
     _storage.enumTargets([ctx, this, &trgDrawCtx] (const Target& target) {
-        double rng = Geo::Spherical::calcRange(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
-        double brg = Geo::Spherical::calcBearing(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
-
-        brg -= trgDrawCtx.hdg;
-
-        if (brg < 0.0)
-            brg += 360.0;
-        else if (brg >= 360.0)
-            brg -= 360.0;
-
-        if (rng >= trgDrawCtx.displayRng)
-            return;
-
-        double radius = _width * 0.5 * rng / trgDrawCtx.displayRng;
-        double dx = _sinuses[(int) brg] * radius;
-        double dy = _cosinuses[(int) brg] * radius;
-
-        std::vector<XPoint> shape;
-        _targetShape.getShape(target.course, (int) dx + _width / 2, (int) dy + _height / 2, shape, 2.0);
-        XFillPolygon(_display, _wnd, ctx, shape.data(), shape.size(), Nonconvex, CoordModeOrigin);
+        drawTarget(target, ctx, trgDrawCtx);
     });
+}
+
+void TargetDisplay::drawTarget(const Target& target, GC ctx, const TargetDrawContext& trgDrawCtx) {
+    double rng = Geo::Spherical::calcRange(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
+    double brg = Geo::Spherical::calcBearing(trgDrawCtx.lat, trgDrawCtx.lon, target.lat, target.lon);
+
+    brg -= trgDrawCtx.hdg;
+
+    if (brg < 0.0)
+        brg += 360.0;
+    else if (brg >= 360.0)
+        brg -= 360.0;
+
+    if (rng >= trgDrawCtx.displayRng)
+        return;
+
+    double radius = _width * 0.5 * rng / trgDrawCtx.displayRng;
+    double dx = _sinuses[(int) brg] * radius;
+    double dy = _cosinuses[(int) brg] * radius;
+
+    std::vector<XPoint> shape;
+    int targetX = (int) dx + _width / 2;
+    int targetY = (int) dy + _height / 2;
+    _targetShape.getShape(target.course, targetX, targetY, shape, 2.0);
+    XFillPolygon(_display, _wnd, ctx, shape.data(), shape.size(), Nonconvex, CoordModeOrigin);
+
+    if (trgDrawCtx.showNames)
+        XDrawString(_display, _wnd, ctx, targetX, targetY + 20, target.name.c_str(), target.name.length());
 }
 
 void TargetDisplay::populateTicksArray() {

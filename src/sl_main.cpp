@@ -19,6 +19,8 @@
 #include "sl_constants.h"
 #include <io/sl_udp_channel.h>
 #include <io/sl_channel_host.h>
+#include "sl_value_storage.h"
+#include "sl_settings_storage.h"
 
 enum class Controls: uint16_t {
     OK,
@@ -195,9 +197,11 @@ int main(int argCount, char *args[]) {
     }
 
     ValueStorage storage;
+    SettingsStorage settings;
+    
     storage.setValue(Types::DataType::DSPLY_RNG, 1852.0 * 2, ValueStorage::Format::Double);
 
-    SearchMasterWnd smWindow(display, storage);
+    SearchMasterWnd smWindow(display, storage, settings);
 
     uint16_t width, height;
     Ui::Util::getScreenSize(display, width, height);

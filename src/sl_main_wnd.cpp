@@ -18,9 +18,10 @@ namespace {
 }
 
 
-SearchMasterWnd::SearchMasterWnd(Display *display, ValueStorage & storage):
+SearchMasterWnd::SearchMasterWnd(Display *display, ValueStorage & storage, SettingsStorage& settings):
     Ui::Wnd(display, X, Y, WIDTH, HEIGHT, /*parent.handle()*/RootWindow(display, DefaultScreen(display))),
-    _storage(storage) {
+    _storage(storage),
+    _settings(settings) {
     auto screen = DefaultScreen(display);
     _borderClr = WhitePixel(display, screen);
     _bgClr = BlackPixel(display, screen);
@@ -73,7 +74,7 @@ void SearchMasterWnd::create() {
     _info->setupLayout(0, 0);
     _info->applyAnchorage();
 
-    _targetDisplay.reset(new TargetDisplay(_storage, _display, _wnd));
+    _targetDisplay.reset(new TargetDisplay(_storage, _settings, _display, _wnd));
     addChild((uint16_t) Ui::Resources::TargetDisplay, _targetDisplay);
     _targetDisplay->create();
     _targetDisplay->show(true);
@@ -111,6 +112,10 @@ void SearchMasterWnd::create() {
     _lampSystemIndicators.reset(new LampSystemIndicators(_storage, _display, 700, 600, _wnd));
     addChild((uint16_t) Ui::Resources::LAMP_SYSTEMS, _lampSystemIndicators);
     _lampSystemIndicators->show(true);
+
+    _butNameEdit->connect([this] (Ui::Event&) {
+        _settings.toggleNameShow();
+    });
 
     _running.store(true);
     _watchdog = std::thread([this] () { watchdogProc(); });
